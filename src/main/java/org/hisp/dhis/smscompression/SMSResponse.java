@@ -70,6 +70,7 @@ public enum SMSResponse
     MULTI_STAGES( 307, "Multiple program stages found for event capture program [%s]" ),
     NO_ENROLL( 308, "No enrollment was found for tracked entity instance [%s] in program stage [%s]" ),
     NULL_ATTRIBVAL( 309, "Value for attribute [%s] was null" ),
+    ENROLL_EXIST( 309, "TEI [%s] already enrolled in program [%s]" ),
 
     ;
 
