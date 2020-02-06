@@ -160,13 +160,23 @@ public class SMSSubmissionWriter
     public void writeAttributeValues( List<SMSAttributeValue> values )
         throws SMSCompressionException
     {
-        valueWriter.writeAttributeValues( values );
+        boolean isEmpty = (values == null || values.isEmpty());
+        ValueUtil.writeBool( isEmpty, outStream );
+        if ( !isEmpty )
+        {
+            valueWriter.writeAttributeValues( values );
+        }
     }
 
     public void writeDataValues( List<SMSDataValue> values )
         throws SMSCompressionException
     {
-        valueWriter.writeDataValues( values );
+        boolean isEmpty = (values == null || values.isEmpty());
+        ValueUtil.writeBool( isEmpty, outStream );
+        if ( !isEmpty )
+        {
+            valueWriter.writeDataValues( values );
+        }
     }
 
     public void writeBool( boolean val )

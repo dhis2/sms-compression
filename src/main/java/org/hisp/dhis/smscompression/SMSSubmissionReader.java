@@ -32,6 +32,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -177,12 +178,22 @@ public class SMSSubmissionReader
     public List<SMSAttributeValue> readAttributeValues()
         throws SMSCompressionException
     {
+        boolean isEmpty = ValueUtil.readBool( inStream );
+        if ( isEmpty )
+        {
+            return new ArrayList<>();
+        }
         return valueReader.readAttributeValues();
     }
 
     public List<SMSDataValue> readDataValues()
         throws SMSCompressionException
     {
+        boolean isEmpty = ValueUtil.readBool( inStream );
+        if ( isEmpty )
+        {
+            return new ArrayList<>();
+        }
         return valueReader.readDataValues();
     }
 
