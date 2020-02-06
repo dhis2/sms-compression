@@ -56,6 +56,8 @@ public class EnrollmentSMSSubmission
 
     protected List<SMSAttributeValue> values;
 
+    protected List<SMSEvent> events;
+
     public UID getOrgUnit()
     {
         return orgUnit;
@@ -126,6 +128,16 @@ public class EnrollmentSMSSubmission
         this.values = values;
     }
 
+    public List<SMSEvent> getEvents()
+    {
+        return events;
+    }
+
+    public void setEvents( List<SMSEvent> events )
+    {
+        this.events = events;
+    }
+
     @Override
     public boolean equals( Object o )
     {
@@ -138,7 +150,7 @@ public class EnrollmentSMSSubmission
         return orgUnit.equals( subm.orgUnit ) && trackerProgram.equals( subm.trackerProgram )
             && trackedEntityType.equals( subm.trackedEntityType )
             && trackedEntityInstance.equals( subm.trackedEntityInstance ) && enrollment.equals( subm.enrollment )
-            && timestamp.equals( subm.timestamp ) && values.equals( subm.values );
+            && timestamp.equals( subm.timestamp ) && values.equals( subm.values ) && events.equals( subm.events );
     }
 
     @Override
@@ -152,6 +164,7 @@ public class EnrollmentSMSSubmission
         writer.writeID( enrollment );
         writer.writeDate( timestamp );
         writer.writeAttributeValues( values );
+        writer.writeEvents( events );
     }
 
     @Override
@@ -165,6 +178,7 @@ public class EnrollmentSMSSubmission
         this.enrollment = reader.readID( MetadataType.ENROLLMENT );
         this.timestamp = reader.readDate();
         this.values = reader.readAttributeValues();
+        this.events = reader.readEvents();
     }
 
     @Override

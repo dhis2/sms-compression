@@ -39,6 +39,7 @@ import org.hisp.dhis.smscompression.SMSConsts.SMSEventStatus;
 import org.hisp.dhis.smscompression.SMSConsts.SubmissionType;
 import org.hisp.dhis.smscompression.models.SMSAttributeValue;
 import org.hisp.dhis.smscompression.models.SMSDataValue;
+import org.hisp.dhis.smscompression.models.SMSEvent;
 import org.hisp.dhis.smscompression.models.SMSMetadata;
 import org.hisp.dhis.smscompression.models.SMSSubmission;
 import org.hisp.dhis.smscompression.models.UID;
@@ -193,5 +194,11 @@ public class SMSSubmissionWriter
         throws SMSCompressionException
     {
         outStream.write( eventStatus.ordinal(), SMSConsts.EVENT_STATUS_BITLEN );
+    }
+
+    public void writeEvents( List<SMSEvent> events )
+        throws SMSCompressionException
+    {
+        // TODO: Implement me
     }
 }

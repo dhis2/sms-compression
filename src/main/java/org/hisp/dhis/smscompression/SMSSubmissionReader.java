@@ -45,6 +45,7 @@ import org.hisp.dhis.smscompression.models.EnrollmentSMSSubmission;
 import org.hisp.dhis.smscompression.models.RelationshipSMSSubmission;
 import org.hisp.dhis.smscompression.models.SMSAttributeValue;
 import org.hisp.dhis.smscompression.models.SMSDataValue;
+import org.hisp.dhis.smscompression.models.SMSEvent;
 import org.hisp.dhis.smscompression.models.SMSMetadata;
 import org.hisp.dhis.smscompression.models.SMSSubmission;
 import org.hisp.dhis.smscompression.models.SMSSubmissionHeader;
@@ -210,5 +211,12 @@ public class SMSSubmissionReader
     {
         int eventStatusNum = inStream.read( SMSConsts.EVENT_STATUS_BITLEN );
         return SMSEventStatus.values()[eventStatusNum];
+    }
+
+    public List<SMSEvent> readEvents()
+        throws SMSCompressionException
+    {
+        // TODO: Implement me
+        return null;
     }
 }
