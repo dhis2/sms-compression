@@ -32,6 +32,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -216,7 +217,18 @@ public class SMSSubmissionReader
     public List<SMSEvent> readEvents()
         throws SMSCompressionException
     {
-        // TODO: Implement me
-        return null;
+        boolean hasEvents = readBool();
+        ArrayList<SMSEvent> events = new ArrayList<>();
+        if ( hasEvents )
+        {
+            for ( boolean hasNext = true; hasNext; hasNext = readBool() )
+            {
+                SMSEvent event = new SMSEvent();
+                event.readEvent( this );
+                events.add( event );
+            }
+        }
+
+        return events;
     }
 }

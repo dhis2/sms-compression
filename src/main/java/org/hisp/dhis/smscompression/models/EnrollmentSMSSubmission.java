@@ -184,7 +184,7 @@ public class EnrollmentSMSSubmission
     @Override
     public int getCurrentVersion()
     {
-        return 1;
+        return 2;
     }
 
     @Override

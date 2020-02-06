@@ -40,6 +40,7 @@ import org.hisp.dhis.smscompression.models.EnrollmentSMSSubmission;
 import org.hisp.dhis.smscompression.models.RelationshipSMSSubmission;
 import org.hisp.dhis.smscompression.models.SMSAttributeValue;
 import org.hisp.dhis.smscompression.models.SMSDataValue;
+import org.hisp.dhis.smscompression.models.SMSEvent;
 import org.hisp.dhis.smscompression.models.SMSSubmission;
 import org.hisp.dhis.smscompression.models.SimpleEventSMSSubmission;
 import org.hisp.dhis.smscompression.models.TrackerEventSMSSubmission;
@@ -157,6 +158,9 @@ public class TestUtils
                                                                         // ID
         subm.setValues( values );
         subm.setSubmissionID( 1 );
+
+        ArrayList<SMSEvent> events = new ArrayList<>();
+        subm.setEvents( events );
 
         return subm;
     }

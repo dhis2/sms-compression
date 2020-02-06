@@ -114,7 +114,11 @@ public class SMSEvent
     @Override
     public boolean equals( Object o )
     {
-        if ( !super.equals( o ) )
+        if ( this == o )
+        {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() )
         {
             return false;
         }
@@ -136,7 +140,7 @@ public class SMSEvent
         writer.writeDataValues( values );
     }
 
-    public void readEvent( SMSSubmissionReader reader, int version )
+    public void readEvent( SMSSubmissionReader reader )
         throws SMSCompressionException
     {
         this.programStage = reader.readID( MetadataType.PROGRAM_STAGE );

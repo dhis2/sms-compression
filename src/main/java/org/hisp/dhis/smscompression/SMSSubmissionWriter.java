@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.hisp.dhis.smscompression.SMSConsts.SMSEventStatus;
@@ -199,6 +200,16 @@ public class SMSSubmissionWriter
     public void writeEvents( List<SMSEvent> events )
         throws SMSCompressionException
     {
-        // TODO: Implement me
+        boolean hasEvents = (events != null && !events.isEmpty());
+        writeBool( hasEvents );
+        if ( hasEvents )
+        {
+            for ( Iterator<SMSEvent> eventIter = events.iterator(); eventIter.hasNext(); )
+            {
+                SMSEvent event = eventIter.next();
+                event.writeEvent( this );
+                writeBool( eventIter.hasNext() );
+            }
+        }
     }
 }
