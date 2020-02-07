@@ -56,9 +56,9 @@ public class SMSEvent
         return programStage;
     }
 
-    public void setProgramStage( UID programStage )
+    public void setProgramStage( String programStage )
     {
-        this.programStage = programStage;
+        this.programStage = new UID( programStage, MetadataType.PROGRAM_STAGE );
     }
 
     public SMSEventStatus getEventStatus()
@@ -76,9 +76,9 @@ public class SMSEvent
         return attributeOptionCombo;
     }
 
-    public void setAttributeOptionCombo( UID attributeOptionCombo )
+    public void setAttributeOptionCombo( String attributeOptionCombo )
     {
-        this.attributeOptionCombo = attributeOptionCombo;
+        this.attributeOptionCombo = new UID( attributeOptionCombo, MetadataType.CATEGORY_OPTION_COMBO );
     }
 
     public UID getEvent()
@@ -86,9 +86,9 @@ public class SMSEvent
         return event;
     }
 
-    public void setEvent( UID event )
+    public void setEvent( String event )
     {
-        this.event = event;
+        this.event = new UID( event, MetadataType.EVENT );
     }
 
     public Date getTimestamp()
@@ -122,11 +122,11 @@ public class SMSEvent
         {
             return false;
         }
-        SMSEvent event = (SMSEvent) o;
+        SMSEvent e = (SMSEvent) o;
 
-        return programStage.equals( event.programStage ) && eventStatus == event.eventStatus
-            && attributeOptionCombo.equals( event.attributeOptionCombo ) && event.equals( event.event )
-            && timestamp.equals( event.timestamp ) && values.equals( event.values );
+        return programStage.equals( e.programStage ) && eventStatus == e.eventStatus
+            && attributeOptionCombo.equals( e.attributeOptionCombo ) && event.equals( e.event )
+            && timestamp.equals( e.timestamp ) && values.equals( e.values );
     }
 
     public void writeEvent( SMSSubmissionWriter writer )

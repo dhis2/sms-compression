@@ -181,6 +181,24 @@ public class TestEncodeDecode
     }
 
     @Test
+    public void testEncodeEnrollmentNoEvents()
+    {
+        try
+        {
+            EnrollmentSMSSubmission origSubm = TestUtils.createEnrollmentSubmissionNoEvents();
+            String comp64 = compressSubm( origSubm );
+            EnrollmentSMSSubmission decSubm = (EnrollmentSMSSubmission) decompressSubm( comp64 );
+
+            TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+            Assert.fail( e.getMessage() );
+        }
+    }
+
+    @Test
     public void testEncodeTrackerEvent()
     {
         try

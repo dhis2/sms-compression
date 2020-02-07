@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.hisp.dhis.smscompression.SMSConsts.SMSEventStatus;
 import org.hisp.dhis.smscompression.models.AggregateDatasetSMSSubmission;
@@ -136,7 +137,7 @@ public class TestUtils
         return subm;
     }
 
-    public static EnrollmentSMSSubmission createEnrollmentSubmission()
+    public static EnrollmentSMSSubmission createEnrollmentSubmissionNoEvents()
     {
         EnrollmentSMSSubmission subm = new EnrollmentSMSSubmission();
 
@@ -165,6 +166,34 @@ public class TestUtils
         return subm;
     }
 
+    public static EnrollmentSMSSubmission createEnrollmentSubmission()
+    {
+        EnrollmentSMSSubmission subm = new EnrollmentSMSSubmission();
+
+        subm.setUserID( "GOLswS44mh8" ); // Tom Wakiki (system)
+        subm.setOrgUnit( "DiszpKrYNg8" ); // Ngelehun CHC
+        subm.setTrackerProgram( "IpHINAT79UW" ); // Child Programme
+        subm.setTrackedEntityType( "nEenWmSyUEp" ); // Person
+        subm.setTrackedEntityInstance( "T2bRuLEGoVN" ); // Newly generated UID
+        subm.setEnrollment( "p7M1gUFK37W" ); // Newly generated UID
+        subm.setTimestamp( getNowWithoutMillis() );
+        ArrayList<SMSAttributeValue> values = new ArrayList<>();
+        values.add( new SMSAttributeValue( "w75KJ2mc4zz", "Harold" ) ); // First
+                                                                        // Name
+        values.add( new SMSAttributeValue( "zDhUuAYrxNC", "Smith" ) ); // Last
+                                                                       // Name
+        values.add( new SMSAttributeValue( "FO4sWYJ64LQ", "Sydney" ) ); // City
+        values.add( new SMSAttributeValue( "VqEFza8wbwA", "The Opera House" ) ); // Address
+        values.add( new SMSAttributeValue( "lZGmxYbs97q", "987123" ) ); // Unique
+                                                                        // ID
+        subm.setValues( values );
+        subm.setSubmissionID( 1 );
+
+        subm.setEvents( createEventList() );
+
+        return subm;
+    }
+
     public static TrackerEventSMSSubmission createTrackerEventSubmission()
     {
         TrackerEventSMSSubmission subm = new TrackerEventSMSSubmission();
@@ -180,8 +209,7 @@ public class TestUtils
         ArrayList<SMSDataValue> values = new ArrayList<>();
         values.add( new SMSDataValue( "HllvX50cXC0", "a3kGcGDCuk6", "10" ) ); // Apgar
                                                                               // score
-        values.add( new SMSDataValue( "HllvX50cXC0", "UXz7xuGCEhU", "500" ) ); // Weight
-                                                                               // (g)
+
         values.add( new SMSDataValue( "HllvX50cXC0", "wQLfBvPrXqq", "Others" ) ); // ARV
                                                                                   // at
                                                                                   // birth
@@ -191,6 +219,27 @@ public class TestUtils
         subm.setSubmissionID( 1 );
 
         return subm;
+    }
+
+    public static List<SMSEvent> createEventList()
+    {
+        List<SMSEvent> events = new ArrayList<>();
+        for ( int i = 1; i <= 3; i++ )
+        {
+            SMSEvent event = new SMSEvent();
+            event.setProgramStage( "A03MvHHogjR" ); // Birth
+            event.setEventStatus( SMSEventStatus.COMPLETED );
+            event.setAttributeOptionCombo( "HllvX50cXC0" ); // Default
+                                                            // catOptionCombo
+            event.setEvent( "r7M1gUFK37v" ); // New UID
+            event.setTimestamp( getNowWithoutMillis() );
+            ArrayList<SMSDataValue> values = new ArrayList<>();
+            values.add( new SMSDataValue( "HllvX50cXC0", "UXz7xuGCEhU", String.valueOf( i ) ) ); // Weight
+            event.setValues( values );
+            events.add( event );
+        }
+
+        return events;
     }
 
     public static void printSubm( SMSSubmission subm )
