@@ -46,7 +46,9 @@ public abstract class SMSSubmission
 
     public abstract SubmissionType getType();
 
-    public abstract void writeSubm( SMSSubmissionWriter writer )
+    // Note: When handling versioning, create a new method to handle
+    // each version, rather than handling all formats in this method alone
+    public abstract void writeSubm( SMSSubmissionWriter writer, int version )
         throws SMSCompressionException;
 
     public abstract void readSubm( SMSSubmissionReader reader, int version )
@@ -56,7 +58,6 @@ public abstract class SMSSubmission
     {
         this.header = new SMSSubmissionHeader();
         header.setType( this.getType() );
-        header.setVersion( this.getCurrentVersion() );
         // Initialise the submission ID so we know if it's been set correctly
         header.setSubmissionID( -1 );
     }
@@ -102,7 +103,7 @@ public abstract class SMSSubmission
         // TODO: We should run validations on each submission here
     }
 
-    public void write( SMSMetadata meta, SMSSubmissionWriter writer )
+    public void write( SMSMetadata meta, SMSSubmissionWriter writer, int version )
         throws SMSCompressionException
     {
         // Ensure we set the lastSyncDate in the subm header
@@ -110,9 +111,10 @@ public abstract class SMSSubmission
         header.setLastSyncDate( lastSyncDate );
 
         validateSubmission();
+        header.setVersion( version );
         header.writeHeader( writer );
         writer.writeID( userID );
-        writeSubm( writer );
+        writeSubm( writer, version );
     }
 
     public void read( SMSSubmissionReader reader, SMSSubmissionHeader header )

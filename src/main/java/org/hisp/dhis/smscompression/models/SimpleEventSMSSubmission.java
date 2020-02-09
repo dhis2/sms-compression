@@ -1,5 +1,7 @@
 package org.hisp.dhis.smscompression.models;
 
+import java.util.ArrayList;
+
 /*
  * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
@@ -33,8 +35,8 @@ import java.util.List;
 
 import org.hisp.dhis.smscompression.SMSCompressionException;
 import org.hisp.dhis.smscompression.SMSConsts;
-import org.hisp.dhis.smscompression.SMSConsts.SMSEventStatus;
 import org.hisp.dhis.smscompression.SMSConsts.MetadataType;
+import org.hisp.dhis.smscompression.SMSConsts.SMSEventStatus;
 import org.hisp.dhis.smscompression.SMSConsts.SubmissionType;
 import org.hisp.dhis.smscompression.SMSSubmissionReader;
 import org.hisp.dhis.smscompression.SMSSubmissionWriter;
@@ -146,7 +148,21 @@ public class SimpleEventSMSSubmission
     /* Implementation of abstract methods */
 
     @Override
-    public void writeSubm( SMSSubmissionWriter writer )
+    public void writeSubm( SMSSubmissionWriter writer, int version )
+        throws SMSCompressionException
+    {
+        switch ( version )
+        {
+        case 1:
+            writeSubmV1( writer );
+            break;
+        case 2:
+            writeSubmV2( writer );
+            break;
+        }
+    }
+
+    private void writeSubmV1( SMSSubmissionWriter writer )
         throws SMSCompressionException
     {
         writer.writeID( orgUnit );
@@ -158,8 +174,39 @@ public class SimpleEventSMSSubmission
         writer.writeDataValues( values );
     }
 
+    private void writeSubmV2( SMSSubmissionWriter writer )
+        throws SMSCompressionException
+    {
+        writer.writeID( orgUnit );
+        writer.writeID( eventProgram );
+        writer.writeEventStatus( eventStatus );
+        writer.writeID( attributeOptionCombo );
+        writer.writeID( event );
+        writer.writeDate( timestamp );
+        boolean hasValues = (values != null && !values.isEmpty());
+        writer.writeBool( hasValues );
+        if ( hasValues )
+        {
+            writer.writeDataValues( values );
+        }
+    }
+
     @Override
     public void readSubm( SMSSubmissionReader reader, int version )
+        throws SMSCompressionException
+    {
+        switch ( version )
+        {
+        case 1:
+            readSubmV1( reader );
+            break;
+        case 2:
+            readSubmV2( reader );
+            break;
+        }
+    }
+
+    private void readSubmV1( SMSSubmissionReader reader )
         throws SMSCompressionException
     {
         this.orgUnit = reader.readID( MetadataType.ORGANISATION_UNIT );
@@ -171,10 +218,23 @@ public class SimpleEventSMSSubmission
         this.values = reader.readDataValues();
     }
 
+    private void readSubmV2( SMSSubmissionReader reader )
+        throws SMSCompressionException
+    {
+        this.orgUnit = reader.readID( MetadataType.ORGANISATION_UNIT );
+        this.eventProgram = reader.readID( MetadataType.PROGRAM );
+        this.eventStatus = reader.readEventStatus();
+        this.attributeOptionCombo = reader.readID( MetadataType.CATEGORY_OPTION_COMBO );
+        this.event = reader.readID( MetadataType.EVENT );
+        this.timestamp = reader.readDate();
+        boolean hasValues = reader.readBool();
+        this.values = hasValues ? reader.readDataValues() : new ArrayList<SMSDataValue>();
+    }
+
     @Override
     public int getCurrentVersion()
     {
-        return 1;
+        return 2;
     }
 
     @Override

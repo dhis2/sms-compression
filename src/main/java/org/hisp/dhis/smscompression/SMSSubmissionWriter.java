@@ -82,11 +82,17 @@ public class SMSSubmissionWriter
     public byte[] compress( SMSSubmission subm )
         throws SMSCompressionException
     {
+        return compress( subm, subm.getCurrentVersion() );
+    }
+
+    public byte[] compress( SMSSubmission subm, int version )
+        throws SMSCompressionException
+    {
         this.byteStream = new ByteArrayOutputStream();
         this.outStream = new BitOutputStream( byteStream );
         this.valueWriter = new ValueWriter( outStream, meta, hashingEnabled );
 
-        subm.write( meta, this );
+        subm.write( meta, this, version );
 
         return toByteArray();
     }
@@ -162,23 +168,13 @@ public class SMSSubmissionWriter
     public void writeAttributeValues( List<SMSAttributeValue> values )
         throws SMSCompressionException
     {
-        boolean isEmpty = (values == null || values.isEmpty());
-        ValueUtil.writeBool( isEmpty, outStream );
-        if ( !isEmpty )
-        {
-            valueWriter.writeAttributeValues( values );
-        }
+        valueWriter.writeAttributeValues( values );
     }
 
     public void writeDataValues( List<SMSDataValue> values )
         throws SMSCompressionException
     {
-        boolean isEmpty = (values == null || values.isEmpty());
-        ValueUtil.writeBool( isEmpty, outStream );
-        if ( !isEmpty )
-        {
-            valueWriter.writeDataValues( values );
-        }
+        valueWriter.writeDataValues( values );
     }
 
     public void writeBool( boolean val )

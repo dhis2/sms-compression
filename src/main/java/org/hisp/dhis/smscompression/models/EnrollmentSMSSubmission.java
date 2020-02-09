@@ -1,5 +1,7 @@
 package org.hisp.dhis.smscompression.models;
 
+import java.util.ArrayList;
+
 /*
  * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
@@ -154,7 +156,21 @@ public class EnrollmentSMSSubmission
     }
 
     @Override
-    public void writeSubm( SMSSubmissionWriter writer )
+    public void writeSubm( SMSSubmissionWriter writer, int version )
+        throws SMSCompressionException
+    {
+        switch ( version )
+        {
+        case 1:
+            writeSubmV1( writer );
+            break;
+        case 2:
+            writeSubmV2( writer );
+            break;
+        }
+    }
+
+    private void writeSubmV1( SMSSubmissionWriter writer )
         throws SMSCompressionException
     {
         writer.writeID( orgUnit );
@@ -167,8 +183,47 @@ public class EnrollmentSMSSubmission
         writer.writeEvents( events );
     }
 
+    private void writeSubmV2( SMSSubmissionWriter writer )
+        throws SMSCompressionException
+    {
+        writer.writeID( orgUnit );
+        writer.writeID( trackerProgram );
+        writer.writeID( trackedEntityType );
+        writer.writeID( trackedEntityInstance );
+        writer.writeID( enrollment );
+        writer.writeDate( timestamp );
+
+        boolean hasValues = (values != null && !values.isEmpty());
+        writer.writeBool( hasValues );
+        if ( hasValues )
+        {
+            writer.writeAttributeValues( values );
+        }
+
+        boolean hasEvents = (events != null && !events.isEmpty());
+        writer.writeBool( hasEvents );
+        if ( hasEvents )
+        {
+            writer.writeEvents( events );
+        }
+    }
+
     @Override
     public void readSubm( SMSSubmissionReader reader, int version )
+        throws SMSCompressionException
+    {
+        switch ( version )
+        {
+        case 1:
+            readSubmV1( reader );
+            break;
+        case 2:
+            readSubmV2( reader );
+            break;
+        }
+    }
+
+    public void readSubmV1( SMSSubmissionReader reader )
         throws SMSCompressionException
     {
         this.orgUnit = reader.readID( MetadataType.ORGANISATION_UNIT );
@@ -179,6 +234,21 @@ public class EnrollmentSMSSubmission
         this.timestamp = reader.readDate();
         this.values = reader.readAttributeValues();
         this.events = reader.readEvents();
+    }
+
+    public void readSubmV2( SMSSubmissionReader reader )
+        throws SMSCompressionException
+    {
+        this.orgUnit = reader.readID( MetadataType.ORGANISATION_UNIT );
+        this.trackerProgram = reader.readID( MetadataType.PROGRAM );
+        this.trackedEntityType = reader.readID( MetadataType.TRACKED_ENTITY_TYPE );
+        this.trackedEntityInstance = reader.readID( MetadataType.TRACKED_ENTITY_INSTANCE );
+        this.enrollment = reader.readID( MetadataType.ENROLLMENT );
+        this.timestamp = reader.readDate();
+        boolean hasValues = reader.readBool();
+        this.values = hasValues ? reader.readAttributeValues() : new ArrayList<SMSAttributeValue>();
+        boolean hasEvents = reader.readBool();
+        this.events = hasEvents ? reader.readEvents() : new ArrayList<SMSEvent>();
     }
 
     @Override

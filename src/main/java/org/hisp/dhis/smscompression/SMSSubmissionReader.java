@@ -179,22 +179,12 @@ public class SMSSubmissionReader
     public List<SMSAttributeValue> readAttributeValues()
         throws SMSCompressionException
     {
-        boolean isEmpty = ValueUtil.readBool( inStream );
-        if ( isEmpty )
-        {
-            return new ArrayList<>();
-        }
         return valueReader.readAttributeValues();
     }
 
     public List<SMSDataValue> readDataValues()
         throws SMSCompressionException
     {
-        boolean isEmpty = ValueUtil.readBool( inStream );
-        if ( isEmpty )
-        {
-            return new ArrayList<>();
-        }
         return valueReader.readDataValues();
     }
 

@@ -67,7 +67,7 @@ public class DeleteSMSSubmission
     /* Implementation of abstract methods */
 
     @Override
-    public void writeSubm( SMSSubmissionWriter writer )
+    public void writeSubm( SMSSubmissionWriter writer, int version )
         throws SMSCompressionException
     {
         writer.writeID( event );

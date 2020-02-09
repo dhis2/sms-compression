@@ -1,5 +1,7 @@
 package org.hisp.dhis.smscompression.models;
 
+import java.util.ArrayList;
+
 /*
  * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
@@ -134,7 +136,21 @@ public class AggregateDatasetSMSSubmission
     /* Implementation of abstract methods */
 
     @Override
-    public void writeSubm( SMSSubmissionWriter writer )
+    public void writeSubm( SMSSubmissionWriter writer, int version )
+        throws SMSCompressionException
+    {
+        switch ( version )
+        {
+        case 1:
+            writeSubmV1( writer );
+            break;
+        case 2:
+            writeSubmV2( writer );
+            break;
+        }
+    }
+
+    private void writeSubmV1( SMSSubmissionWriter writer )
         throws SMSCompressionException
     {
         writer.writeID( orgUnit );
@@ -145,8 +161,38 @@ public class AggregateDatasetSMSSubmission
         writer.writeDataValues( values );
     }
 
+    private void writeSubmV2( SMSSubmissionWriter writer )
+        throws SMSCompressionException
+    {
+        writer.writeID( orgUnit );
+        writer.writeID( dataSet );
+        writer.writeBool( complete );
+        writer.writeID( attributeOptionCombo );
+        writer.writePeriod( period );
+        boolean hasValues = (values != null && !values.isEmpty());
+        writer.writeBool( hasValues );
+        if ( hasValues )
+        {
+            writer.writeDataValues( values );
+        }
+    }
+
     @Override
     public void readSubm( SMSSubmissionReader reader, int version )
+        throws SMSCompressionException
+    {
+        switch ( version )
+        {
+        case 1:
+            readSubmV1( reader );
+            break;
+        case 2:
+            readSubmV2( reader );
+            break;
+        }
+    }
+
+    private void readSubmV1( SMSSubmissionReader reader )
         throws SMSCompressionException
     {
         this.orgUnit = reader.readID( MetadataType.ORGANISATION_UNIT );
@@ -157,10 +203,22 @@ public class AggregateDatasetSMSSubmission
         this.values = reader.readDataValues();
     }
 
+    private void readSubmV2( SMSSubmissionReader reader )
+        throws SMSCompressionException
+    {
+        this.orgUnit = reader.readID( MetadataType.ORGANISATION_UNIT );
+        this.dataSet = reader.readID( MetadataType.DATASET );
+        this.complete = reader.readBool();
+        this.attributeOptionCombo = reader.readID( MetadataType.CATEGORY_OPTION_COMBO );
+        this.period = reader.readPeriod();
+        boolean hasValues = reader.readBool();
+        this.values = hasValues ? reader.readDataValues() : new ArrayList<SMSDataValue>();
+    }
+
     @Override
     public int getCurrentVersion()
     {
-        return 1;
+        return 2;
     }
 
     @Override
