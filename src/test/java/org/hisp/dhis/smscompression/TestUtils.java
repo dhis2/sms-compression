@@ -240,6 +240,7 @@ public class TestUtils
         }
 
         return events;
+    }
 
     // Submissions with empty values
     public static SimpleEventSMSSubmission createSimpleEventSubmissionEmptyVals()
@@ -288,8 +289,11 @@ public class TestUtils
         subm.setTrackedEntityInstance( "T2bRuLEGoVN" ); // Newly generated UID
         subm.setEnrollment( "p7M1gUFK37W" ); // Newly generated UID
         subm.setTimestamp( getNowWithoutMillis() );
-        ArrayList<SMSAttributeValue> values = new ArrayList<>();
+        List<SMSAttributeValue> values = new ArrayList<>();
         subm.setValues( values );
+        List<SMSEvent> events = new ArrayList<>();
+        subm.setEvents( events );
+
         subm.setSubmissionID( 1 );
 
         return subm;
