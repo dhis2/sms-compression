@@ -240,6 +240,78 @@ public class TestUtils
         }
 
         return events;
+
+    // Submissions with empty values
+    public static SimpleEventSMSSubmission createSimpleEventSubmissionEmptyVals()
+    {
+        SimpleEventSMSSubmission subm = new SimpleEventSMSSubmission();
+
+        subm.setUserID( "GOLswS44mh8" ); // Tom Wakiki (system)
+        subm.setOrgUnit( "DiszpKrYNg8" ); // Ngelehun CHC
+        subm.setEventProgram( "lxAQ7Zs9VYR" ); // Antenatal Care Visit
+        subm.setAttributeOptionCombo( "HllvX50cXC0" ); // Default catOptionCombo
+        subm.setEvent( "l7M1gUFK37v" ); // New UID
+        subm.setEventStatus( SMSEventStatus.COMPLETED );
+        subm.setTimestamp( getNowWithoutMillis() );
+        ArrayList<SMSDataValue> values = new ArrayList<>();
+        subm.setValues( values );
+        subm.setSubmissionID( 1 );
+
+        return subm;
+    }
+
+    public static AggregateDatasetSMSSubmission createAggregateDatasetSubmissionEmptyVals()
+    {
+        AggregateDatasetSMSSubmission subm = new AggregateDatasetSMSSubmission();
+
+        subm.setUserID( "GOLswS44mh8" ); // Tom Wakiki (system)
+        subm.setOrgUnit( "DiszpKrYNg8" ); // Ngelehun CHC
+        subm.setDataSet( "Nyh6laLdBEJ" ); // IDSR Weekly
+        subm.setComplete( true );
+        subm.setAttributeOptionCombo( "HllvX50cXC0" );
+        subm.setPeriod( "2019W16" );
+        ArrayList<SMSDataValue> values = new ArrayList<>();
+        subm.setValues( values );
+        subm.setSubmissionID( 1 );
+
+        return subm;
+    }
+
+    public static EnrollmentSMSSubmission createEnrollmentSubmissionEmptyVals()
+    {
+        EnrollmentSMSSubmission subm = new EnrollmentSMSSubmission();
+
+        subm.setUserID( "GOLswS44mh8" ); // Tom Wakiki (system)
+        subm.setOrgUnit( "DiszpKrYNg8" ); // Ngelehun CHC
+        subm.setTrackerProgram( "IpHINAT79UW" ); // Child Programme
+        subm.setTrackedEntityType( "nEenWmSyUEp" ); // Person
+        subm.setTrackedEntityInstance( "T2bRuLEGoVN" ); // Newly generated UID
+        subm.setEnrollment( "p7M1gUFK37W" ); // Newly generated UID
+        subm.setTimestamp( getNowWithoutMillis() );
+        ArrayList<SMSAttributeValue> values = new ArrayList<>();
+        subm.setValues( values );
+        subm.setSubmissionID( 1 );
+
+        return subm;
+    }
+
+    public static TrackerEventSMSSubmission createTrackerEventSubmissionEmptyVals()
+    {
+        TrackerEventSMSSubmission subm = new TrackerEventSMSSubmission();
+
+        subm.setUserID( "GOLswS44mh8" ); // Tom Wakiki (system)
+        subm.setOrgUnit( "DiszpKrYNg8" ); // Ngelehun CHC
+        subm.setProgramStage( "A03MvHHogjR" ); // Birth
+        subm.setAttributeOptionCombo( "HllvX50cXC0" ); // Default catOptionCombo
+        subm.setEnrollment( "DacGG5vK1K6" ); // Test Person
+        subm.setEvent( "r7M1gUFK37v" ); // New UID
+        subm.setEventStatus( SMSEventStatus.COMPLETED );
+        subm.setTimestamp( getNowWithoutMillis() );
+        ArrayList<SMSDataValue> values = new ArrayList<>();
+        subm.setValues( values );
+        subm.setSubmissionID( 1 );
+
+        return subm;
     }
 
     public static void printSubm( SMSSubmission subm )
