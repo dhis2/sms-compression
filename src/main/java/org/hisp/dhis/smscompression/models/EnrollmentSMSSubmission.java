@@ -180,7 +180,6 @@ public class EnrollmentSMSSubmission
         writer.writeID( enrollment );
         writer.writeDate( timestamp );
         writer.writeAttributeValues( values );
-        writer.writeEvents( events );
     }
 
     private void writeSubmV2( SMSSubmissionWriter writer )
@@ -233,7 +232,7 @@ public class EnrollmentSMSSubmission
         this.enrollment = reader.readID( MetadataType.ENROLLMENT );
         this.timestamp = reader.readDate();
         this.values = reader.readAttributeValues();
-        this.events = reader.readEvents();
+        this.events = new ArrayList<SMSEvent>();
     }
 
     public void readSubmV2( SMSSubmissionReader reader )
