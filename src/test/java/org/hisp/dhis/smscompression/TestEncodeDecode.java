@@ -1,5 +1,7 @@
 package org.hisp.dhis.smscompression;
 
+import static org.junit.Assert.assertEquals;
+
 /*
  * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
@@ -216,4 +218,43 @@ public class TestEncodeDecode
         }
     }
 
+    @Test
+    public void testInvalidCRCEnd()
+    {
+        try
+        {
+            TrackerEventSMSSubmission origSubm = TestUtils.createTrackerEventSubmission();
+            String comp64 = compressSubm( origSubm );
+            comp64 = comp64.subSequence( 0, comp64.length() - 1 ).toString();
+            decompressSubm( comp64 );
+        }
+        catch ( Exception e )
+        {
+            assertEquals( e.getClass(), SMSCompressionException.class );
+            assertEquals( e.getMessage(), "Invalid CRC - CRC in header does not match submission" );
+            return;
+        }
+
+        Assert.fail( "Expected Invalid CRC exception not found" );
+    }
+
+    @Test
+    public void testInvalidCRCBegin()
+    {
+        try
+        {
+            TrackerEventSMSSubmission origSubm = TestUtils.createTrackerEventSubmission();
+            String comp64 = compressSubm( origSubm );
+            comp64 = comp64.subSequence( 1, comp64.length() ).toString();
+            decompressSubm( comp64 );
+        }
+        catch ( Exception e )
+        {
+            assertEquals( e.getClass(), SMSCompressionException.class );
+            assertEquals( e.getMessage(), "Invalid CRC - CRC in header does not match submission" );
+            return;
+        }
+
+        Assert.fail( "Expected Invalid CRC exception not found" );
+    }
 }

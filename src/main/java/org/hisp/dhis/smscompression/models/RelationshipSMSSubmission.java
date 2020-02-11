@@ -108,6 +108,10 @@ public class RelationshipSMSSubmission
     public void writeSubm( SMSSubmissionWriter writer, int version )
         throws SMSCompressionException
     {
+        if ( version != 1 )
+        {
+            throw new SMSCompressionException( versionError( version ) );
+        }
         writer.writeID( relationshipType );
         writer.writeID( relationship );
         writer.writeNewID( from.uid );
@@ -118,6 +122,10 @@ public class RelationshipSMSSubmission
     public void readSubm( SMSSubmissionReader reader, int version )
         throws SMSCompressionException
     {
+        if ( version != 1 )
+        {
+            throw new SMSCompressionException( versionError( version ) );
+        }
         this.relationshipType = reader.readID( MetadataType.RELATIONSHIP_TYPE );
         this.relationship = reader.readID( MetadataType.RELATIONSHIP );
         this.from = new UID( reader.readNewID(), null );

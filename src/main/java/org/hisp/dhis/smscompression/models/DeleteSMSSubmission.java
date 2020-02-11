@@ -70,6 +70,10 @@ public class DeleteSMSSubmission
     public void writeSubm( SMSSubmissionWriter writer, int version )
         throws SMSCompressionException
     {
+        if ( version != 1 )
+        {
+            throw new SMSCompressionException( versionError( version ) );
+        }
         writer.writeID( event );
     }
 
@@ -77,6 +81,10 @@ public class DeleteSMSSubmission
     public void readSubm( SMSSubmissionReader reader, int version )
         throws SMSCompressionException
     {
+        if ( version != 1 )
+        {
+            throw new SMSCompressionException( versionError( version ) );
+        }
         this.event = reader.readID( MetadataType.EVENT );
     }
 

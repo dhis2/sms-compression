@@ -1,5 +1,7 @@
 package org.hisp.dhis.smscompression;
 
+import static org.junit.Assert.assertEquals;
+
 /*
  * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
@@ -160,4 +162,79 @@ public class TestVersions
         }
     }
 
+    @Test
+    public void testWriteUnknownVersion()
+    {
+        try
+        {
+            compressSubm( TestUtils.createTrackerEventSubmission(), 0 );
+        }
+        catch ( Exception e )
+        {
+            assertEquals( e.getClass(), SMSCompressionException.class );
+            assertEquals( e.getMessage(), "Version 0 of TrackerEventSMSSubmission is not supported" );
+            return;
+        }
+
+        Assert.fail( "Expected unknown version exception not found" );
+    }
+
+    @Test
+    public void testWriteFutureVersion()
+    {
+        SMSSubmission subm = TestUtils.createTrackerEventSubmission();
+        int futureVer = subm.getCurrentVersion() + 1;
+
+        try
+        {
+            compressSubm( subm, futureVer );
+        }
+        catch ( Exception e )
+        {
+            assertEquals( e.getClass(), SMSCompressionException.class );
+            assertEquals( e.getMessage(),
+                String.format( "Version %d of TrackerEventSMSSubmission is not supported", futureVer ) );
+            return;
+        }
+
+        Assert.fail( "Expected unknown version exception not found" );
+    }
+
+    @Test
+    public void testWriteUnknownVersionRelationship()
+    {
+        try
+        {
+            compressSubm( TestUtils.createRelationshipSubmission(), 0 );
+        }
+        catch ( Exception e )
+        {
+            assertEquals( e.getClass(), SMSCompressionException.class );
+            assertEquals( e.getMessage(), "Version 0 of RelationshipSMSSubmission is not supported" );
+            return;
+        }
+
+        Assert.fail( "Expected unknown version exception not found" );
+    }
+
+    @Test
+    public void testWriteFutureVersionRelationship()
+    {
+        SMSSubmission subm = TestUtils.createRelationshipSubmission();
+        int futureVer = subm.getCurrentVersion() + 1;
+
+        try
+        {
+            compressSubm( subm, futureVer );
+        }
+        catch ( Exception e )
+        {
+            assertEquals( e.getClass(), SMSCompressionException.class );
+            assertEquals( e.getMessage(),
+                String.format( "Version %d of RelationshipSMSSubmission is not supported", futureVer ) );
+            return;
+        }
+
+        Assert.fail( "Expected unknown version exception not found" );
+    }
 }

@@ -167,6 +167,8 @@ public class EnrollmentSMSSubmission
         case 2:
             writeSubmV2( writer );
             break;
+        default:
+            throw new SMSCompressionException( versionError( version ) );
         }
     }
 
@@ -219,6 +221,8 @@ public class EnrollmentSMSSubmission
         case 2:
             readSubmV2( reader );
             break;
+        default:
+            throw new SMSCompressionException( versionError( version ) );
         }
     }
 

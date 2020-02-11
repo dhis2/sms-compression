@@ -124,4 +124,9 @@ public abstract class SMSSubmission
         this.userID = reader.readID( MetadataType.USER );
         readSubm( reader, this.header.getVersion() );
     }
+
+    protected String versionError( int version )
+    {
+        return String.format( "Version %d of %s is not supported", version, this.getClass().getSimpleName() );
+    }
 }
