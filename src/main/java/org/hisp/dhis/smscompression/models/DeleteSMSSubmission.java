@@ -70,7 +70,7 @@ public class DeleteSMSSubmission
     public void writeSubm( SMSSubmissionWriter writer, int version )
         throws SMSCompressionException
     {
-        if ( version != 1 )
+        if ( version != 1 && version != 2 )
         {
             throw new SMSCompressionException( versionError( version ) );
         }
@@ -81,7 +81,7 @@ public class DeleteSMSSubmission
     public void readSubm( SMSSubmissionReader reader, int version )
         throws SMSCompressionException
     {
-        if ( version != 1 )
+        if ( version != 1 && version != 2 )
         {
             throw new SMSCompressionException( versionError( version ) );
         }
@@ -91,7 +91,7 @@ public class DeleteSMSSubmission
     @Override
     public int getCurrentVersion()
     {
-        return 1;
+        return 2;
     }
 
     @Override

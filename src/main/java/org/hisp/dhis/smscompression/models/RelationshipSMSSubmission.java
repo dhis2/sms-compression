@@ -108,7 +108,7 @@ public class RelationshipSMSSubmission
     public void writeSubm( SMSSubmissionWriter writer, int version )
         throws SMSCompressionException
     {
-        if ( version != 1 )
+        if ( version != 1 && version != 2 )
         {
             throw new SMSCompressionException( versionError( version ) );
         }
@@ -122,7 +122,7 @@ public class RelationshipSMSSubmission
     public void readSubm( SMSSubmissionReader reader, int version )
         throws SMSCompressionException
     {
-        if ( version != 1 )
+        if ( version != 1 && version != 2 )
         {
             throw new SMSCompressionException( versionError( version ) );
         }
@@ -135,7 +135,7 @@ public class RelationshipSMSSubmission
     @Override
     public int getCurrentVersion()
     {
-        return 1;
+        return 2;
     }
 
     @Override

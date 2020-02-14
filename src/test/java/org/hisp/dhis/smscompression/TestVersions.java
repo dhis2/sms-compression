@@ -34,7 +34,9 @@ import java.io.FileReader;
 
 import org.apache.commons.io.IOUtils;
 import org.hisp.dhis.smscompression.models.AggregateDatasetSMSSubmission;
+import org.hisp.dhis.smscompression.models.DeleteSMSSubmission;
 import org.hisp.dhis.smscompression.models.EnrollmentSMSSubmission;
+import org.hisp.dhis.smscompression.models.RelationshipSMSSubmission;
 import org.hisp.dhis.smscompression.models.SMSMetadata;
 import org.hisp.dhis.smscompression.models.SMSSubmission;
 import org.hisp.dhis.smscompression.models.SMSSubmissionHeader;
@@ -152,6 +154,42 @@ public class TestVersions
             TrackerEventSMSSubmission origSubm = TestUtils.createTrackerEventSubmission();
             String comp64 = compressSubm( origSubm, 1 );
             TrackerEventSMSSubmission decSubm = (TrackerEventSMSSubmission) decompressSubm( comp64 );
+
+            TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+            Assert.fail( e.getMessage() );
+        }
+    }
+
+    @Test
+    public void testEncDecDeleteVersion1()
+    {
+        try
+        {
+            DeleteSMSSubmission origSubm = TestUtils.createDeleteSubmission();
+            String comp64 = compressSubm( origSubm, 1 );
+            DeleteSMSSubmission decSubm = (DeleteSMSSubmission) decompressSubm( comp64 );
+
+            TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+            Assert.fail( e.getMessage() );
+        }
+    }
+
+    @Test
+    public void testEncDecRelationshipVersion1()
+    {
+        try
+        {
+            RelationshipSMSSubmission origSubm = TestUtils.createRelationshipSubmission();
+            String comp64 = compressSubm( origSubm, 1 );
+            RelationshipSMSSubmission decSubm = (RelationshipSMSSubmission) decompressSubm( comp64 );
 
             TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
         }
