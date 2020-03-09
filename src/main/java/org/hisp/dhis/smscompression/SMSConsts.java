@@ -76,6 +76,15 @@ public class SMSConsts
 
     }
 
+    public enum SMSEnrollmentStatus
+    {
+        // TODO: Get these from DHIS2 core code
+        ACTIVE, COMPLETED, CANCELLED
+
+        ;
+
+    }
+
     public static final int VARLEN_BITLEN = 6;
 
     public static final int CHAR_BITLEN = 8;

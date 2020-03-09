@@ -1,5 +1,7 @@
 package org.hisp.dhis.smscompression.models;
 
+import java.util.Objects;
+
 /*
  * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
@@ -98,8 +100,9 @@ public class RelationshipSMSSubmission
         }
         RelationshipSMSSubmission subm = (RelationshipSMSSubmission) o;
 
-        return relationshipType.equals( subm.relationshipType ) && relationship.equals( subm.relationship )
-            && from.equals( subm.from ) && to.equals( subm.to );
+        return Objects.equals( relationshipType, subm.relationshipType )
+            && Objects.equals( relationship, subm.relationship ) && Objects.equals( from, subm.from )
+            && Objects.equals( to, subm.to );
     }
 
     /* Implementation of abstract methods */

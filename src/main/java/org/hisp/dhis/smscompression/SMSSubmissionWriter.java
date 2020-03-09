@@ -36,8 +36,10 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.hisp.dhis.smscompression.SMSConsts.SMSEnrollmentStatus;
 import org.hisp.dhis.smscompression.SMSConsts.SMSEventStatus;
 import org.hisp.dhis.smscompression.SMSConsts.SubmissionType;
+import org.hisp.dhis.smscompression.models.GeoPoint;
 import org.hisp.dhis.smscompression.models.SMSAttributeValue;
 import org.hisp.dhis.smscompression.models.SMSDataValue;
 import org.hisp.dhis.smscompression.models.SMSEvent;
@@ -147,10 +149,20 @@ public class SMSSubmissionWriter
         outStream.write( version, SMSConsts.VERSION_BITLEN );
     }
 
-    public void writeDate( Date date )
+    public void writeNonNullableDate( Date date )
         throws SMSCompressionException
     {
         ValueUtil.writeDate( date, outStream );
+    }
+
+    public void writeDate( Date date )
+        throws SMSCompressionException
+    {
+        writeBool( date != null );
+        if ( date != null )
+        {
+            ValueUtil.writeDate( date, outStream );
+        }
     }
 
     public void writeID( UID uid )
@@ -203,7 +215,7 @@ public class SMSSubmissionWriter
         outStream.write( eventStatus.ordinal(), SMSConsts.EVENT_STATUS_BITLEN );
     }
 
-    public void writeEvents( List<SMSEvent> events )
+    public void writeEvents( List<SMSEvent> events, int version )
         throws SMSCompressionException
     {
         boolean hasEvents = (events != null && !events.isEmpty());
@@ -213,9 +225,21 @@ public class SMSSubmissionWriter
             for ( Iterator<SMSEvent> eventIter = events.iterator(); eventIter.hasNext(); )
             {
                 SMSEvent event = eventIter.next();
-                event.writeEvent( this );
+                event.writeEvent( this, version );
                 writeBool( eventIter.hasNext() );
             }
         }
+    }
+
+    public void writeGeoPoint( GeoPoint coordinates )
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void writeEnrollmentStatus( SMSEnrollmentStatus enrollmentStatus )
+    {
+        // TODO Auto-generated method stub
+
     }
 }

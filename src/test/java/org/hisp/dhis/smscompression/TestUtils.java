@@ -96,7 +96,7 @@ public class TestUtils
         subm.setAttributeOptionCombo( "HllvX50cXC0" ); // Default catOptionCombo
         subm.setEvent( "l7M1gUFK37v" ); // New UID
         subm.setEventStatus( SMSEventStatus.COMPLETED );
-        subm.setTimestamp( getNowWithoutMillis() );
+        subm.setEventDate( getNowWithoutMillis() );
         ArrayList<SMSDataValue> values = new ArrayList<>();
         values.add( new SMSDataValue( "HllvX50cXC0", "sWoqcoByYmD", "true" ) ); // WHOMCH
                                                                                 // Smoking
@@ -147,7 +147,7 @@ public class TestUtils
         subm.setTrackedEntityType( "nEenWmSyUEp" ); // Person
         subm.setTrackedEntityInstance( "T2bRuLEGoVN" ); // Newly generated UID
         subm.setEnrollment( "p7M1gUFK37W" ); // Newly generated UID
-        subm.setTimestamp( getNowWithoutMillis() );
+        subm.setEnrollmentDate( getNowWithoutMillis() );
         ArrayList<SMSAttributeValue> values = new ArrayList<>();
         values.add( new SMSAttributeValue( "w75KJ2mc4zz", "Harold" ) ); // First
                                                                         // Name
@@ -176,7 +176,7 @@ public class TestUtils
         subm.setTrackedEntityType( "nEenWmSyUEp" ); // Person
         subm.setTrackedEntityInstance( "T2bRuLEGoVN" ); // Newly generated UID
         subm.setEnrollment( "p7M1gUFK37W" ); // Newly generated UID
-        subm.setTimestamp( getNowWithoutMillis() );
+        subm.setEnrollmentDate( getNowWithoutMillis() );
         ArrayList<SMSAttributeValue> values = new ArrayList<>();
         values.add( new SMSAttributeValue( "w75KJ2mc4zz", "Harold" ) ); // First
                                                                         // Name
@@ -205,7 +205,7 @@ public class TestUtils
         subm.setEnrollment( "DacGG5vK1K6" ); // Test Person
         subm.setEvent( "r7M1gUFK37v" ); // New UID
         subm.setEventStatus( SMSEventStatus.COMPLETED );
-        subm.setTimestamp( getNowWithoutMillis() );
+        subm.setEventDate( getNowWithoutMillis() );
         ArrayList<SMSDataValue> values = new ArrayList<>();
         values.add( new SMSDataValue( "HllvX50cXC0", "a3kGcGDCuk6", "10" ) ); // Apgar
                                                                               // score
@@ -227,12 +227,13 @@ public class TestUtils
         for ( int i = 1; i <= 3; i++ )
         {
             SMSEvent event = new SMSEvent();
+            event.setOrgUnit( "DiszpKrYNg8" ); // Ngelehun CHC
             event.setProgramStage( "A03MvHHogjR" ); // Birth
             event.setEventStatus( SMSEventStatus.COMPLETED );
             event.setAttributeOptionCombo( "HllvX50cXC0" ); // Default
                                                             // catOptionCombo
             event.setEvent( "r7M1gUFK37v" ); // New UID
-            event.setTimestamp( getNowWithoutMillis() );
+            event.setEventDate( getNowWithoutMillis() );
             ArrayList<SMSDataValue> values = new ArrayList<>();
             values.add( new SMSDataValue( "HllvX50cXC0", "UXz7xuGCEhU", String.valueOf( i ) ) ); // Weight
             event.setValues( values );
@@ -253,7 +254,7 @@ public class TestUtils
         subm.setAttributeOptionCombo( "HllvX50cXC0" ); // Default catOptionCombo
         subm.setEvent( "l7M1gUFK37v" ); // New UID
         subm.setEventStatus( SMSEventStatus.COMPLETED );
-        subm.setTimestamp( getNowWithoutMillis() );
+        subm.setEventDate( getNowWithoutMillis() );
         ArrayList<SMSDataValue> values = new ArrayList<>();
         subm.setValues( values );
         subm.setSubmissionID( 1 );
@@ -288,7 +289,7 @@ public class TestUtils
         subm.setTrackedEntityType( "nEenWmSyUEp" ); // Person
         subm.setTrackedEntityInstance( "T2bRuLEGoVN" ); // Newly generated UID
         subm.setEnrollment( "p7M1gUFK37W" ); // Newly generated UID
-        subm.setTimestamp( getNowWithoutMillis() );
+        subm.setEnrollmentDate( getNowWithoutMillis() );
         List<SMSAttributeValue> values = new ArrayList<>();
         subm.setValues( values );
         List<SMSEvent> events = new ArrayList<>();
@@ -310,7 +311,7 @@ public class TestUtils
         subm.setEnrollment( "DacGG5vK1K6" ); // Test Person
         subm.setEvent( "r7M1gUFK37v" ); // New UID
         subm.setEventStatus( SMSEventStatus.COMPLETED );
-        subm.setTimestamp( getNowWithoutMillis() );
+        subm.setEventDate( getNowWithoutMillis() );
         ArrayList<SMSDataValue> values = new ArrayList<>();
         subm.setValues( values );
         subm.setSubmissionID( 1 );

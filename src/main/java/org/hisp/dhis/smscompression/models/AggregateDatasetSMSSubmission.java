@@ -31,6 +31,7 @@ import java.util.ArrayList;
  */
 
 import java.util.List;
+import java.util.Objects;
 
 import org.hisp.dhis.smscompression.SMSCompressionException;
 import org.hisp.dhis.smscompression.SMSConsts;
@@ -126,11 +127,10 @@ public class AggregateDatasetSMSSubmission
         }
         AggregateDatasetSMSSubmission subm = (AggregateDatasetSMSSubmission) o;
 
-        values.equals( subm.values );
-
-        return orgUnit.equals( subm.orgUnit ) && dataSet.equals( subm.dataSet ) && complete == subm.complete
-            && attributeOptionCombo.equals( subm.attributeOptionCombo ) && period.equals( subm.period )
-            && values.equals( subm.values );
+        return Objects.equals( orgUnit, subm.orgUnit ) && Objects.equals( dataSet, subm.dataSet )
+            && Objects.equals( complete, subm.complete )
+            && Objects.equals( attributeOptionCombo, subm.attributeOptionCombo )
+            && Objects.equals( period, subm.period ) && Objects.equals( values, subm.values );
     }
 
     /* Implementation of abstract methods */

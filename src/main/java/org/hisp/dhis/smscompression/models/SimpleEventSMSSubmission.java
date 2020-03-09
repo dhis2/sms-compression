@@ -32,6 +32,7 @@ import java.util.ArrayList;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import org.hisp.dhis.smscompression.SMSCompressionException;
 import org.hisp.dhis.smscompression.SMSConsts;
@@ -55,7 +56,11 @@ public class SimpleEventSMSSubmission
 
     protected UID event;
 
-    protected Date timestamp;
+    protected Date eventDate;
+
+    protected Date dueDate;
+
+    protected GeoPoint coordinates;
 
     protected List<SMSDataValue> values;
 
@@ -111,14 +116,34 @@ public class SimpleEventSMSSubmission
         this.event = new UID( event, MetadataType.EVENT );
     }
 
-    public Date getTimestamp()
+    public Date getEventDate()
     {
-        return timestamp;
+        return eventDate;
     }
 
-    public void setTimestamp( Date timestamp )
+    public void setEventDate( Date eventDate )
     {
-        this.timestamp = timestamp;
+        this.eventDate = eventDate;
+    }
+
+    public Date getDueDate()
+    {
+        return dueDate;
+    }
+
+    public void setDueDate( Date dueDate )
+    {
+        this.dueDate = dueDate;
+    }
+
+    public GeoPoint getCoordinates()
+    {
+        return coordinates;
+    }
+
+    public void setCoordinates( GeoPoint coordinates )
+    {
+        this.coordinates = coordinates;
     }
 
     public List<SMSDataValue> getValues()
@@ -140,9 +165,11 @@ public class SimpleEventSMSSubmission
         }
         SimpleEventSMSSubmission subm = (SimpleEventSMSSubmission) o;
 
-        return orgUnit.equals( subm.orgUnit ) && eventProgram.equals( subm.eventProgram )
-            && eventStatus == subm.eventStatus && attributeOptionCombo.equals( subm.attributeOptionCombo )
-            && event.equals( subm.event ) && timestamp.equals( subm.timestamp ) && values.equals( subm.values );
+        return Objects.equals( orgUnit, subm.orgUnit ) && Objects.equals( eventProgram, subm.eventProgram )
+            && Objects.equals( eventStatus, subm.eventStatus )
+            && Objects.equals( attributeOptionCombo, subm.attributeOptionCombo ) && Objects.equals( event, subm.event )
+            && Objects.equals( eventDate, subm.eventDate ) && Objects.equals( dueDate, subm.dueDate )
+            && Objects.equals( coordinates, subm.coordinates ) && Objects.equals( values, subm.values );
     }
 
     /* Implementation of abstract methods */
@@ -172,7 +199,7 @@ public class SimpleEventSMSSubmission
         writer.writeEventStatus( eventStatus );
         writer.writeID( attributeOptionCombo );
         writer.writeID( event );
-        writer.writeDate( timestamp );
+        writer.writeNonNullableDate( eventDate );
         writer.writeDataValues( values );
     }
 
@@ -184,7 +211,9 @@ public class SimpleEventSMSSubmission
         writer.writeEventStatus( eventStatus );
         writer.writeID( attributeOptionCombo );
         writer.writeID( event );
-        writer.writeDate( timestamp );
+        writer.writeDate( eventDate );
+        writer.writeDate( dueDate );
+        writer.writeGeoPoint( coordinates );
         boolean hasValues = (values != null && !values.isEmpty());
         writer.writeBool( hasValues );
         if ( hasValues )
@@ -218,7 +247,7 @@ public class SimpleEventSMSSubmission
         this.eventStatus = reader.readEventStatus();
         this.attributeOptionCombo = reader.readID( MetadataType.CATEGORY_OPTION_COMBO );
         this.event = reader.readID( MetadataType.EVENT );
-        this.timestamp = reader.readDate();
+        this.eventDate = reader.readNonNullableDate();
         this.values = reader.readDataValues();
     }
 
@@ -230,7 +259,9 @@ public class SimpleEventSMSSubmission
         this.eventStatus = reader.readEventStatus();
         this.attributeOptionCombo = reader.readID( MetadataType.CATEGORY_OPTION_COMBO );
         this.event = reader.readID( MetadataType.EVENT );
-        this.timestamp = reader.readDate();
+        this.eventDate = reader.readDate();
+        this.dueDate = reader.readDate();
+        this.coordinates = reader.readGeoPoint();
         boolean hasValues = reader.readBool();
         this.values = hasValues ? reader.readDataValues() : new ArrayList<SMSDataValue>();
     }

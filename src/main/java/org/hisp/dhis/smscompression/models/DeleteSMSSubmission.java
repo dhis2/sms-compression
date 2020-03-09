@@ -1,5 +1,7 @@
 package org.hisp.dhis.smscompression.models;
 
+import java.util.Objects;
+
 /*
  * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
@@ -61,7 +63,7 @@ public class DeleteSMSSubmission
             return false;
         }
         DeleteSMSSubmission subm = (DeleteSMSSubmission) o;
-        return event.equals( subm.event );
+        return Objects.equals( event, subm.event );
     }
 
     /* Implementation of abstract methods */

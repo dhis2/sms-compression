@@ -30,6 +30,7 @@ package org.hisp.dhis.smscompression.models;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import org.hisp.dhis.smscompression.SMSCompressionException;
 import org.hisp.dhis.smscompression.SMSConsts.MetadataType;
@@ -39,6 +40,8 @@ import org.hisp.dhis.smscompression.SMSSubmissionWriter;
 
 public class SMSEvent
 {
+    protected UID orgUnit;
+
     protected UID programStage;
 
     protected SMSEventStatus eventStatus;
@@ -47,9 +50,23 @@ public class SMSEvent
 
     protected UID event;
 
-    protected Date timestamp;
+    protected Date eventDate;
+
+    protected Date dueDate;
+
+    protected GeoPoint coordinates;
 
     protected List<SMSDataValue> values;
+
+    public UID getOrgUnit()
+    {
+        return orgUnit;
+    }
+
+    public void setOrgUnit( String orgUnit )
+    {
+        this.orgUnit = new UID( orgUnit, MetadataType.ORGANISATION_UNIT );
+    }
 
     public UID getProgramStage()
     {
@@ -91,14 +108,34 @@ public class SMSEvent
         this.event = new UID( event, MetadataType.EVENT );
     }
 
-    public Date getTimestamp()
+    public Date getEventDate()
     {
-        return timestamp;
+        return eventDate;
     }
 
-    public void setTimestamp( Date timestamp )
+    public void setEventDate( Date eventDate )
     {
-        this.timestamp = timestamp;
+        this.eventDate = eventDate;
+    }
+
+    public Date getDueDate()
+    {
+        return dueDate;
+    }
+
+    public void setDueDate( Date dueDate )
+    {
+        this.dueDate = dueDate;
+    }
+
+    public GeoPoint getCoordinates()
+    {
+        return coordinates;
+    }
+
+    public void setCoordinates( GeoPoint coordinates )
+    {
+        this.coordinates = coordinates;
     }
 
     public List<SMSDataValue> getValues()
@@ -124,30 +161,58 @@ public class SMSEvent
         }
         SMSEvent e = (SMSEvent) o;
 
-        return programStage.equals( e.programStage ) && eventStatus == e.eventStatus
-            && attributeOptionCombo.equals( e.attributeOptionCombo ) && event.equals( e.event )
-            && timestamp.equals( e.timestamp ) && values.equals( e.values );
+        return Objects.equals( orgUnit, e.orgUnit ) && Objects.equals( programStage, e.programStage )
+            && Objects.equals( eventStatus, e.eventStatus )
+            && Objects.equals( attributeOptionCombo, e.attributeOptionCombo ) && event.equals( e.event )
+            && Objects.equals( eventDate, e.eventDate ) && Objects.equals( dueDate, e.dueDate )
+            && Objects.equals( coordinates, e.coordinates ) && Objects.equals( values, e.values );
     }
 
-    public void writeEvent( SMSSubmissionWriter writer )
+    public void writeEvent( SMSSubmissionWriter writer, int version )
         throws SMSCompressionException
     {
+        if ( version != 2 )
+        {
+            throw new SMSCompressionException( versionError( version ) );
+        }
+
+        writer.writeID( orgUnit );
         writer.writeID( programStage );
         writer.writeEventStatus( eventStatus );
         writer.writeID( attributeOptionCombo );
         writer.writeID( event );
-        writer.writeDate( timestamp );
+        writer.writeDate( eventDate );
+        writer.writeDate( dueDate );
+        writer.writeGeoPoint( coordinates );
         writer.writeDataValues( values );
     }
 
-    public void readEvent( SMSSubmissionReader reader )
+    public void readEvent( SMSSubmissionReader reader, int version )
         throws SMSCompressionException
     {
+        if ( version != 2 )
+        {
+            throw new SMSCompressionException( versionError( version ) );
+        }
+
+        this.orgUnit = reader.readID( MetadataType.ORGANISATION_UNIT );
         this.programStage = reader.readID( MetadataType.PROGRAM_STAGE );
         this.eventStatus = reader.readEventStatus();
         this.attributeOptionCombo = reader.readID( MetadataType.CATEGORY_OPTION_COMBO );
         this.event = reader.readID( MetadataType.EVENT );
-        this.timestamp = reader.readDate();
+        this.eventDate = reader.readDate();
+        this.dueDate = reader.readDate();
+        this.coordinates = reader.readGeoPoint();
         this.values = reader.readDataValues();
+    }
+
+    public int getCurrentVersion()
+    {
+        return 2;
+    }
+
+    private String versionError( int version )
+    {
+        return String.format( "Version %d of %s is not supported", version, this.getClass().getSimpleName() );
     }
 }
