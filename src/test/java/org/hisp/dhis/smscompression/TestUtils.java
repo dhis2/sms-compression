@@ -34,6 +34,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.hisp.dhis.smscompression.SMSConsts.SMSEnrollmentStatus;
 import org.hisp.dhis.smscompression.SMSConsts.SMSEventStatus;
 import org.hisp.dhis.smscompression.models.AggregateDatasetSMSSubmission;
 import org.hisp.dhis.smscompression.models.DeleteSMSSubmission;
@@ -125,14 +126,43 @@ public class TestUtils
         subm.setAttributeOptionCombo( "HllvX50cXC0" );
         subm.setPeriod( "2019W16" );
         ArrayList<SMSDataValue> values = new ArrayList<>();
-        values.add( new SMSDataValue( "HllvX50cXC0", "noIzB569hTM", "12345678" ) ); // Yellow
-        // Fever
-        values.add( new SMSDataValue( "HllvX50cXC0", "vq2qO3eTrNi", "-24.5" ) ); // Malaria
-        values.add( new SMSDataValue( "HllvX50cXC0", "HS9zqaBdOQ4", "-65535" ) ); // Plague
-        values.add( new SMSDataValue( "HllvX50cXC0", "YazgqXbizv1", "0.12345678" ) ); // Measles
         values.add( new SMSDataValue( "HllvX50cXC0", "UsSUX0cpKsH", "0" ) ); // Cholera
+        values.add( new SMSDataValue( "HllvX50cXC0", "HS9zqaBdOQ4", "-65535" ) ); // Plague
+        values.add( new SMSDataValue( "HllvX50cXC0", "noIzB569hTM", "12345678" ) ); // Yellow
+                                                                                    // Fever
+        values.add( new SMSDataValue( "HllvX50cXC0", "vq2qO3eTrNi", "-24.5" ) ); // Malaria
+        values.add( new SMSDataValue( "HllvX50cXC0", "YazgqXbizv1", "0.12345678" ) ); // Measles
         subm.setValues( values );
         subm.setSubmissionID( 1 );
+
+        return subm;
+    }
+
+    public static EnrollmentSMSSubmission createEnrollmentSubmissionV1()
+    {
+        EnrollmentSMSSubmission subm = new EnrollmentSMSSubmission();
+
+        subm.setUserID( "GOLswS44mh8" ); // Tom Wakiki (system)
+        subm.setOrgUnit( "DiszpKrYNg8" ); // Ngelehun CHC
+        subm.setTrackerProgram( "IpHINAT79UW" ); // Child Programme
+        subm.setTrackedEntityType( "nEenWmSyUEp" ); // Person
+        subm.setTrackedEntityInstance( "T2bRuLEGoVN" ); // Newly generated UID
+        subm.setEnrollment( "p7M1gUFK37W" ); // Newly generated UID
+        subm.setEnrollmentDate( getNowWithoutMillis() );
+        ArrayList<SMSAttributeValue> values = new ArrayList<>();
+        values.add( new SMSAttributeValue( "w75KJ2mc4zz", "Harold" ) ); // First
+                                                                        // Name
+        values.add( new SMSAttributeValue( "zDhUuAYrxNC", "Smith" ) ); // Last
+                                                                       // Name
+        values.add( new SMSAttributeValue( "FO4sWYJ64LQ", "Sydney" ) ); // City
+        values.add( new SMSAttributeValue( "VqEFza8wbwA", "The Opera House" ) ); // Address
+        values.add( new SMSAttributeValue( "lZGmxYbs97q", "987123" ) ); // Unique
+                                                                        // ID
+        subm.setValues( values );
+        subm.setSubmissionID( 1 );
+
+        ArrayList<SMSEvent> events = new ArrayList<>();
+        subm.setEvents( events );
 
         return subm;
     }
@@ -148,6 +178,7 @@ public class TestUtils
         subm.setTrackedEntityInstance( "T2bRuLEGoVN" ); // Newly generated UID
         subm.setEnrollment( "p7M1gUFK37W" ); // Newly generated UID
         subm.setEnrollmentDate( getNowWithoutMillis() );
+        subm.setEnrollmentStatus( SMSEnrollmentStatus.ACTIVE );
         ArrayList<SMSAttributeValue> values = new ArrayList<>();
         values.add( new SMSAttributeValue( "w75KJ2mc4zz", "Harold" ) ); // First
                                                                         // Name
@@ -177,6 +208,7 @@ public class TestUtils
         subm.setTrackedEntityInstance( "T2bRuLEGoVN" ); // Newly generated UID
         subm.setEnrollment( "p7M1gUFK37W" ); // Newly generated UID
         subm.setEnrollmentDate( getNowWithoutMillis() );
+        subm.setEnrollmentStatus( SMSEnrollmentStatus.ACTIVE );
         ArrayList<SMSAttributeValue> values = new ArrayList<>();
         values.add( new SMSAttributeValue( "w75KJ2mc4zz", "Harold" ) ); // First
                                                                         // Name
@@ -290,6 +322,7 @@ public class TestUtils
         subm.setTrackedEntityInstance( "T2bRuLEGoVN" ); // Newly generated UID
         subm.setEnrollment( "p7M1gUFK37W" ); // Newly generated UID
         subm.setEnrollmentDate( getNowWithoutMillis() );
+        subm.setEnrollmentStatus( SMSEnrollmentStatus.ACTIVE );
         List<SMSAttributeValue> values = new ArrayList<>();
         subm.setValues( values );
         List<SMSEvent> events = new ArrayList<>();
@@ -333,6 +366,23 @@ public class TestUtils
     public static byte[] decBase64( String subm )
     {
         return Base64.getDecoder().decode( subm );
+    }
+
+    public static String stripTillValid( String subm )
+    {
+        while ( !subm.isEmpty() )
+        {
+            try
+            {
+                Base64.getDecoder().decode( subm );
+                return subm;
+            }
+            catch ( Exception e )
+            {
+                subm = subm.subSequence( 0, subm.length() - 1 ).toString();
+            }
+        }
+        return subm;
     }
 
     public static void printBase64Subm( String subm, Class<?> submType )

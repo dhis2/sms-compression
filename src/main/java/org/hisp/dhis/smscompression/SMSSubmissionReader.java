@@ -247,14 +247,24 @@ public class SMSSubmissionReader
     }
 
     public GeoPoint readGeoPoint()
+        throws SMSCompressionException
     {
-        // TODO Auto-generated method stub
-        return null;
+        GeoPoint gp = null;
+        boolean hasGeoPoint = readBool();
+        if ( hasGeoPoint )
+        {
+            float lat = ValueUtil.readFloat( inStream );
+            float lon = ValueUtil.readFloat( inStream );
+            gp = new GeoPoint( lat, lon );
+        }
+
+        return gp;
     }
 
     public SMSEnrollmentStatus readEnrollmentStatus()
+        throws SMSCompressionException
     {
-        // TODO Auto-generated method stub
-        return null;
+        int enrollStatusNum = inStream.read( SMSConsts.ENROL_STATUS_BITLEN );
+        return SMSEnrollmentStatus.values()[enrollStatusNum];
     }
 }

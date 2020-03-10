@@ -133,7 +133,7 @@ public class TestVersions
     {
         try
         {
-            EnrollmentSMSSubmission origSubm = TestUtils.createEnrollmentSubmissionNoEvents();
+            EnrollmentSMSSubmission origSubm = TestUtils.createEnrollmentSubmissionV1();
             String comp64 = compressSubm( origSubm, 1 );
             EnrollmentSMSSubmission decSubm = (EnrollmentSMSSubmission) decompressSubm( comp64 );
 

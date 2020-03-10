@@ -225,7 +225,8 @@ public class TestEncodeDecode
         {
             TrackerEventSMSSubmission origSubm = TestUtils.createTrackerEventSubmission();
             String comp64 = compressSubm( origSubm );
-            comp64 = comp64.subSequence( 0, comp64.length() - 1 ).toString();
+            comp64 = comp64.subSequence( 0, comp64.length() - 4 ).toString();
+            comp64 = TestUtils.stripTillValid( comp64 );
             decompressSubm( comp64 );
         }
         catch ( Exception e )
@@ -246,12 +247,13 @@ public class TestEncodeDecode
             TrackerEventSMSSubmission origSubm = TestUtils.createTrackerEventSubmission();
             String comp64 = compressSubm( origSubm );
             comp64 = comp64.subSequence( 1, comp64.length() ).toString();
+            comp64 = TestUtils.stripTillValid( comp64 );
             decompressSubm( comp64 );
         }
         catch ( Exception e )
         {
-            assertEquals( e.getClass(), SMSCompressionException.class );
-            assertEquals( e.getMessage(), "Invalid CRC - CRC in header does not match submission" );
+            assertEquals( SMSCompressionException.class, e.getClass() );
+            assertEquals( "Invalid CRC - CRC in header does not match submission", e.getMessage() );
             return;
         }
 

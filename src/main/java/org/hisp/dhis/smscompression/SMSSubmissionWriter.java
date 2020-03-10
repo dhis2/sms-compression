@@ -232,14 +232,19 @@ public class SMSSubmissionWriter
     }
 
     public void writeGeoPoint( GeoPoint coordinates )
+        throws SMSCompressionException
     {
-        // TODO Auto-generated method stub
-
+        writeBool( coordinates != null );
+        if ( coordinates != null )
+        {
+            ValueUtil.writeFloat( coordinates.getLatitude(), outStream );
+            ValueUtil.writeFloat( coordinates.getLongitude(), outStream );
+        }
     }
 
     public void writeEnrollmentStatus( SMSEnrollmentStatus enrollmentStatus )
+        throws SMSCompressionException
     {
-        // TODO Auto-generated method stub
-
+        outStream.write( enrollmentStatus.ordinal(), SMSConsts.ENROL_STATUS_BITLEN );
     }
 }

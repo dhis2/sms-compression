@@ -78,7 +78,6 @@ public class SMSConsts
 
     public enum SMSEnrollmentStatus
     {
-        // TODO: Get these from DHIS2 core code
         ACTIVE, COMPLETED, CANCELLED
 
         ;
@@ -107,6 +106,8 @@ public class SMSConsts
     public static final int FIXED_INT_BITLEN = 4;
 
     public static final int EVENT_STATUS_BITLEN = 3;
+
+    public static final int ENROL_STATUS_BITLEN = 2;
 
     public static final int METADATA_TYPE_BITLEN = 5; // Keeping this large (32)
                                                       // to support more types
