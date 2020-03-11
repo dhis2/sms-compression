@@ -184,7 +184,12 @@ public class SMSEvent
         writer.writeDate( eventDate );
         writer.writeDate( dueDate );
         writer.writeGeoPoint( coordinates );
-        writer.writeDataValues( values );
+        boolean hasValues = (values != null && !values.isEmpty());
+        writer.writeBool( hasValues );
+        if ( hasValues )
+        {
+            writer.writeDataValues( values );
+        }
     }
 
     public void readEvent( SMSSubmissionReader reader, int version )
@@ -203,7 +208,8 @@ public class SMSEvent
         this.eventDate = reader.readDate();
         this.dueDate = reader.readDate();
         this.coordinates = reader.readGeoPoint();
-        this.values = reader.readDataValues();
+        boolean hasValues = reader.readBool();
+        this.values = hasValues ? reader.readDataValues() : null;
     }
 
     public int getCurrentVersion()

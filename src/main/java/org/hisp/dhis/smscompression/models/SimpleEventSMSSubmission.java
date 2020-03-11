@@ -1,7 +1,5 @@
 package org.hisp.dhis.smscompression.models;
 
-import java.util.ArrayList;
-
 /*
  * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
@@ -263,7 +261,7 @@ public class SimpleEventSMSSubmission
         this.dueDate = reader.readDate();
         this.coordinates = reader.readGeoPoint();
         boolean hasValues = reader.readBool();
-        this.values = hasValues ? reader.readDataValues() : new ArrayList<SMSDataValue>();
+        this.values = hasValues ? reader.readDataValues() : null;
     }
 
     @Override

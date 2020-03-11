@@ -29,10 +29,13 @@ package org.hisp.dhis.smscompression;
  */
 
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.hisp.dhis.smscompression.models.AggregateDatasetSMSSubmission;
 import org.hisp.dhis.smscompression.models.EnrollmentSMSSubmission;
+import org.hisp.dhis.smscompression.models.SMSEvent;
 import org.hisp.dhis.smscompression.models.SMSMetadata;
 import org.hisp.dhis.smscompression.models.SMSSubmission;
 import org.hisp.dhis.smscompression.models.SMSSubmissionHeader;
@@ -89,29 +92,12 @@ public class TestEmptyVals
     }
 
     @Test
-    public void testEncDecSimpleEventEmptyVals()
+    public void testEncDecAggregateDatasetNulls()
     {
         try
         {
-            SimpleEventSMSSubmission origSubm = TestUtils.createSimpleEventSubmissionEmptyVals();
-            String comp64 = compressSubm( origSubm );
-            SimpleEventSMSSubmission decSubm = (SimpleEventSMSSubmission) decompressSubm( comp64 );
-
-            TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
-        }
-        catch ( Exception e )
-        {
-            e.printStackTrace();
-            Assert.fail( e.getMessage() );
-        }
-    }
-
-    @Test
-    public void testEncDecAggregateDatasetEmptyVals()
-    {
-        try
-        {
-            AggregateDatasetSMSSubmission origSubm = TestUtils.createAggregateDatasetSubmissionEmptyVals();
+            AggregateDatasetSMSSubmission origSubm = CreateSubm.createAggregateDatasetSubmission();
+            origSubm.setValues( null );
             String comp64 = compressSubm( origSubm );
             AggregateDatasetSMSSubmission decSubm = (AggregateDatasetSMSSubmission) decompressSubm( comp64 );
 
@@ -125,11 +111,38 @@ public class TestEmptyVals
     }
 
     @Test
-    public void testEncDecEnrollmentEmptyVals()
+    public void testEncDecSimpleEventNulls()
     {
         try
         {
-            EnrollmentSMSSubmission origSubm = TestUtils.createEnrollmentSubmissionEmptyVals();
+            SimpleEventSMSSubmission origSubm = CreateSubm.createSimpleEventSubmission();
+            origSubm.setEventDate( null );
+            origSubm.setDueDate( null );
+            origSubm.setCoordinates( null );
+            origSubm.setValues( null );
+            String comp64 = compressSubm( origSubm );
+            SimpleEventSMSSubmission decSubm = (SimpleEventSMSSubmission) decompressSubm( comp64 );
+
+            TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+            Assert.fail( e.getMessage() );
+        }
+    }
+
+    @Test
+    public void testEncDecEnrollmentNulls()
+    {
+        try
+        {
+            EnrollmentSMSSubmission origSubm = CreateSubm.createEnrollmentSubmission();
+            origSubm.setEnrollmentDate( null );
+            origSubm.setIncidentDate( null );
+            origSubm.setCoordinates( null );
+            origSubm.setValues( null );
+            origSubm.setEvents( null );
             String comp64 = compressSubm( origSubm );
             EnrollmentSMSSubmission decSubm = (EnrollmentSMSSubmission) decompressSubm( comp64 );
 
@@ -143,11 +156,43 @@ public class TestEmptyVals
     }
 
     @Test
-    public void testEncDecTrackerEventEmptyVals()
+    public void testEncDecEnrollmentNullEvents()
     {
         try
         {
-            TrackerEventSMSSubmission origSubm = TestUtils.createTrackerEventSubmissionEmptyVals();
+            EnrollmentSMSSubmission origSubm = CreateSubm.createEnrollmentSubmission();
+            List<SMSEvent> blankEvents = new ArrayList<>();
+            for ( SMSEvent e : origSubm.getEvents() )
+            {
+                e.setEventDate( null );
+                e.setDueDate( null );
+                e.setCoordinates( null );
+                e.setValues( null );
+                blankEvents.add( e );
+            }
+            origSubm.setEvents( blankEvents );
+            String comp64 = compressSubm( origSubm );
+            EnrollmentSMSSubmission decSubm = (EnrollmentSMSSubmission) decompressSubm( comp64 );
+
+            TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+            Assert.fail( e.getMessage() );
+        }
+    }
+
+    @Test
+    public void testEncDecTrackerEventNulls()
+    {
+        try
+        {
+            TrackerEventSMSSubmission origSubm = CreateSubm.createTrackerEventSubmission();
+            origSubm.setEventDate( null );
+            origSubm.setDueDate( null );
+            origSubm.setCoordinates( null );
+            origSubm.setValues( null );
             String comp64 = compressSubm( origSubm );
             TrackerEventSMSSubmission decSubm = (TrackerEventSMSSubmission) decompressSubm( comp64 );
 

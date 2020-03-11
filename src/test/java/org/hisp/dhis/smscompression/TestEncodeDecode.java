@@ -97,7 +97,7 @@ public class TestEncodeDecode
     {
         try
         {
-            RelationshipSMSSubmission origSubm = TestUtils.createRelationshipSubmission();
+            RelationshipSMSSubmission origSubm = CreateSubm.createRelationshipSubmission();
             String comp64 = compressSubm( origSubm );
             RelationshipSMSSubmission decSubm = (RelationshipSMSSubmission) decompressSubm( comp64 );
 
@@ -115,7 +115,7 @@ public class TestEncodeDecode
     {
         try
         {
-            DeleteSMSSubmission origSubm = TestUtils.createDeleteSubmission();
+            DeleteSMSSubmission origSubm = CreateSubm.createDeleteSubmission();
             String comp64 = compressSubm( origSubm );
             DeleteSMSSubmission decSubm = (DeleteSMSSubmission) decompressSubm( comp64 );
 
@@ -133,7 +133,7 @@ public class TestEncodeDecode
     {
         try
         {
-            SimpleEventSMSSubmission origSubm = TestUtils.createSimpleEventSubmission();
+            SimpleEventSMSSubmission origSubm = CreateSubm.createSimpleEventSubmission();
             String comp64 = compressSubm( origSubm );
             SimpleEventSMSSubmission decSubm = (SimpleEventSMSSubmission) decompressSubm( comp64 );
 
@@ -151,7 +151,7 @@ public class TestEncodeDecode
     {
         try
         {
-            AggregateDatasetSMSSubmission origSubm = TestUtils.createAggregateDatasetSubmission();
+            AggregateDatasetSMSSubmission origSubm = CreateSubm.createAggregateDatasetSubmission();
             String comp64 = compressSubm( origSubm );
             AggregateDatasetSMSSubmission decSubm = (AggregateDatasetSMSSubmission) decompressSubm( comp64 );
 
@@ -169,25 +169,7 @@ public class TestEncodeDecode
     {
         try
         {
-            EnrollmentSMSSubmission origSubm = TestUtils.createEnrollmentSubmission();
-            String comp64 = compressSubm( origSubm );
-            EnrollmentSMSSubmission decSubm = (EnrollmentSMSSubmission) decompressSubm( comp64 );
-
-            TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
-        }
-        catch ( Exception e )
-        {
-            e.printStackTrace();
-            Assert.fail( e.getMessage() );
-        }
-    }
-
-    @Test
-    public void testEncodeEnrollmentNoEvents()
-    {
-        try
-        {
-            EnrollmentSMSSubmission origSubm = TestUtils.createEnrollmentSubmissionNoEvents();
+            EnrollmentSMSSubmission origSubm = CreateSubm.createEnrollmentSubmission();
             String comp64 = compressSubm( origSubm );
             EnrollmentSMSSubmission decSubm = (EnrollmentSMSSubmission) decompressSubm( comp64 );
 
@@ -205,7 +187,7 @@ public class TestEncodeDecode
     {
         try
         {
-            TrackerEventSMSSubmission origSubm = TestUtils.createTrackerEventSubmission();
+            TrackerEventSMSSubmission origSubm = CreateSubm.createTrackerEventSubmission();
             String comp64 = compressSubm( origSubm );
             TrackerEventSMSSubmission decSubm = (TrackerEventSMSSubmission) decompressSubm( comp64 );
 
@@ -223,7 +205,7 @@ public class TestEncodeDecode
     {
         try
         {
-            TrackerEventSMSSubmission origSubm = TestUtils.createTrackerEventSubmission();
+            TrackerEventSMSSubmission origSubm = CreateSubm.createTrackerEventSubmission();
             String comp64 = compressSubm( origSubm );
             comp64 = comp64.subSequence( 0, comp64.length() - 4 ).toString();
             comp64 = TestUtils.stripTillValid( comp64 );
@@ -244,7 +226,7 @@ public class TestEncodeDecode
     {
         try
         {
-            TrackerEventSMSSubmission origSubm = TestUtils.createTrackerEventSubmission();
+            TrackerEventSMSSubmission origSubm = CreateSubm.createTrackerEventSubmission();
             String comp64 = compressSubm( origSubm );
             comp64 = comp64.subSequence( 1, comp64.length() ).toString();
             comp64 = TestUtils.stripTillValid( comp64 );

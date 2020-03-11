@@ -97,7 +97,7 @@ public class TestVersions
     {
         try
         {
-            SimpleEventSMSSubmission origSubm = TestUtils.createSimpleEventSubmission();
+            SimpleEventSMSSubmission origSubm = CreateSubmV1.createSimpleEventSubmissionV1();
             String comp64 = compressSubm( origSubm, 1 );
             SimpleEventSMSSubmission decSubm = (SimpleEventSMSSubmission) decompressSubm( comp64 );
 
@@ -115,7 +115,7 @@ public class TestVersions
     {
         try
         {
-            AggregateDatasetSMSSubmission origSubm = TestUtils.createAggregateDatasetSubmission();
+            AggregateDatasetSMSSubmission origSubm = CreateSubm.createAggregateDatasetSubmission();
             String comp64 = compressSubm( origSubm, 1 );
             AggregateDatasetSMSSubmission decSubm = (AggregateDatasetSMSSubmission) decompressSubm( comp64 );
 
@@ -133,7 +133,7 @@ public class TestVersions
     {
         try
         {
-            EnrollmentSMSSubmission origSubm = TestUtils.createEnrollmentSubmissionV1();
+            EnrollmentSMSSubmission origSubm = CreateSubmV1.createEnrollmentSubmissionV1();
             String comp64 = compressSubm( origSubm, 1 );
             EnrollmentSMSSubmission decSubm = (EnrollmentSMSSubmission) decompressSubm( comp64 );
 
@@ -151,7 +151,7 @@ public class TestVersions
     {
         try
         {
-            TrackerEventSMSSubmission origSubm = TestUtils.createTrackerEventSubmission();
+            TrackerEventSMSSubmission origSubm = CreateSubmV1.createTrackerEventSubmissionV1();
             String comp64 = compressSubm( origSubm, 1 );
             TrackerEventSMSSubmission decSubm = (TrackerEventSMSSubmission) decompressSubm( comp64 );
 
@@ -169,7 +169,7 @@ public class TestVersions
     {
         try
         {
-            DeleteSMSSubmission origSubm = TestUtils.createDeleteSubmission();
+            DeleteSMSSubmission origSubm = CreateSubm.createDeleteSubmission();
             String comp64 = compressSubm( origSubm, 1 );
             DeleteSMSSubmission decSubm = (DeleteSMSSubmission) decompressSubm( comp64 );
 
@@ -187,7 +187,7 @@ public class TestVersions
     {
         try
         {
-            RelationshipSMSSubmission origSubm = TestUtils.createRelationshipSubmission();
+            RelationshipSMSSubmission origSubm = CreateSubm.createRelationshipSubmission();
             String comp64 = compressSubm( origSubm, 1 );
             RelationshipSMSSubmission decSubm = (RelationshipSMSSubmission) decompressSubm( comp64 );
 
@@ -205,7 +205,7 @@ public class TestVersions
     {
         try
         {
-            compressSubm( TestUtils.createTrackerEventSubmission(), 0 );
+            compressSubm( CreateSubm.createTrackerEventSubmission(), 0 );
         }
         catch ( Exception e )
         {
@@ -220,7 +220,7 @@ public class TestVersions
     @Test
     public void testWriteFutureVersion()
     {
-        SMSSubmission subm = TestUtils.createTrackerEventSubmission();
+        SMSSubmission subm = CreateSubm.createTrackerEventSubmission();
         int futureVer = subm.getCurrentVersion() + 1;
 
         try
@@ -243,7 +243,7 @@ public class TestVersions
     {
         try
         {
-            compressSubm( TestUtils.createRelationshipSubmission(), 0 );
+            compressSubm( CreateSubm.createRelationshipSubmission(), 0 );
         }
         catch ( Exception e )
         {
@@ -258,7 +258,7 @@ public class TestVersions
     @Test
     public void testWriteFutureVersionRelationship()
     {
-        SMSSubmission subm = TestUtils.createRelationshipSubmission();
+        SMSSubmission subm = CreateSubm.createRelationshipSubmission();
         int futureVer = subm.getCurrentVersion() + 1;
 
         try

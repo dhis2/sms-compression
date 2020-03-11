@@ -232,9 +232,10 @@ public class SMSSubmissionReader
         throws SMSCompressionException
     {
         boolean hasEvents = readBool();
-        ArrayList<SMSEvent> events = new ArrayList<>();
+        ArrayList<SMSEvent> events = null;
         if ( hasEvents )
         {
+            events = new ArrayList<>();
             for ( boolean hasNext = true; hasNext; hasNext = readBool() )
             {
                 SMSEvent event = new SMSEvent();

@@ -92,8 +92,7 @@ public class SMSConsts
 
     public static final int SUBM_TYPE_BITLEN = 4;
 
-    public static final int VERSION_BITLEN = 4; // TODO: Allows for 16 versions,
-                                                // is this enough?
+    public static final int VERSION_BITLEN = 4;
 
     public static final int CRC_BITLEN = 8;
 

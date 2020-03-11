@@ -1,5 +1,7 @@
 package org.hisp.dhis.smscompression.models;
 
+import java.util.Objects;
+
 public class GeoPoint
 {
     private float latitude;
@@ -32,4 +34,19 @@ public class GeoPoint
         this.longitude = longitude;
     }
 
+    @Override
+    public boolean equals( Object o )
+    {
+        if ( this == o )
+        {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() )
+        {
+            return false;
+        }
+        GeoPoint gp = (GeoPoint) o;
+
+        return Objects.equals( latitude, gp.latitude ) && Objects.equals( longitude, gp.longitude );
+    }
 }

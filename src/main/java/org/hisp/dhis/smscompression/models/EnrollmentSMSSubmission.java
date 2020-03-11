@@ -1,7 +1,5 @@
 package org.hisp.dhis.smscompression.models;
 
-import java.util.ArrayList;
-
 /*
  * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
@@ -273,7 +271,7 @@ public class EnrollmentSMSSubmission
         this.enrollment = reader.readID( MetadataType.ENROLLMENT );
         this.enrollmentDate = reader.readNonNullableDate();
         this.values = reader.readAttributeValues();
-        this.events = new ArrayList<SMSEvent>();
+        this.events = null;
     }
 
     public void readSubmV2( SMSSubmissionReader reader, int version )
@@ -289,7 +287,7 @@ public class EnrollmentSMSSubmission
         this.incidentDate = reader.readDate();
         this.coordinates = reader.readGeoPoint();
         boolean hasValues = reader.readBool();
-        this.values = hasValues ? reader.readAttributeValues() : new ArrayList<SMSAttributeValue>();
+        this.values = hasValues ? reader.readAttributeValues() : null;
         this.events = reader.readEvents( version );
     }
 

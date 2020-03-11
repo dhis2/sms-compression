@@ -49,7 +49,7 @@ public class TestCustomMetadata
             writer = new SMSSubmissionWriter( meta );
             reader = new SMSSubmissionReader();
 
-            AggregateDatasetSMSSubmission origSubm = TestUtils.createAggregateDatasetSubmission();
+            AggregateDatasetSMSSubmission origSubm = CreateSubm.createAggregateDatasetSubmission();
             String comp64 = compressSubm( origSubm );
             AggregateDatasetSMSSubmission decSubm = (AggregateDatasetSMSSubmission) decompressSubm( comp64 );
 
@@ -71,7 +71,7 @@ public class TestCustomMetadata
             writer = new SMSSubmissionWriter( meta );
             reader = new SMSSubmissionReader();
 
-            AggregateDatasetSMSSubmission origSubm = TestUtils.createAggregateDatasetSubmission();
+            AggregateDatasetSMSSubmission origSubm = CreateSubm.createAggregateDatasetSubmission();
             String comp64 = compressSubm( origSubm );
             AggregateDatasetSMSSubmission decSubm = (AggregateDatasetSMSSubmission) decompressSubm( comp64 );
 
@@ -96,7 +96,7 @@ public class TestCustomMetadata
             writer = new SMSSubmissionWriter( meta );
             reader = new SMSSubmissionReader();
 
-            AggregateDatasetSMSSubmission origSubm = TestUtils.createAggregateDatasetSubmission();
+            AggregateDatasetSMSSubmission origSubm = CreateSubm.createAggregateDatasetSubmission();
             String comp64 = compressSubm( origSubm );
             AggregateDatasetSMSSubmission decSubm = (AggregateDatasetSMSSubmission) decompressSubm( comp64 );
 
@@ -121,7 +121,7 @@ public class TestCustomMetadata
             writer = new SMSSubmissionWriter( meta );
             reader = new SMSSubmissionReader();
 
-            EnrollmentSMSSubmission origSubm = TestUtils.createEnrollmentSubmission();
+            EnrollmentSMSSubmission origSubm = CreateSubm.createEnrollmentSubmission();
             String comp64 = compressSubm( origSubm );
             EnrollmentSMSSubmission decSubm = (EnrollmentSMSSubmission) decompressSubm( comp64 );
 
@@ -146,7 +146,7 @@ public class TestCustomMetadata
             writer.setHashingEnabled( false );
             reader = new SMSSubmissionReader();
 
-            AggregateDatasetSMSSubmission origSubm = TestUtils.createAggregateDatasetSubmission();
+            AggregateDatasetSMSSubmission origSubm = CreateSubm.createAggregateDatasetSubmission();
             String comp64 = compressSubm( origSubm );
             AggregateDatasetSMSSubmission decSubm = (AggregateDatasetSMSSubmission) decompressSubm( comp64 );
 
