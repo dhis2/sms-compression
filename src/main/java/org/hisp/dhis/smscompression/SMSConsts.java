@@ -76,6 +76,14 @@ public class SMSConsts
 
     }
 
+    public enum SMSEnrollmentStatus
+    {
+        ACTIVE, COMPLETED, CANCELLED
+
+        ;
+
+    }
+
     public static final int VARLEN_BITLEN = 6;
 
     public static final int CHAR_BITLEN = 8;
@@ -84,8 +92,7 @@ public class SMSConsts
 
     public static final int SUBM_TYPE_BITLEN = 4;
 
-    public static final int VERSION_BITLEN = 4; // TODO: Allows for 16 versions,
-                                                // is this enough?
+    public static final int VERSION_BITLEN = 4;
 
     public static final int CRC_BITLEN = 8;
 
@@ -98,6 +105,8 @@ public class SMSConsts
     public static final int FIXED_INT_BITLEN = 4;
 
     public static final int EVENT_STATUS_BITLEN = 3;
+
+    public static final int ENROL_STATUS_BITLEN = 2;
 
     public static final int METADATA_TYPE_BITLEN = 5; // Keeping this large (32)
                                                       // to support more types

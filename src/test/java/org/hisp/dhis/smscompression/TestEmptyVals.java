@@ -1,7 +1,5 @@
 package org.hisp.dhis.smscompression;
 
-import static org.junit.Assert.assertEquals;
-
 /*
  * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
@@ -31,12 +29,13 @@ import static org.junit.Assert.assertEquals;
  */
 
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.hisp.dhis.smscompression.models.AggregateDatasetSMSSubmission;
-import org.hisp.dhis.smscompression.models.DeleteSMSSubmission;
 import org.hisp.dhis.smscompression.models.EnrollmentSMSSubmission;
-import org.hisp.dhis.smscompression.models.RelationshipSMSSubmission;
+import org.hisp.dhis.smscompression.models.SMSEvent;
 import org.hisp.dhis.smscompression.models.SMSMetadata;
 import org.hisp.dhis.smscompression.models.SMSSubmission;
 import org.hisp.dhis.smscompression.models.SMSSubmissionHeader;
@@ -49,7 +48,7 @@ import org.junit.Test;
 
 import com.google.gson.Gson;
 
-public class TestEncodeDecode
+public class TestEmptyVals
 {
     SMSMetadata meta;
 
@@ -93,65 +92,12 @@ public class TestEncodeDecode
     }
 
     @Test
-    public void testEncodeDecodeRelationship()
-    {
-        try
-        {
-            RelationshipSMSSubmission origSubm = CreateSubm.createRelationshipSubmission();
-            String comp64 = compressSubm( origSubm );
-            RelationshipSMSSubmission decSubm = (RelationshipSMSSubmission) decompressSubm( comp64 );
-
-            TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
-        }
-        catch ( Exception e )
-        {
-            e.printStackTrace();
-            Assert.fail( e.getMessage() );
-        }
-    }
-
-    @Test
-    public void testEncodeDecodeDelete()
-    {
-        try
-        {
-            DeleteSMSSubmission origSubm = CreateSubm.createDeleteSubmission();
-            String comp64 = compressSubm( origSubm );
-            DeleteSMSSubmission decSubm = (DeleteSMSSubmission) decompressSubm( comp64 );
-
-            TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
-        }
-        catch ( Exception e )
-        {
-            e.printStackTrace();
-            Assert.fail( e.getMessage() );
-        }
-    }
-
-    @Test
-    public void testEncodeDecodeSimpleEvent()
-    {
-        try
-        {
-            SimpleEventSMSSubmission origSubm = CreateSubm.createSimpleEventSubmission();
-            String comp64 = compressSubm( origSubm );
-            SimpleEventSMSSubmission decSubm = (SimpleEventSMSSubmission) decompressSubm( comp64 );
-
-            TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
-        }
-        catch ( Exception e )
-        {
-            e.printStackTrace();
-            Assert.fail( e.getMessage() );
-        }
-    }
-
-    @Test
-    public void testEncodeAggregateDataset()
+    public void testEncDecAggregateDatasetNulls()
     {
         try
         {
             AggregateDatasetSMSSubmission origSubm = CreateSubm.createAggregateDatasetSubmission();
+            origSubm.setValues( null );
             String comp64 = compressSubm( origSubm );
             AggregateDatasetSMSSubmission decSubm = (AggregateDatasetSMSSubmission) decompressSubm( comp64 );
 
@@ -165,11 +111,38 @@ public class TestEncodeDecode
     }
 
     @Test
-    public void testEncodeEnrollment()
+    public void testEncDecSimpleEventNulls()
+    {
+        try
+        {
+            SimpleEventSMSSubmission origSubm = CreateSubm.createSimpleEventSubmission();
+            origSubm.setEventDate( null );
+            origSubm.setDueDate( null );
+            origSubm.setCoordinates( null );
+            origSubm.setValues( null );
+            String comp64 = compressSubm( origSubm );
+            SimpleEventSMSSubmission decSubm = (SimpleEventSMSSubmission) decompressSubm( comp64 );
+
+            TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+            Assert.fail( e.getMessage() );
+        }
+    }
+
+    @Test
+    public void testEncDecEnrollmentNulls()
     {
         try
         {
             EnrollmentSMSSubmission origSubm = CreateSubm.createEnrollmentSubmission();
+            origSubm.setEnrollmentDate( null );
+            origSubm.setIncidentDate( null );
+            origSubm.setCoordinates( null );
+            origSubm.setValues( null );
+            origSubm.setEvents( null );
             String comp64 = compressSubm( origSubm );
             EnrollmentSMSSubmission decSubm = (EnrollmentSMSSubmission) decompressSubm( comp64 );
 
@@ -183,11 +156,43 @@ public class TestEncodeDecode
     }
 
     @Test
-    public void testEncodeTrackerEvent()
+    public void testEncDecEnrollmentNullEvents()
+    {
+        try
+        {
+            EnrollmentSMSSubmission origSubm = CreateSubm.createEnrollmentSubmission();
+            List<SMSEvent> blankEvents = new ArrayList<>();
+            for ( SMSEvent e : origSubm.getEvents() )
+            {
+                e.setEventDate( null );
+                e.setDueDate( null );
+                e.setCoordinates( null );
+                e.setValues( null );
+                blankEvents.add( e );
+            }
+            origSubm.setEvents( blankEvents );
+            String comp64 = compressSubm( origSubm );
+            EnrollmentSMSSubmission decSubm = (EnrollmentSMSSubmission) decompressSubm( comp64 );
+
+            TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+            Assert.fail( e.getMessage() );
+        }
+    }
+
+    @Test
+    public void testEncDecTrackerEventNulls()
     {
         try
         {
             TrackerEventSMSSubmission origSubm = CreateSubm.createTrackerEventSubmission();
+            origSubm.setEventDate( null );
+            origSubm.setDueDate( null );
+            origSubm.setCoordinates( null );
+            origSubm.setValues( null );
             String comp64 = compressSubm( origSubm );
             TrackerEventSMSSubmission decSubm = (TrackerEventSMSSubmission) decompressSubm( comp64 );
 
@@ -200,45 +205,4 @@ public class TestEncodeDecode
         }
     }
 
-    @Test
-    public void testInvalidCRCEnd()
-    {
-        try
-        {
-            TrackerEventSMSSubmission origSubm = CreateSubm.createTrackerEventSubmission();
-            String comp64 = compressSubm( origSubm );
-            comp64 = comp64.subSequence( 0, comp64.length() - 4 ).toString();
-            comp64 = TestUtils.stripTillValid( comp64 );
-            decompressSubm( comp64 );
-        }
-        catch ( Exception e )
-        {
-            assertEquals( e.getClass(), SMSCompressionException.class );
-            assertEquals( e.getMessage(), "Invalid CRC - CRC in header does not match submission" );
-            return;
-        }
-
-        Assert.fail( "Expected Invalid CRC exception not found" );
-    }
-
-    @Test
-    public void testInvalidCRCBegin()
-    {
-        try
-        {
-            TrackerEventSMSSubmission origSubm = CreateSubm.createTrackerEventSubmission();
-            String comp64 = compressSubm( origSubm );
-            comp64 = comp64.subSequence( 1, comp64.length() ).toString();
-            comp64 = TestUtils.stripTillValid( comp64 );
-            decompressSubm( comp64 );
-        }
-        catch ( Exception e )
-        {
-            assertEquals( SMSCompressionException.class, e.getClass() );
-            assertEquals( "Invalid CRC - CRC in header does not match submission", e.getMessage() );
-            return;
-        }
-
-        Assert.fail( "Expected Invalid CRC exception not found" );
-    }
 }

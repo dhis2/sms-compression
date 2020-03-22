@@ -49,7 +49,7 @@ import org.junit.Test;
 
 import com.google.gson.Gson;
 
-public class TestEncodeDecode
+public class TestVersions
 {
     SMSMetadata meta;
 
@@ -57,10 +57,10 @@ public class TestEncodeDecode
 
     SMSSubmissionReader reader;
 
-    public String compressSubm( SMSSubmission subm )
+    public String compressSubm( SMSSubmission subm, int version )
         throws Exception
     {
-        byte[] compressSubm = writer.compress( subm );
+        byte[] compressSubm = writer.compress( subm, version );
         String comp64 = TestUtils.encBase64( compressSubm );
         TestUtils.printBase64Subm( comp64, subm.getClass() );
         return comp64;
@@ -93,48 +93,12 @@ public class TestEncodeDecode
     }
 
     @Test
-    public void testEncodeDecodeRelationship()
+    public void testEncDecSimpleEventVersion1()
     {
         try
         {
-            RelationshipSMSSubmission origSubm = CreateSubm.createRelationshipSubmission();
-            String comp64 = compressSubm( origSubm );
-            RelationshipSMSSubmission decSubm = (RelationshipSMSSubmission) decompressSubm( comp64 );
-
-            TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
-        }
-        catch ( Exception e )
-        {
-            e.printStackTrace();
-            Assert.fail( e.getMessage() );
-        }
-    }
-
-    @Test
-    public void testEncodeDecodeDelete()
-    {
-        try
-        {
-            DeleteSMSSubmission origSubm = CreateSubm.createDeleteSubmission();
-            String comp64 = compressSubm( origSubm );
-            DeleteSMSSubmission decSubm = (DeleteSMSSubmission) decompressSubm( comp64 );
-
-            TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
-        }
-        catch ( Exception e )
-        {
-            e.printStackTrace();
-            Assert.fail( e.getMessage() );
-        }
-    }
-
-    @Test
-    public void testEncodeDecodeSimpleEvent()
-    {
-        try
-        {
-            SimpleEventSMSSubmission origSubm = CreateSubm.createSimpleEventSubmission();
-            String comp64 = compressSubm( origSubm );
+            SimpleEventSMSSubmission origSubm = CreateSubmV1.createSimpleEventSubmissionV1();
+            String comp64 = compressSubm( origSubm, 1 );
             SimpleEventSMSSubmission decSubm = (SimpleEventSMSSubmission) decompressSubm( comp64 );
 
             TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
@@ -147,12 +111,12 @@ public class TestEncodeDecode
     }
 
     @Test
-    public void testEncodeAggregateDataset()
+    public void testEncDecAggregateDatasetVersion1()
     {
         try
         {
             AggregateDatasetSMSSubmission origSubm = CreateSubm.createAggregateDatasetSubmission();
-            String comp64 = compressSubm( origSubm );
+            String comp64 = compressSubm( origSubm, 1 );
             AggregateDatasetSMSSubmission decSubm = (AggregateDatasetSMSSubmission) decompressSubm( comp64 );
 
             TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
@@ -165,12 +129,12 @@ public class TestEncodeDecode
     }
 
     @Test
-    public void testEncodeEnrollment()
+    public void testEncDecEnrollmentVersion1()
     {
         try
         {
-            EnrollmentSMSSubmission origSubm = CreateSubm.createEnrollmentSubmission();
-            String comp64 = compressSubm( origSubm );
+            EnrollmentSMSSubmission origSubm = CreateSubmV1.createEnrollmentSubmissionV1();
+            String comp64 = compressSubm( origSubm, 1 );
             EnrollmentSMSSubmission decSubm = (EnrollmentSMSSubmission) decompressSubm( comp64 );
 
             TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
@@ -183,12 +147,12 @@ public class TestEncodeDecode
     }
 
     @Test
-    public void testEncodeTrackerEvent()
+    public void testEncDecTrackerEventVersion1()
     {
         try
         {
-            TrackerEventSMSSubmission origSubm = CreateSubm.createTrackerEventSubmission();
-            String comp64 = compressSubm( origSubm );
+            TrackerEventSMSSubmission origSubm = CreateSubmV1.createTrackerEventSubmissionV1();
+            String comp64 = compressSubm( origSubm, 1 );
             TrackerEventSMSSubmission decSubm = (TrackerEventSMSSubmission) decompressSubm( comp64 );
 
             TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
@@ -201,44 +165,114 @@ public class TestEncodeDecode
     }
 
     @Test
-    public void testInvalidCRCEnd()
+    public void testEncDecDeleteVersion1()
     {
         try
         {
-            TrackerEventSMSSubmission origSubm = CreateSubm.createTrackerEventSubmission();
-            String comp64 = compressSubm( origSubm );
-            comp64 = comp64.subSequence( 0, comp64.length() - 4 ).toString();
-            comp64 = TestUtils.stripTillValid( comp64 );
-            decompressSubm( comp64 );
+            DeleteSMSSubmission origSubm = CreateSubm.createDeleteSubmission();
+            String comp64 = compressSubm( origSubm, 1 );
+            DeleteSMSSubmission decSubm = (DeleteSMSSubmission) decompressSubm( comp64 );
+
+            TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+            Assert.fail( e.getMessage() );
+        }
+    }
+
+    @Test
+    public void testEncDecRelationshipVersion1()
+    {
+        try
+        {
+            RelationshipSMSSubmission origSubm = CreateSubm.createRelationshipSubmission();
+            String comp64 = compressSubm( origSubm, 1 );
+            RelationshipSMSSubmission decSubm = (RelationshipSMSSubmission) decompressSubm( comp64 );
+
+            TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+            Assert.fail( e.getMessage() );
+        }
+    }
+
+    @Test
+    public void testWriteUnknownVersion()
+    {
+        try
+        {
+            compressSubm( CreateSubm.createTrackerEventSubmission(), 0 );
         }
         catch ( Exception e )
         {
             assertEquals( e.getClass(), SMSCompressionException.class );
-            assertEquals( e.getMessage(), "Invalid CRC - CRC in header does not match submission" );
+            assertEquals( e.getMessage(), "Version 0 of TrackerEventSMSSubmission is not supported" );
             return;
         }
 
-        Assert.fail( "Expected Invalid CRC exception not found" );
+        Assert.fail( "Expected unknown version exception not found" );
     }
 
     @Test
-    public void testInvalidCRCBegin()
+    public void testWriteFutureVersion()
     {
+        SMSSubmission subm = CreateSubm.createTrackerEventSubmission();
+        int futureVer = subm.getCurrentVersion() + 1;
+
         try
         {
-            TrackerEventSMSSubmission origSubm = CreateSubm.createTrackerEventSubmission();
-            String comp64 = compressSubm( origSubm );
-            comp64 = comp64.subSequence( 1, comp64.length() ).toString();
-            comp64 = TestUtils.stripTillValid( comp64 );
-            decompressSubm( comp64 );
+            compressSubm( subm, futureVer );
         }
         catch ( Exception e )
         {
-            assertEquals( SMSCompressionException.class, e.getClass() );
-            assertEquals( "Invalid CRC - CRC in header does not match submission", e.getMessage() );
+            assertEquals( e.getClass(), SMSCompressionException.class );
+            assertEquals( e.getMessage(),
+                String.format( "Version %d of TrackerEventSMSSubmission is not supported", futureVer ) );
             return;
         }
 
-        Assert.fail( "Expected Invalid CRC exception not found" );
+        Assert.fail( "Expected unknown version exception not found" );
+    }
+
+    @Test
+    public void testWriteUnknownVersionRelationship()
+    {
+        try
+        {
+            compressSubm( CreateSubm.createRelationshipSubmission(), 0 );
+        }
+        catch ( Exception e )
+        {
+            assertEquals( e.getClass(), SMSCompressionException.class );
+            assertEquals( e.getMessage(), "Version 0 of RelationshipSMSSubmission is not supported" );
+            return;
+        }
+
+        Assert.fail( "Expected unknown version exception not found" );
+    }
+
+    @Test
+    public void testWriteFutureVersionRelationship()
+    {
+        SMSSubmission subm = CreateSubm.createRelationshipSubmission();
+        int futureVer = subm.getCurrentVersion() + 1;
+
+        try
+        {
+            compressSubm( subm, futureVer );
+        }
+        catch ( Exception e )
+        {
+            assertEquals( e.getClass(), SMSCompressionException.class );
+            assertEquals( e.getMessage(),
+                String.format( "Version %d of RelationshipSMSSubmission is not supported", futureVer ) );
+            return;
+        }
+
+        Assert.fail( "Expected unknown version exception not found" );
     }
 }

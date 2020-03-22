@@ -32,19 +32,23 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import org.hisp.dhis.smscompression.SMSConsts.MetadataType;
+import org.hisp.dhis.smscompression.SMSConsts.SMSEnrollmentStatus;
 import org.hisp.dhis.smscompression.SMSConsts.SMSEventStatus;
 import org.hisp.dhis.smscompression.SMSConsts.SubmissionType;
 import org.hisp.dhis.smscompression.models.AggregateDatasetSMSSubmission;
 import org.hisp.dhis.smscompression.models.DeleteSMSSubmission;
 import org.hisp.dhis.smscompression.models.EnrollmentSMSSubmission;
+import org.hisp.dhis.smscompression.models.GeoPoint;
 import org.hisp.dhis.smscompression.models.RelationshipSMSSubmission;
 import org.hisp.dhis.smscompression.models.SMSAttributeValue;
 import org.hisp.dhis.smscompression.models.SMSDataValue;
+import org.hisp.dhis.smscompression.models.SMSEvent;
 import org.hisp.dhis.smscompression.models.SMSMetadata;
 import org.hisp.dhis.smscompression.models.SMSSubmission;
 import org.hisp.dhis.smscompression.models.SMSSubmissionHeader;
@@ -156,9 +160,21 @@ public class SMSSubmissionReader
         return inStream.read( SMSConsts.VERSION_BITLEN );
     }
 
+    public Date readNonNullableDate()
+        throws SMSCompressionException
+    {
+        return ValueUtil.readDate( inStream );
+    }
+
     public Date readDate()
         throws SMSCompressionException
     {
+        boolean hasDate = readBool();
+        if ( !hasDate )
+        {
+            return null;
+
+        }
         return ValueUtil.readDate( inStream );
     }
 
@@ -210,5 +226,46 @@ public class SMSSubmissionReader
     {
         int eventStatusNum = inStream.read( SMSConsts.EVENT_STATUS_BITLEN );
         return SMSEventStatus.values()[eventStatusNum];
+    }
+
+    public List<SMSEvent> readEvents( int version )
+        throws SMSCompressionException
+    {
+        boolean hasEvents = readBool();
+        ArrayList<SMSEvent> events = null;
+        if ( hasEvents )
+        {
+            events = new ArrayList<>();
+            for ( boolean hasNext = true; hasNext; hasNext = readBool() )
+            {
+                SMSEvent event = new SMSEvent();
+                event.readEvent( this, version );
+                events.add( event );
+            }
+        }
+
+        return events;
+    }
+
+    public GeoPoint readGeoPoint()
+        throws SMSCompressionException
+    {
+        GeoPoint gp = null;
+        boolean hasGeoPoint = readBool();
+        if ( hasGeoPoint )
+        {
+            float lat = ValueUtil.readFloat( inStream );
+            float lon = ValueUtil.readFloat( inStream );
+            gp = new GeoPoint( lat, lon );
+        }
+
+        return gp;
+    }
+
+    public SMSEnrollmentStatus readEnrollmentStatus()
+        throws SMSCompressionException
+    {
+        int enrollStatusNum = inStream.read( SMSConsts.ENROL_STATUS_BITLEN );
+        return SMSEnrollmentStatus.values()[enrollStatusNum];
     }
 }

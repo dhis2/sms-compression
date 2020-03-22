@@ -29,6 +29,7 @@ package org.hisp.dhis.smscompression.models;
  */
 
 import java.util.List;
+import java.util.Objects;
 
 import org.hisp.dhis.smscompression.SMSCompressionException;
 import org.hisp.dhis.smscompression.SMSConsts;
@@ -124,17 +125,32 @@ public class AggregateDatasetSMSSubmission
         }
         AggregateDatasetSMSSubmission subm = (AggregateDatasetSMSSubmission) o;
 
-        values.equals( subm.values );
-
-        return orgUnit.equals( subm.orgUnit ) && dataSet.equals( subm.dataSet ) && complete == subm.complete
-            && attributeOptionCombo.equals( subm.attributeOptionCombo ) && period.equals( subm.period )
-            && values.equals( subm.values );
+        return Objects.equals( orgUnit, subm.orgUnit ) && Objects.equals( dataSet, subm.dataSet )
+            && Objects.equals( complete, subm.complete )
+            && Objects.equals( attributeOptionCombo, subm.attributeOptionCombo )
+            && Objects.equals( period, subm.period ) && Objects.equals( values, subm.values );
     }
 
     /* Implementation of abstract methods */
 
     @Override
-    public void writeSubm( SMSSubmissionWriter writer )
+    public void writeSubm( SMSSubmissionWriter writer, int version )
+        throws SMSCompressionException
+    {
+        switch ( version )
+        {
+        case 1:
+            writeSubmV1( writer );
+            break;
+        case 2:
+            writeSubmV2( writer );
+            break;
+        default:
+            throw new SMSCompressionException( versionError( version ) );
+        }
+    }
+
+    private void writeSubmV1( SMSSubmissionWriter writer )
         throws SMSCompressionException
     {
         writer.writeID( orgUnit );
@@ -145,8 +161,40 @@ public class AggregateDatasetSMSSubmission
         writer.writeDataValues( values );
     }
 
+    private void writeSubmV2( SMSSubmissionWriter writer )
+        throws SMSCompressionException
+    {
+        writer.writeID( orgUnit );
+        writer.writeID( dataSet );
+        writer.writeBool( complete );
+        writer.writeID( attributeOptionCombo );
+        writer.writePeriod( period );
+        boolean hasValues = (values != null && !values.isEmpty());
+        writer.writeBool( hasValues );
+        if ( hasValues )
+        {
+            writer.writeDataValues( values );
+        }
+    }
+
     @Override
     public void readSubm( SMSSubmissionReader reader, int version )
+        throws SMSCompressionException
+    {
+        switch ( version )
+        {
+        case 1:
+            readSubmV1( reader );
+            break;
+        case 2:
+            readSubmV2( reader );
+            break;
+        default:
+            throw new SMSCompressionException( versionError( version ) );
+        }
+    }
+
+    private void readSubmV1( SMSSubmissionReader reader )
         throws SMSCompressionException
     {
         this.orgUnit = reader.readID( MetadataType.ORGANISATION_UNIT );
@@ -157,10 +205,22 @@ public class AggregateDatasetSMSSubmission
         this.values = reader.readDataValues();
     }
 
+    private void readSubmV2( SMSSubmissionReader reader )
+        throws SMSCompressionException
+    {
+        this.orgUnit = reader.readID( MetadataType.ORGANISATION_UNIT );
+        this.dataSet = reader.readID( MetadataType.DATASET );
+        this.complete = reader.readBool();
+        this.attributeOptionCombo = reader.readID( MetadataType.CATEGORY_OPTION_COMBO );
+        this.period = reader.readPeriod();
+        boolean hasValues = reader.readBool();
+        this.values = hasValues ? reader.readDataValues() : null;
+    }
+
     @Override
     public int getCurrentVersion()
     {
-        return 1;
+        return 2;
     }
 
     @Override

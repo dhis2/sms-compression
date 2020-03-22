@@ -33,12 +33,16 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
+import org.hisp.dhis.smscompression.SMSConsts.SMSEnrollmentStatus;
 import org.hisp.dhis.smscompression.SMSConsts.SMSEventStatus;
 import org.hisp.dhis.smscompression.SMSConsts.SubmissionType;
+import org.hisp.dhis.smscompression.models.GeoPoint;
 import org.hisp.dhis.smscompression.models.SMSAttributeValue;
 import org.hisp.dhis.smscompression.models.SMSDataValue;
+import org.hisp.dhis.smscompression.models.SMSEvent;
 import org.hisp.dhis.smscompression.models.SMSMetadata;
 import org.hisp.dhis.smscompression.models.SMSSubmission;
 import org.hisp.dhis.smscompression.models.UID;
@@ -80,11 +84,17 @@ public class SMSSubmissionWriter
     public byte[] compress( SMSSubmission subm )
         throws SMSCompressionException
     {
+        return compress( subm, subm.getCurrentVersion() );
+    }
+
+    public byte[] compress( SMSSubmission subm, int version )
+        throws SMSCompressionException
+    {
         this.byteStream = new ByteArrayOutputStream();
         this.outStream = new BitOutputStream( byteStream );
         this.valueWriter = new ValueWriter( outStream, meta, hashingEnabled );
 
-        subm.write( meta, this );
+        subm.write( meta, this, version );
 
         return toByteArray();
     }
@@ -139,10 +149,20 @@ public class SMSSubmissionWriter
         outStream.write( version, SMSConsts.VERSION_BITLEN );
     }
 
-    public void writeDate( Date date )
+    public void writeNonNullableDate( Date date )
         throws SMSCompressionException
     {
         ValueUtil.writeDate( date, outStream );
+    }
+
+    public void writeDate( Date date )
+        throws SMSCompressionException
+    {
+        writeBool( date != null );
+        if ( date != null )
+        {
+            ValueUtil.writeDate( date, outStream );
+        }
     }
 
     public void writeID( UID uid )
@@ -193,5 +213,38 @@ public class SMSSubmissionWriter
         throws SMSCompressionException
     {
         outStream.write( eventStatus.ordinal(), SMSConsts.EVENT_STATUS_BITLEN );
+    }
+
+    public void writeEvents( List<SMSEvent> events, int version )
+        throws SMSCompressionException
+    {
+        boolean hasEvents = (events != null && !events.isEmpty());
+        writeBool( hasEvents );
+        if ( hasEvents )
+        {
+            for ( Iterator<SMSEvent> eventIter = events.iterator(); eventIter.hasNext(); )
+            {
+                SMSEvent event = eventIter.next();
+                event.writeEvent( this, version );
+                writeBool( eventIter.hasNext() );
+            }
+        }
+    }
+
+    public void writeGeoPoint( GeoPoint coordinates )
+        throws SMSCompressionException
+    {
+        writeBool( coordinates != null );
+        if ( coordinates != null )
+        {
+            ValueUtil.writeFloat( coordinates.getLatitude(), outStream );
+            ValueUtil.writeFloat( coordinates.getLongitude(), outStream );
+        }
+    }
+
+    public void writeEnrollmentStatus( SMSEnrollmentStatus enrollmentStatus )
+        throws SMSCompressionException
+    {
+        outStream.write( enrollmentStatus.ordinal(), SMSConsts.ENROL_STATUS_BITLEN );
     }
 }

@@ -1,5 +1,7 @@
 package org.hisp.dhis.smscompression.models;
 
+import java.util.Objects;
+
 /*
  * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
@@ -98,16 +100,21 @@ public class RelationshipSMSSubmission
         }
         RelationshipSMSSubmission subm = (RelationshipSMSSubmission) o;
 
-        return relationshipType.equals( subm.relationshipType ) && relationship.equals( subm.relationship )
-            && from.equals( subm.from ) && to.equals( subm.to );
+        return Objects.equals( relationshipType, subm.relationshipType )
+            && Objects.equals( relationship, subm.relationship ) && Objects.equals( from, subm.from )
+            && Objects.equals( to, subm.to );
     }
 
     /* Implementation of abstract methods */
 
     @Override
-    public void writeSubm( SMSSubmissionWriter writer )
+    public void writeSubm( SMSSubmissionWriter writer, int version )
         throws SMSCompressionException
     {
+        if ( version != 1 && version != 2 )
+        {
+            throw new SMSCompressionException( versionError( version ) );
+        }
         writer.writeID( relationshipType );
         writer.writeID( relationship );
         writer.writeNewID( from.uid );
@@ -118,6 +125,10 @@ public class RelationshipSMSSubmission
     public void readSubm( SMSSubmissionReader reader, int version )
         throws SMSCompressionException
     {
+        if ( version != 1 && version != 2 )
+        {
+            throw new SMSCompressionException( versionError( version ) );
+        }
         this.relationshipType = reader.readID( MetadataType.RELATIONSHIP_TYPE );
         this.relationship = reader.readID( MetadataType.RELATIONSHIP );
         this.from = new UID( reader.readNewID(), null );
@@ -127,7 +138,7 @@ public class RelationshipSMSSubmission
     @Override
     public int getCurrentVersion()
     {
-        return 1;
+        return 2;
     }
 
     @Override

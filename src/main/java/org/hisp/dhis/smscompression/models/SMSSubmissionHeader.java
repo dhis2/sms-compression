@@ -116,7 +116,7 @@ public class SMSSubmissionHeader
     {
         writer.writeType( type );
         writer.writeVersion( version );
-        writer.writeDate( lastSyncDate );
+        writer.writeNonNullableDate( lastSyncDate );
         writer.writeSubmissionID( submissionID );
     }
 
@@ -125,7 +125,7 @@ public class SMSSubmissionHeader
     {
         this.type = reader.readType();
         this.version = reader.readVersion();
-        this.lastSyncDate = reader.readDate();
+        this.lastSyncDate = reader.readNonNullableDate();
         this.submissionID = reader.readSubmissionID();
     }
 }

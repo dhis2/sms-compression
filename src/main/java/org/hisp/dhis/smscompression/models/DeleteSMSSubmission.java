@@ -1,5 +1,7 @@
 package org.hisp.dhis.smscompression.models;
 
+import java.util.Objects;
+
 /*
  * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
@@ -61,15 +63,19 @@ public class DeleteSMSSubmission
             return false;
         }
         DeleteSMSSubmission subm = (DeleteSMSSubmission) o;
-        return event.equals( subm.event );
+        return Objects.equals( event, subm.event );
     }
 
     /* Implementation of abstract methods */
 
     @Override
-    public void writeSubm( SMSSubmissionWriter writer )
+    public void writeSubm( SMSSubmissionWriter writer, int version )
         throws SMSCompressionException
     {
+        if ( version != 1 && version != 2 )
+        {
+            throw new SMSCompressionException( versionError( version ) );
+        }
         writer.writeID( event );
     }
 
@@ -77,13 +83,17 @@ public class DeleteSMSSubmission
     public void readSubm( SMSSubmissionReader reader, int version )
         throws SMSCompressionException
     {
+        if ( version != 1 && version != 2 )
+        {
+            throw new SMSCompressionException( versionError( version ) );
+        }
         this.event = reader.readID( MetadataType.EVENT );
     }
 
     @Override
     public int getCurrentVersion()
     {
-        return 1;
+        return 2;
     }
 
     @Override
