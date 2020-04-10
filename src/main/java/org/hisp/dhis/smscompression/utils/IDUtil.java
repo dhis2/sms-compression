@@ -186,23 +186,23 @@ public class IDUtil
     public static void writeID( UID uid, boolean hashingEnabled, SMSMetadata meta, BitOutputStream outStream )
         throws SMSCompressionException
     {
-        if ( !validID( uid.uid ) )
-            throw new SMSCompressionException( "Attempting to write out ID with invalid format: " + uid.uid );
+        if ( !validID( uid.getUID() ) )
+            throw new SMSCompressionException( "Attempting to write out ID with invalid format: " + uid.getUID() );
 
-        List<String> idList = meta != null ? meta.getType( uid.type ) : null;
-        boolean useHash = hashingEnabled && idList != null && idList.contains( uid.uid );
+        List<String> idList = meta != null ? meta.getType( uid.getType() ) : null;
+        boolean useHash = hashingEnabled && idList != null && idList.contains( uid.getUID() );
         ValueUtil.writeBool( useHash, outStream );
 
         if ( useHash )
         {
             int typeBitLen = getBitLengthForList( idList );
             outStream.write( typeBitLen, SMSConsts.VARLEN_BITLEN );
-            int idHash = BinaryUtils.hash( uid.uid, typeBitLen );
+            int idHash = BinaryUtils.hash( uid.getUID(), typeBitLen );
             outStream.write( idHash, typeBitLen );
         }
         else
         {
-            IDUtil.writeNewID( uid.uid, outStream );
+            IDUtil.writeNewID( uid.getUID(), outStream );
         }
     }
 
@@ -210,13 +210,13 @@ public class IDUtil
     {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         BitOutputStream outStream = new BitOutputStream( byteStream );
-        int bitLen = BinaryUtils.bitlenNeeded( uid.hash );
+        int bitLen = BinaryUtils.bitlenNeeded( uid.getHash() );
 
         try
         {
-            outStream.write( uid.type.ordinal(), SMSConsts.METADATA_TYPE_BITLEN );
+            outStream.write( uid.getType().ordinal(), SMSConsts.METADATA_TYPE_BITLEN );
             outStream.write( bitLen, SMSConsts.VARLEN_BITLEN );
-            outStream.write( uid.hash, bitLen );
+            outStream.write( uid.getHash(), bitLen );
             outStream.close();
         }
         catch ( Exception e )

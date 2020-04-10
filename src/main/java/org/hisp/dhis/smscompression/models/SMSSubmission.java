@@ -96,7 +96,7 @@ public abstract class SMSSubmission
         throws SMSCompressionException
     {
         header.validateHeaer();
-        if ( userID.uid.isEmpty() )
+        if ( userID.getUID().isEmpty() )
         {
             throw new SMSCompressionException( "Ensure the UserID is set in the submission" );
         }

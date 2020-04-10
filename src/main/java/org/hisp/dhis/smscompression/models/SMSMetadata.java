@@ -29,6 +29,8 @@ package org.hisp.dhis.smscompression.models;
  */
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -39,6 +41,12 @@ import org.hisp.dhis.smscompression.utils.IDUtil;
 
 public class SMSMetadata
 {
+    public static final List<MetadataType> ValidHashTypes = Collections
+        .unmodifiableList( Arrays.asList( MetadataType.USER, MetadataType.TRACKED_ENTITY_TYPE,
+            MetadataType.TRACKED_ENTITY_ATTRIBUTE, MetadataType.PROGRAM, MetadataType.ORGANISATION_UNIT,
+            MetadataType.DATA_ELEMENT, MetadataType.CATEGORY_OPTION_COMBO, MetadataType.DATASET,
+            MetadataType.PROGRAM_STAGE, MetadataType.RELATIONSHIP_TYPE ) );
+
     public static class ID
     {
         String id;
@@ -69,20 +77,12 @@ public class SMSMetadata
 
     public List<ID> programStages;
 
-    public List<ID> events;
-
-    public List<ID> enrollments;
-
-    public List<ID> trackedEntityInstances;
-
-    public List<ID> relationships;
-
     public List<ID> relationshipTypes;
 
     public void validate()
         throws SMSCompressionException
     {
-        for ( MetadataType type : MetadataType.values() )
+        for ( MetadataType type : ValidHashTypes )
         {
             checkIDList( getType( type ), type );
         }
@@ -126,14 +126,6 @@ public class SMSMetadata
             return getIDs( dataSets );
         case PROGRAM_STAGE:
             return getIDs( programStages );
-        case EVENT:
-            return getIDs( events );
-        case ENROLLMENT:
-            return getIDs( enrollments );
-        case TRACKED_ENTITY_INSTANCE:
-            return getIDs( trackedEntityInstances );
-        case RELATIONSHIP:
-            return getIDs( relationships );
         case RELATIONSHIP_TYPE:
             return getIDs( relationshipTypes );
 
