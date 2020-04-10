@@ -65,12 +65,12 @@ public class TestUtils
             event.setEventStatus( SMSEventStatus.COMPLETED );
             event.setAttributeOptionCombo( "HllvX50cXC0" ); // Default
                                                             // catOptionCombo
-            event.setEvent( "r7M1gUFK37v" ); // New UID
+            event.setEvent( "r7M1gUFK3X" + i ); // New UID
             event.setEventDate( getNowWithoutMillis() );
             event.setDueDate( getNowWithoutMillis() );
             event.setCoordinates( new GeoPoint( 8.4844694f, -13.2364332f ) );
             ArrayList<SMSDataValue> values = new ArrayList<>();
-            values.add( new SMSDataValue( "HllvX50cXC0", "UXz7xuGCEhU", String.valueOf( i ) ) ); // Weight
+            values.add( new SMSDataValue( "HllvX50cXC0", "UXz7xuGCEhU", String.valueOf( i + 1 ) ) ); // Weight
             event.setValues( values );
             events.add( event );
         }
