@@ -48,17 +48,17 @@ public class ValueWriter
     {
         if ( !useHashing )
         {
-            ValueUtil.writeString( uid.uid, outStream );
+            ValueUtil.writeString( uid.getUID(), outStream );
             return;
         }
 
         // We have a non-empty list of UIDs in our metadata with hashing
         // enabled, we expect to find all UIDs in the metadata for this type
-        if ( !meta.getType( uid.type ).contains( uid.uid ) )
+        if ( !meta.getType( uid.getType() ).contains( uid.getUID() ) )
             throw new SMSCompressionException(
-                String.format( "Error hashing UID [%s] not found in [%s]", uid.uid, uid.type ) );
+                String.format( "Error hashing UID [%s] not found in [%s]", uid.getUID(), uid.getType() ) );
 
-        int idHash = BinaryUtils.hash( uid.uid, bitLen );
+        int idHash = BinaryUtils.hash( uid.getUID(), bitLen );
         outStream.write( idHash, bitLen );
     }
 

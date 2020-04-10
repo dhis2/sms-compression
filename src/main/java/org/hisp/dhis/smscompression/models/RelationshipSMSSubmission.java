@@ -117,8 +117,8 @@ public class RelationshipSMSSubmission
         }
         writer.writeID( relationshipType );
         writer.writeID( relationship );
-        writer.writeNewID( from.uid );
-        writer.writeNewID( to.uid );
+        writer.writeNewID( from.getUID() );
+        writer.writeNewID( to.getUID() );
     }
 
     @Override

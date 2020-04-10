@@ -5,11 +5,11 @@ import org.hisp.dhis.smscompression.utils.IDUtil;
 
 public class UID
 {
-    public String uid;
+    private String uid;
 
-    public int hash;
+    private int hash;
 
-    public MetadataType type;
+    private MetadataType type;
 
     public UID( String uid, MetadataType type )
     {
@@ -24,7 +24,22 @@ public class UID
         this.type = type;
     }
 
-    public String getHash()
+    public int getHash()
+    {
+        return hash;
+    }
+
+    public String getUID()
+    {
+        return uid;
+    }
+
+    public MetadataType getType()
+    {
+        return type;
+    }
+
+    public String getHashAsBase64()
     {
         return ("#" + IDUtil.hashAsBase64( this ));
     }
@@ -33,7 +48,7 @@ public class UID
     public String toString()
     {
         if ( uid == null )
-            return getHash();
+            return getHashAsBase64();
         return uid;
     }
 
