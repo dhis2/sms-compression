@@ -33,7 +33,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-public enum SMSResponse
+public enum SmsResponse
 {
     SUCCESS( 0, "Submission has been processed successfully" ),
 
@@ -80,21 +80,21 @@ public enum SMSResponse
 
     private List<Object> errorElems;
 
-    private SMSResponse( int code, String description )
+    private SmsResponse( int code, String description )
     {
         this.code = code;
         this.description = description;
         this.errorElems = new ArrayList<Object>();
     }
 
-    public SMSResponse set( Object... elems )
+    public SmsResponse set( Object... elems )
     {
         this.errorElems = Arrays.asList( elems );
         this.description = String.format( description, elems );
         return this;
     }
 
-    public SMSResponse setList( List<Object> elems )
+    public SmsResponse setList( List<Object> elems )
     {
         this.errorElems = elems;
         this.description = String.format( description, errorElems.toArray() );

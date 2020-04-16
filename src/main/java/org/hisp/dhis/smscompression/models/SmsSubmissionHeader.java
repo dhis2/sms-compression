@@ -30,12 +30,12 @@ package org.hisp.dhis.smscompression.models;
 
 import java.util.Date;
 
-import org.hisp.dhis.smscompression.SMSCompressionException;
-import org.hisp.dhis.smscompression.SMSConsts.SubmissionType;
-import org.hisp.dhis.smscompression.SMSSubmissionReader;
-import org.hisp.dhis.smscompression.SMSSubmissionWriter;
+import org.hisp.dhis.smscompression.SmsCompressionException;
+import org.hisp.dhis.smscompression.SmsConsts.SubmissionType;
+import org.hisp.dhis.smscompression.SmsSubmissionReader;
+import org.hisp.dhis.smscompression.SmsSubmissionWriter;
 
-public class SMSSubmissionHeader
+public class SmsSubmissionHeader
 {
     protected SubmissionType type;
 
@@ -43,16 +43,16 @@ public class SMSSubmissionHeader
 
     protected Date lastSyncDate;
 
-    protected int submissionID;
+    protected int submissionId;
 
-    public int getSubmissionID()
+    public int getSubmissionId()
     {
-        return submissionID;
+        return submissionId;
     }
 
-    public void setSubmissionID( int submissionID )
+    public void setSubmissionId( int submissionId )
     {
-        this.submissionID = submissionID;
+        this.submissionId = submissionId;
     }
 
     public SubmissionType getType()
@@ -96,36 +96,36 @@ public class SMSSubmissionHeader
         {
             return false;
         }
-        SMSSubmissionHeader hdr = (SMSSubmissionHeader) o;
+        SmsSubmissionHeader hdr = (SmsSubmissionHeader) o;
         return type.equals( hdr.type ) && version == hdr.version && lastSyncDate.equals( hdr.lastSyncDate )
-            && submissionID == hdr.submissionID;
+            && submissionId == hdr.submissionId;
     }
 
     public void validateHeaer()
-        throws SMSCompressionException
+        throws SmsCompressionException
     {
         // TODO: More validation here
-        if ( submissionID < 0 || submissionID > 255 )
+        if ( submissionId < 0 || submissionId > 255 )
         {
-            throw new SMSCompressionException( "Ensure the Submission ID has been set for this submission" );
+            throw new SmsCompressionException( "Ensure the Submission ID has been set for this submission" );
         }
     }
 
-    public void writeHeader( SMSSubmissionWriter writer )
-        throws SMSCompressionException
+    public void writeHeader( SmsSubmissionWriter writer )
+        throws SmsCompressionException
     {
         writer.writeType( type );
         writer.writeVersion( version );
         writer.writeNonNullableDate( lastSyncDate );
-        writer.writeSubmissionID( submissionID );
+        writer.writeSubmissionId( submissionId );
     }
 
-    public void readHeader( SMSSubmissionReader reader )
-        throws SMSCompressionException
+    public void readHeader( SmsSubmissionReader reader )
+        throws SmsCompressionException
     {
         this.type = reader.readType();
         this.version = reader.readVersion();
         this.lastSyncDate = reader.readNonNullableDate();
-        this.submissionID = reader.readSubmissionID();
+        this.submissionId = reader.readSubmissionId();
     }
 }

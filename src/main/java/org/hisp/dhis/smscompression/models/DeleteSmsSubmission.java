@@ -1,6 +1,6 @@
 package org.hisp.dhis.smscompression.models;
 
-import org.hisp.dhis.smscompression.SMSConsts.MetadataType;
+import java.util.Objects;
 
 /*
  * Copyright (c) 2004-2019, University of Oslo
@@ -30,73 +30,75 @@ import org.hisp.dhis.smscompression.SMSConsts.MetadataType;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-public class SMSDataValue
+import org.hisp.dhis.smscompression.SmsCompressionException;
+import org.hisp.dhis.smscompression.SmsConsts;
+import org.hisp.dhis.smscompression.SmsConsts.MetadataType;
+import org.hisp.dhis.smscompression.SmsConsts.SubmissionType;
+import org.hisp.dhis.smscompression.SmsSubmissionReader;
+import org.hisp.dhis.smscompression.SmsSubmissionWriter;
+
+public class DeleteSmsSubmission
+    extends
+    SmsSubmission
 {
-    protected UID categoryOptionCombo;
+    protected Uid event;
 
-    protected UID dataElement;
+    /* Getters and Setters */
 
-    protected String value;
-
-    protected SMSValue<?> smsValue;
-
-    public SMSDataValue( String categoryOptionCombo, String dataElement, String value )
+    public Uid getEvent()
     {
-        this.categoryOptionCombo = new UID( categoryOptionCombo, MetadataType.CATEGORY_OPTION_COMBO );
-        this.dataElement = new UID( dataElement, MetadataType.DATA_ELEMENT );
-        this.value = value;
-        this.smsValue = SMSValue.asSMSValue( value );
+        return event;
     }
 
-    public SMSDataValue( UID categoryOptionCombo, UID dataElement, SMSValue<?> smsValue )
+    public void setEvent( String event )
     {
-        this.categoryOptionCombo = categoryOptionCombo;
-        this.dataElement = dataElement;
-        this.smsValue = smsValue;
-        // TODO: We probably need better handling than just toString() here
-        this.value = smsValue.getValue().toString();
-    }
-
-    public UID getCategoryOptionCombo()
-    {
-        return categoryOptionCombo;
-    }
-
-    public UID getDataElement()
-    {
-        return dataElement;
-    }
-
-    public String getValue()
-    {
-        return value;
-    }
-
-    public SMSValue<?> getSMSValue()
-    {
-        return smsValue;
+        this.event = new Uid( event, MetadataType.EVENT );
     }
 
     @Override
     public boolean equals( Object o )
     {
-        if ( this == o )
-        {
-            return true;
-        }
-        if ( o == null || getClass() != o.getClass() )
+        if ( !super.equals( o ) )
         {
             return false;
         }
-        SMSDataValue dv = (SMSDataValue) o;
+        DeleteSmsSubmission subm = (DeleteSmsSubmission) o;
+        return Objects.equals( event, subm.event );
+    }
 
-        return categoryOptionCombo.equals( dv.categoryOptionCombo ) && dataElement.equals( dv.dataElement )
-            && value.equals( dv.value );
+    /* Implementation of abstract methods */
+
+    @Override
+    public void writeSubm( SmsSubmissionWriter writer, int version )
+        throws SmsCompressionException
+    {
+        if ( version != 1 && version != 2 )
+        {
+            throw new SmsCompressionException( versionError( version ) );
+        }
+        writer.writeId( event );
     }
 
     @Override
-    public int hashCode()
+    public void readSubm( SmsSubmissionReader reader, int version )
+        throws SmsCompressionException
     {
-        return 0;
+        if ( version != 1 && version != 2 )
+        {
+            throw new SmsCompressionException( versionError( version ) );
+        }
+        this.event = reader.readId( MetadataType.EVENT );
+    }
+
+    @Override
+    public int getCurrentVersion()
+    {
+        return 2;
+    }
+
+    @Override
+    public SubmissionType getType()
+    {
+        return SmsConsts.SubmissionType.DELETE;
     }
 }

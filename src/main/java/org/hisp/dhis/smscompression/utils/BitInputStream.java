@@ -33,7 +33,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 
-import org.hisp.dhis.smscompression.SMSCompressionException;
+import org.hisp.dhis.smscompression.SmsCompressionException;
 
 /**
  * A stream of bits that can be read. Because they come from an underlying byte
@@ -91,11 +91,11 @@ public final class BitInputStream
      * Throws an EOFException if the end of the stream is reached.
      * 
      * @return the next n bits as an integer
-     * @throws SMSCompressionException if an I/O exception or EOF exception
+     * @throws SmsCompressionException if an I/O exception or EOF exception
      *         occurred
      */
     public int read( int n )
-        throws SMSCompressionException
+        throws SmsCompressionException
     {
         try
         {
@@ -110,7 +110,7 @@ public final class BitInputStream
         }
         catch ( IOException e )
         {
-            throw new SMSCompressionException( e );
+            throw new SmsCompressionException( e );
         }
     }
 

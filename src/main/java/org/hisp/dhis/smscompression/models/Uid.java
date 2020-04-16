@@ -1,9 +1,9 @@
 package org.hisp.dhis.smscompression.models;
 
-import org.hisp.dhis.smscompression.SMSConsts.MetadataType;
-import org.hisp.dhis.smscompression.utils.IDUtil;
+import org.hisp.dhis.smscompression.SmsConsts.MetadataType;
+import org.hisp.dhis.smscompression.utils.IdUtil;
 
-public class UID
+public class Uid
 {
     private String uid;
 
@@ -11,13 +11,13 @@ public class UID
 
     private MetadataType type;
 
-    public UID( String uid, MetadataType type )
+    public Uid( String uid, MetadataType type )
     {
         this.uid = uid;
         this.type = type;
     }
 
-    public UID( String uid, int hash, MetadataType type )
+    public Uid( String uid, int hash, MetadataType type )
     {
         this.uid = uid;
         this.hash = hash;
@@ -29,7 +29,7 @@ public class UID
         return hash;
     }
 
-    public String getUID()
+    public String getUid()
     {
         return uid;
     }
@@ -41,7 +41,7 @@ public class UID
 
     public String getHashAsBase64()
     {
-        return ("#" + IDUtil.hashAsBase64( this ));
+        return ("#" + IdUtil.hashAsBase64( this ));
     }
 
     @Override
@@ -63,7 +63,7 @@ public class UID
         {
             return false;
         }
-        UID u = (UID) o;
+        Uid u = (Uid) o;
         return uid.equals( u.uid ) && (type == u.type);
     }
 

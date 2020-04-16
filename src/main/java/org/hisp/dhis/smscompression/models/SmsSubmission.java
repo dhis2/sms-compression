@@ -30,17 +30,17 @@ import java.util.Date;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.hisp.dhis.smscompression.SMSCompressionException;
-import org.hisp.dhis.smscompression.SMSConsts.MetadataType;
-import org.hisp.dhis.smscompression.SMSConsts.SubmissionType;
-import org.hisp.dhis.smscompression.SMSSubmissionReader;
-import org.hisp.dhis.smscompression.SMSSubmissionWriter;
+import org.hisp.dhis.smscompression.SmsCompressionException;
+import org.hisp.dhis.smscompression.SmsConsts.MetadataType;
+import org.hisp.dhis.smscompression.SmsConsts.SubmissionType;
+import org.hisp.dhis.smscompression.SmsSubmissionReader;
+import org.hisp.dhis.smscompression.SmsSubmissionWriter;
 
-public abstract class SMSSubmission
+public abstract class SmsSubmission
 {
-    protected SMSSubmissionHeader header;
+    protected SmsSubmissionHeader header;
 
-    protected UID userID;
+    protected Uid userId;
 
     public abstract int getCurrentVersion();
 
@@ -48,18 +48,18 @@ public abstract class SMSSubmission
 
     // Note: When handling versioning, create a new method to handle
     // each version, rather than handling all formats in this method alone
-    public abstract void writeSubm( SMSSubmissionWriter writer, int version )
-        throws SMSCompressionException;
+    public abstract void writeSubm( SmsSubmissionWriter writer, int version )
+        throws SmsCompressionException;
 
-    public abstract void readSubm( SMSSubmissionReader reader, int version )
-        throws SMSCompressionException;
+    public abstract void readSubm( SmsSubmissionReader reader, int version )
+        throws SmsCompressionException;
 
-    public SMSSubmission()
+    public SmsSubmission()
     {
-        this.header = new SMSSubmissionHeader();
+        this.header = new SmsSubmissionHeader();
         header.setType( this.getType() );
         // Initialise the submission ID so we know if it's been set correctly
-        header.setSubmissionID( -1 );
+        header.setSubmissionId( -1 );
     }
 
     @Override
@@ -73,38 +73,38 @@ public abstract class SMSSubmission
         {
             return false;
         }
-        SMSSubmission subm = (SMSSubmission) o;
-        return userID.equals( subm.userID ) && header.equals( subm.header );
+        SmsSubmission subm = (SmsSubmission) o;
+        return userId.equals( subm.userId ) && header.equals( subm.header );
     }
 
-    public void setSubmissionID( int submissionID )
+    public void setSubmissionId( int submissionId )
     {
-        header.setSubmissionID( submissionID );
+        header.setSubmissionId( submissionId );
     }
 
-    public UID getUserID()
+    public Uid getUserId()
     {
-        return userID;
+        return userId;
     }
 
-    public void setUserID( String userID )
+    public void setUserId( String userId )
     {
-        this.userID = new UID( userID, MetadataType.USER );
+        this.userId = new Uid( userId, MetadataType.USER );
     }
 
     public void validateSubmission()
-        throws SMSCompressionException
+        throws SmsCompressionException
     {
         header.validateHeaer();
-        if ( userID.getUID().isEmpty() )
+        if ( userId.getUid().isEmpty() )
         {
-            throw new SMSCompressionException( "Ensure the UserID is set in the submission" );
+            throw new SmsCompressionException( "Ensure the UserID is set in the submission" );
         }
         // TODO: We should run validations on each submission here
     }
 
-    public void write( SMSMetadata meta, SMSSubmissionWriter writer, int version )
-        throws SMSCompressionException
+    public void write( SmsMetadata meta, SmsSubmissionWriter writer, int version )
+        throws SmsCompressionException
     {
         // Ensure we set the lastSyncDate in the subm header
         Date lastSyncDate = meta != null && meta.lastSyncDate != null ? meta.lastSyncDate : new Date( 0 );
@@ -113,15 +113,15 @@ public abstract class SMSSubmission
         validateSubmission();
         header.setVersion( version );
         header.writeHeader( writer );
-        writer.writeID( userID );
+        writer.writeId( userId );
         writeSubm( writer, version );
     }
 
-    public void read( SMSSubmissionReader reader, SMSSubmissionHeader header )
-        throws SMSCompressionException
+    public void read( SmsSubmissionReader reader, SmsSubmissionHeader header )
+        throws SmsCompressionException
     {
         this.header = header;
-        this.userID = reader.readID( MetadataType.USER );
+        this.userId = reader.readId( MetadataType.USER );
         readSubm( reader, this.header.getVersion() );
     }
 

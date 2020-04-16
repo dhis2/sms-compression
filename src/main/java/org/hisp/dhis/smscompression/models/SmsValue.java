@@ -3,16 +3,16 @@ package org.hisp.dhis.smscompression.models;
 import java.text.ParseException;
 import java.util.Date;
 
-import org.hisp.dhis.smscompression.SMSConsts;
-import org.hisp.dhis.smscompression.SMSConsts.ValueType;
+import org.hisp.dhis.smscompression.SmsConsts;
+import org.hisp.dhis.smscompression.SmsConsts.ValueType;
 
-public class SMSValue<T>
+public class SmsValue<T>
 {
     T value;
 
     ValueType type;
 
-    public SMSValue( T value, ValueType type )
+    public SmsValue( T value, ValueType type )
     {
         this.value = value;
         this.type = type;
@@ -29,20 +29,20 @@ public class SMSValue<T>
         return this.type;
     }
 
-    public static SMSValue<?> asSMSValue( String value )
+    public static SmsValue<?> asSmsValue( String value )
     {
         // BOOL
         if ( value.equals( "true" ) || value.equals( "false" ) )
         {
             Boolean valBool = value.equals( "true" ) ? true : false;
-            return new SMSValue<Boolean>( valBool, ValueType.BOOL );
+            return new SmsValue<Boolean>( valBool, ValueType.BOOL );
         }
 
         // DATE
         try
         {
-            Date valDate = SMSConsts.SIMPLE_DATE_FORMAT.parse( value );
-            return new SMSValue<Date>( valDate, ValueType.DATE );
+            Date valDate = SmsConsts.SIMPLE_DATE_FORMAT.parse( value );
+            return new SmsValue<Date>( valDate, ValueType.DATE );
         }
         catch ( ParseException e )
         {
@@ -53,7 +53,7 @@ public class SMSValue<T>
         try
         {
             Integer valInt = Integer.parseInt( value );
-            return new SMSValue<Integer>( valInt, ValueType.INT );
+            return new SmsValue<Integer>( valInt, ValueType.INT );
         }
         catch ( NumberFormatException e )
         {
@@ -64,7 +64,7 @@ public class SMSValue<T>
         try
         {
             Float valFloat = Float.parseFloat( value );
-            return new SMSValue<Float>( valFloat, ValueType.FLOAT );
+            return new SmsValue<Float>( valFloat, ValueType.FLOAT );
         }
         catch ( NumberFormatException e )
         {
@@ -72,6 +72,6 @@ public class SMSValue<T>
         }
 
         // If all else fails we can use String
-        return new SMSValue<String>( value, ValueType.STRING );
+        return new SmsValue<String>( value, ValueType.STRING );
     }
 }

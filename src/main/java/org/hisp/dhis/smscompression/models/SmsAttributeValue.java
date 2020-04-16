@@ -1,6 +1,7 @@
 package org.hisp.dhis.smscompression.models;
 
-import java.util.Objects;
+import org.hisp.dhis.smscompression.SmsConsts.MetadataType;
+import org.hisp.dhis.smscompression.SmsConsts.ValueType;
 
 /*
  * Copyright (c) 2004-2019, University of Oslo
@@ -30,75 +31,65 @@ import java.util.Objects;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.hisp.dhis.smscompression.SMSCompressionException;
-import org.hisp.dhis.smscompression.SMSConsts;
-import org.hisp.dhis.smscompression.SMSConsts.MetadataType;
-import org.hisp.dhis.smscompression.SMSConsts.SubmissionType;
-import org.hisp.dhis.smscompression.SMSSubmissionReader;
-import org.hisp.dhis.smscompression.SMSSubmissionWriter;
-
-public class DeleteSMSSubmission
-    extends
-    SMSSubmission
+public class SmsAttributeValue
 {
-    protected UID event;
+    protected Uid attribute;
 
-    /* Getters and Setters */
+    protected String value;
 
-    public UID getEvent()
+    protected SmsValue<?> smsValue;
+
+    protected ValueType type;
+
+    public SmsAttributeValue( String attribute, String value )
     {
-        return event;
+        this.attribute = new Uid( attribute, MetadataType.TRACKED_ENTITY_ATTRIBUTE );
+        this.value = value;
+        this.smsValue = SmsValue.asSmsValue( value );
     }
 
-    public void setEvent( String event )
+    public SmsAttributeValue( Uid attribute, SmsValue<?> smsValue )
     {
-        this.event = new UID( event, MetadataType.EVENT );
+        this.attribute = attribute;
+        this.smsValue = smsValue;
+        // TODO: We probably need better handling than just toString() here
+        this.value = smsValue.getValue().toString();
+    }
+
+    public Uid getAttribute()
+    {
+        return this.attribute;
+    }
+
+    public String getValue()
+    {
+        return this.value;
+    }
+
+    public SmsValue<?> getSmsValue()
+    {
+        return this.smsValue;
     }
 
     @Override
     public boolean equals( Object o )
     {
-        if ( !super.equals( o ) )
+        if ( this == o )
+        {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() )
         {
             return false;
         }
-        DeleteSMSSubmission subm = (DeleteSMSSubmission) o;
-        return Objects.equals( event, subm.event );
-    }
+        SmsAttributeValue dv = (SmsAttributeValue) o;
 
-    /* Implementation of abstract methods */
-
-    @Override
-    public void writeSubm( SMSSubmissionWriter writer, int version )
-        throws SMSCompressionException
-    {
-        if ( version != 1 && version != 2 )
-        {
-            throw new SMSCompressionException( versionError( version ) );
-        }
-        writer.writeID( event );
+        return attribute.equals( dv.attribute ) && value.equals( dv.value );
     }
 
     @Override
-    public void readSubm( SMSSubmissionReader reader, int version )
-        throws SMSCompressionException
+    public int hashCode()
     {
-        if ( version != 1 && version != 2 )
-        {
-            throw new SMSCompressionException( versionError( version ) );
-        }
-        this.event = reader.readID( MetadataType.EVENT );
-    }
-
-    @Override
-    public int getCurrentVersion()
-    {
-        return 2;
-    }
-
-    @Override
-    public SubmissionType getType()
-    {
-        return SMSConsts.SubmissionType.DELETE;
+        return 0;
     }
 }

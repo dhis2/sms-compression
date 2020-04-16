@@ -32,23 +32,23 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import org.hisp.dhis.smscompression.SMSCompressionException;
-import org.hisp.dhis.smscompression.SMSConsts.MetadataType;
-import org.hisp.dhis.smscompression.SMSConsts.SMSEventStatus;
-import org.hisp.dhis.smscompression.SMSSubmissionReader;
-import org.hisp.dhis.smscompression.SMSSubmissionWriter;
+import org.hisp.dhis.smscompression.SmsCompressionException;
+import org.hisp.dhis.smscompression.SmsConsts.MetadataType;
+import org.hisp.dhis.smscompression.SmsConsts.SmsEventStatus;
+import org.hisp.dhis.smscompression.SmsSubmissionReader;
+import org.hisp.dhis.smscompression.SmsSubmissionWriter;
 
-public class SMSEvent
+public class SmsEvent
 {
-    protected UID orgUnit;
+    protected Uid orgUnit;
 
-    protected UID programStage;
+    protected Uid programStage;
 
-    protected SMSEventStatus eventStatus;
+    protected SmsEventStatus eventStatus;
 
-    protected UID attributeOptionCombo;
+    protected Uid attributeOptionCombo;
 
-    protected UID event;
+    protected Uid event;
 
     protected Date eventDate;
 
@@ -56,56 +56,56 @@ public class SMSEvent
 
     protected GeoPoint coordinates;
 
-    protected List<SMSDataValue> values;
+    protected List<SmsDataValue> values;
 
-    public UID getOrgUnit()
+    public Uid getOrgUnit()
     {
         return orgUnit;
     }
 
     public void setOrgUnit( String orgUnit )
     {
-        this.orgUnit = new UID( orgUnit, MetadataType.ORGANISATION_UNIT );
+        this.orgUnit = new Uid( orgUnit, MetadataType.ORGANISATION_UNIT );
     }
 
-    public UID getProgramStage()
+    public Uid getProgramStage()
     {
         return programStage;
     }
 
     public void setProgramStage( String programStage )
     {
-        this.programStage = new UID( programStage, MetadataType.PROGRAM_STAGE );
+        this.programStage = new Uid( programStage, MetadataType.PROGRAM_STAGE );
     }
 
-    public SMSEventStatus getEventStatus()
+    public SmsEventStatus getEventStatus()
     {
         return eventStatus;
     }
 
-    public void setEventStatus( SMSEventStatus eventStatus )
+    public void setEventStatus( SmsEventStatus eventStatus )
     {
         this.eventStatus = eventStatus;
     }
 
-    public UID getAttributeOptionCombo()
+    public Uid getAttributeOptionCombo()
     {
         return attributeOptionCombo;
     }
 
     public void setAttributeOptionCombo( String attributeOptionCombo )
     {
-        this.attributeOptionCombo = new UID( attributeOptionCombo, MetadataType.CATEGORY_OPTION_COMBO );
+        this.attributeOptionCombo = new Uid( attributeOptionCombo, MetadataType.CATEGORY_OPTION_COMBO );
     }
 
-    public UID getEvent()
+    public Uid getEvent()
     {
         return event;
     }
 
     public void setEvent( String event )
     {
-        this.event = new UID( event, MetadataType.EVENT );
+        this.event = new Uid( event, MetadataType.EVENT );
     }
 
     public Date getEventDate()
@@ -138,12 +138,12 @@ public class SMSEvent
         this.coordinates = coordinates;
     }
 
-    public List<SMSDataValue> getValues()
+    public List<SmsDataValue> getValues()
     {
         return values;
     }
 
-    public void setValues( List<SMSDataValue> values )
+    public void setValues( List<SmsDataValue> values )
     {
         this.values = values;
     }
@@ -159,7 +159,7 @@ public class SMSEvent
         {
             return false;
         }
-        SMSEvent e = (SMSEvent) o;
+        SmsEvent e = (SmsEvent) o;
 
         return Objects.equals( orgUnit, e.orgUnit ) && Objects.equals( programStage, e.programStage )
             && Objects.equals( eventStatus, e.eventStatus )
@@ -168,19 +168,19 @@ public class SMSEvent
             && Objects.equals( coordinates, e.coordinates ) && Objects.equals( values, e.values );
     }
 
-    public void writeEvent( SMSSubmissionWriter writer, int version )
-        throws SMSCompressionException
+    public void writeEvent( SmsSubmissionWriter writer, int version )
+        throws SmsCompressionException
     {
         if ( version != 2 )
         {
-            throw new SMSCompressionException( versionError( version ) );
+            throw new SmsCompressionException( versionError( version ) );
         }
 
-        writer.writeID( orgUnit );
-        writer.writeID( programStage );
+        writer.writeId( orgUnit );
+        writer.writeId( programStage );
         writer.writeEventStatus( eventStatus );
-        writer.writeID( attributeOptionCombo );
-        writer.writeID( event );
+        writer.writeId( attributeOptionCombo );
+        writer.writeId( event );
         writer.writeDate( eventDate );
         writer.writeDate( dueDate );
         writer.writeGeoPoint( coordinates );
@@ -192,19 +192,19 @@ public class SMSEvent
         }
     }
 
-    public void readEvent( SMSSubmissionReader reader, int version )
-        throws SMSCompressionException
+    public void readEvent( SmsSubmissionReader reader, int version )
+        throws SmsCompressionException
     {
         if ( version != 2 )
         {
-            throw new SMSCompressionException( versionError( version ) );
+            throw new SmsCompressionException( versionError( version ) );
         }
 
-        this.orgUnit = reader.readID( MetadataType.ORGANISATION_UNIT );
-        this.programStage = reader.readID( MetadataType.PROGRAM_STAGE );
+        this.orgUnit = reader.readId( MetadataType.ORGANISATION_UNIT );
+        this.programStage = reader.readId( MetadataType.PROGRAM_STAGE );
         this.eventStatus = reader.readEventStatus();
-        this.attributeOptionCombo = reader.readID( MetadataType.CATEGORY_OPTION_COMBO );
-        this.event = reader.readID( MetadataType.EVENT );
+        this.attributeOptionCombo = reader.readId( MetadataType.CATEGORY_OPTION_COMBO );
+        this.event = reader.readId( MetadataType.EVENT );
         this.eventDate = reader.readDate();
         this.dueDate = reader.readDate();
         this.coordinates = reader.readGeoPoint();

@@ -33,14 +33,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-import org.hisp.dhis.smscompression.models.AggregateDatasetSMSSubmission;
-import org.hisp.dhis.smscompression.models.EnrollmentSMSSubmission;
-import org.hisp.dhis.smscompression.models.SMSEvent;
-import org.hisp.dhis.smscompression.models.SMSMetadata;
-import org.hisp.dhis.smscompression.models.SMSSubmission;
-import org.hisp.dhis.smscompression.models.SMSSubmissionHeader;
-import org.hisp.dhis.smscompression.models.SimpleEventSMSSubmission;
-import org.hisp.dhis.smscompression.models.TrackerEventSMSSubmission;
+import org.hisp.dhis.smscompression.models.AggregateDatasetSmsSubmission;
+import org.hisp.dhis.smscompression.models.EnrollmentSmsSubmission;
+import org.hisp.dhis.smscompression.models.SmsEvent;
+import org.hisp.dhis.smscompression.models.SmsMetadata;
+import org.hisp.dhis.smscompression.models.SmsSubmission;
+import org.hisp.dhis.smscompression.models.SmsSubmissionHeader;
+import org.hisp.dhis.smscompression.models.SimpleEventSmsSubmission;
+import org.hisp.dhis.smscompression.models.TrackerEventSmsSubmission;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -50,13 +50,13 @@ import com.google.gson.Gson;
 
 public class TestEmptyVals
 {
-    SMSMetadata meta;
+    SmsMetadata meta;
 
-    SMSSubmissionWriter writer;
+    SmsSubmissionWriter writer;
 
-    SMSSubmissionReader reader;
+    SmsSubmissionReader reader;
 
-    public String compressSubm( SMSSubmission subm )
+    public String compressSubm( SmsSubmission subm )
         throws Exception
     {
         byte[] compressSubm = writer.compress( subm );
@@ -65,11 +65,11 @@ public class TestEmptyVals
         return comp64;
     }
 
-    public SMSSubmission decompressSubm( String comp64 )
+    public SmsSubmission decompressSubm( String comp64 )
         throws Exception
     {
         byte[] decSubmBytes = TestUtils.decBase64( comp64 );
-        SMSSubmissionHeader header = reader.readHeader( decSubmBytes );
+        SmsSubmissionHeader header = reader.readHeader( decSubmBytes );
         Assert.assertNotNull( header );
         return reader.readSubmission( decSubmBytes, meta );
     }
@@ -80,9 +80,9 @@ public class TestEmptyVals
     {
         Gson gson = new Gson();
         String metadataJson = IOUtils.toString( new FileReader( "src/test/resources/metadata.json" ) );
-        meta = gson.fromJson( metadataJson, SMSMetadata.class );
-        writer = new SMSSubmissionWriter( meta );
-        reader = new SMSSubmissionReader();
+        meta = gson.fromJson( metadataJson, SmsMetadata.class );
+        writer = new SmsSubmissionWriter( meta );
+        reader = new SmsSubmissionReader();
     }
 
     @After
@@ -96,10 +96,10 @@ public class TestEmptyVals
     {
         try
         {
-            AggregateDatasetSMSSubmission origSubm = CreateSubm.createAggregateDatasetSubmission();
+            AggregateDatasetSmsSubmission origSubm = CreateSubm.createAggregateDatasetSubmission();
             origSubm.setValues( null );
             String comp64 = compressSubm( origSubm );
-            AggregateDatasetSMSSubmission decSubm = (AggregateDatasetSMSSubmission) decompressSubm( comp64 );
+            AggregateDatasetSmsSubmission decSubm = (AggregateDatasetSmsSubmission) decompressSubm( comp64 );
 
             TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
         }
@@ -115,13 +115,13 @@ public class TestEmptyVals
     {
         try
         {
-            SimpleEventSMSSubmission origSubm = CreateSubm.createSimpleEventSubmission();
+            SimpleEventSmsSubmission origSubm = CreateSubm.createSimpleEventSubmission();
             origSubm.setEventDate( null );
             origSubm.setDueDate( null );
             origSubm.setCoordinates( null );
             origSubm.setValues( null );
             String comp64 = compressSubm( origSubm );
-            SimpleEventSMSSubmission decSubm = (SimpleEventSMSSubmission) decompressSubm( comp64 );
+            SimpleEventSmsSubmission decSubm = (SimpleEventSmsSubmission) decompressSubm( comp64 );
 
             TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
         }
@@ -137,14 +137,14 @@ public class TestEmptyVals
     {
         try
         {
-            EnrollmentSMSSubmission origSubm = CreateSubm.createEnrollmentSubmission();
+            EnrollmentSmsSubmission origSubm = CreateSubm.createEnrollmentSubmission();
             origSubm.setEnrollmentDate( null );
             origSubm.setIncidentDate( null );
             origSubm.setCoordinates( null );
             origSubm.setValues( null );
             origSubm.setEvents( null );
             String comp64 = compressSubm( origSubm );
-            EnrollmentSMSSubmission decSubm = (EnrollmentSMSSubmission) decompressSubm( comp64 );
+            EnrollmentSmsSubmission decSubm = (EnrollmentSmsSubmission) decompressSubm( comp64 );
 
             TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
         }
@@ -160,9 +160,9 @@ public class TestEmptyVals
     {
         try
         {
-            EnrollmentSMSSubmission origSubm = CreateSubm.createEnrollmentSubmission();
-            List<SMSEvent> blankEvents = new ArrayList<>();
-            for ( SMSEvent e : origSubm.getEvents() )
+            EnrollmentSmsSubmission origSubm = CreateSubm.createEnrollmentSubmission();
+            List<SmsEvent> blankEvents = new ArrayList<>();
+            for ( SmsEvent e : origSubm.getEvents() )
             {
                 e.setEventDate( null );
                 e.setDueDate( null );
@@ -172,7 +172,7 @@ public class TestEmptyVals
             }
             origSubm.setEvents( blankEvents );
             String comp64 = compressSubm( origSubm );
-            EnrollmentSMSSubmission decSubm = (EnrollmentSMSSubmission) decompressSubm( comp64 );
+            EnrollmentSmsSubmission decSubm = (EnrollmentSmsSubmission) decompressSubm( comp64 );
 
             TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
         }
@@ -188,13 +188,13 @@ public class TestEmptyVals
     {
         try
         {
-            TrackerEventSMSSubmission origSubm = CreateSubm.createTrackerEventSubmission();
+            TrackerEventSmsSubmission origSubm = CreateSubm.createTrackerEventSubmission();
             origSubm.setEventDate( null );
             origSubm.setDueDate( null );
             origSubm.setCoordinates( null );
             origSubm.setValues( null );
             String comp64 = compressSubm( origSubm );
-            TrackerEventSMSSubmission decSubm = (TrackerEventSMSSubmission) decompressSubm( comp64 );
+            TrackerEventSmsSubmission decSubm = (TrackerEventSmsSubmission) decompressSubm( comp64 );
 
             TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
         }

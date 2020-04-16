@@ -1,7 +1,6 @@
 package org.hisp.dhis.smscompression.models;
 
-import org.hisp.dhis.smscompression.SMSConsts.MetadataType;
-import org.hisp.dhis.smscompression.SMSConsts.ValueType;
+import org.hisp.dhis.smscompression.SmsConsts.MetadataType;
 
 /*
  * Copyright (c) 2004-2019, University of Oslo
@@ -31,44 +30,51 @@ import org.hisp.dhis.smscompression.SMSConsts.ValueType;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-public class SMSAttributeValue
+public class SmsDataValue
 {
-    protected UID attribute;
+    protected Uid categoryOptionCombo;
+
+    protected Uid dataElement;
 
     protected String value;
 
-    protected SMSValue<?> smsValue;
+    protected SmsValue<?> smsValue;
 
-    protected ValueType type;
-
-    public SMSAttributeValue( String attribute, String value )
+    public SmsDataValue( String categoryOptionCombo, String dataElement, String value )
     {
-        this.attribute = new UID( attribute, MetadataType.TRACKED_ENTITY_ATTRIBUTE );
+        this.categoryOptionCombo = new Uid( categoryOptionCombo, MetadataType.CATEGORY_OPTION_COMBO );
+        this.dataElement = new Uid( dataElement, MetadataType.DATA_ELEMENT );
         this.value = value;
-        this.smsValue = SMSValue.asSMSValue( value );
+        this.smsValue = SmsValue.asSmsValue( value );
     }
 
-    public SMSAttributeValue( UID attribute, SMSValue<?> smsValue )
+    public SmsDataValue( Uid categoryOptionCombo, Uid dataElement, SmsValue<?> smsValue )
     {
-        this.attribute = attribute;
+        this.categoryOptionCombo = categoryOptionCombo;
+        this.dataElement = dataElement;
         this.smsValue = smsValue;
         // TODO: We probably need better handling than just toString() here
         this.value = smsValue.getValue().toString();
     }
 
-    public UID getAttribute()
+    public Uid getCategoryOptionCombo()
     {
-        return this.attribute;
+        return categoryOptionCombo;
+    }
+
+    public Uid getDataElement()
+    {
+        return dataElement;
     }
 
     public String getValue()
     {
-        return this.value;
+        return value;
     }
 
-    public SMSValue<?> getSMSValue()
+    public SmsValue<?> getSmsValue()
     {
-        return this.smsValue;
+        return smsValue;
     }
 
     @Override
@@ -82,9 +88,10 @@ public class SMSAttributeValue
         {
             return false;
         }
-        SMSAttributeValue dv = (SMSAttributeValue) o;
+        SmsDataValue dv = (SmsDataValue) o;
 
-        return attribute.equals( dv.attribute ) && value.equals( dv.value );
+        return categoryOptionCombo.equals( dv.categoryOptionCombo ) && dataElement.equals( dv.dataElement )
+            && value.equals( dv.value );
     }
 
     @Override

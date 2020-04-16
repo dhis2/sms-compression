@@ -33,15 +33,15 @@ import static org.junit.Assert.assertEquals;
 import java.io.FileReader;
 
 import org.apache.commons.io.IOUtils;
-import org.hisp.dhis.smscompression.models.AggregateDatasetSMSSubmission;
-import org.hisp.dhis.smscompression.models.DeleteSMSSubmission;
-import org.hisp.dhis.smscompression.models.EnrollmentSMSSubmission;
-import org.hisp.dhis.smscompression.models.RelationshipSMSSubmission;
-import org.hisp.dhis.smscompression.models.SMSMetadata;
-import org.hisp.dhis.smscompression.models.SMSSubmission;
-import org.hisp.dhis.smscompression.models.SMSSubmissionHeader;
-import org.hisp.dhis.smscompression.models.SimpleEventSMSSubmission;
-import org.hisp.dhis.smscompression.models.TrackerEventSMSSubmission;
+import org.hisp.dhis.smscompression.models.AggregateDatasetSmsSubmission;
+import org.hisp.dhis.smscompression.models.DeleteSmsSubmission;
+import org.hisp.dhis.smscompression.models.EnrollmentSmsSubmission;
+import org.hisp.dhis.smscompression.models.RelationshipSmsSubmission;
+import org.hisp.dhis.smscompression.models.SimpleEventSmsSubmission;
+import org.hisp.dhis.smscompression.models.SmsMetadata;
+import org.hisp.dhis.smscompression.models.SmsSubmission;
+import org.hisp.dhis.smscompression.models.SmsSubmissionHeader;
+import org.hisp.dhis.smscompression.models.TrackerEventSmsSubmission;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -51,13 +51,13 @@ import com.google.gson.Gson;
 
 public class TestVersions
 {
-    SMSMetadata meta;
+    SmsMetadata meta;
 
-    SMSSubmissionWriter writer;
+    SmsSubmissionWriter writer;
 
-    SMSSubmissionReader reader;
+    SmsSubmissionReader reader;
 
-    public String compressSubm( SMSSubmission subm, int version )
+    public String compressSubm( SmsSubmission subm, int version )
         throws Exception
     {
         byte[] compressSubm = writer.compress( subm, version );
@@ -66,11 +66,11 @@ public class TestVersions
         return comp64;
     }
 
-    public SMSSubmission decompressSubm( String comp64 )
+    public SmsSubmission decompressSubm( String comp64 )
         throws Exception
     {
         byte[] decSubmBytes = TestUtils.decBase64( comp64 );
-        SMSSubmissionHeader header = reader.readHeader( decSubmBytes );
+        SmsSubmissionHeader header = reader.readHeader( decSubmBytes );
         Assert.assertNotNull( header );
         return reader.readSubmission( decSubmBytes, meta );
     }
@@ -81,9 +81,9 @@ public class TestVersions
     {
         Gson gson = new Gson();
         String metadataJson = IOUtils.toString( new FileReader( "src/test/resources/metadata.json" ) );
-        meta = gson.fromJson( metadataJson, SMSMetadata.class );
-        writer = new SMSSubmissionWriter( meta );
-        reader = new SMSSubmissionReader();
+        meta = gson.fromJson( metadataJson, SmsMetadata.class );
+        writer = new SmsSubmissionWriter( meta );
+        reader = new SmsSubmissionReader();
     }
 
     @After
@@ -97,9 +97,9 @@ public class TestVersions
     {
         try
         {
-            SimpleEventSMSSubmission origSubm = CreateSubmV1.createSimpleEventSubmissionV1();
+            SimpleEventSmsSubmission origSubm = CreateSubmV1.createSimpleEventSubmissionV1();
             String comp64 = compressSubm( origSubm, 1 );
-            SimpleEventSMSSubmission decSubm = (SimpleEventSMSSubmission) decompressSubm( comp64 );
+            SimpleEventSmsSubmission decSubm = (SimpleEventSmsSubmission) decompressSubm( comp64 );
 
             TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
         }
@@ -115,9 +115,9 @@ public class TestVersions
     {
         try
         {
-            AggregateDatasetSMSSubmission origSubm = CreateSubm.createAggregateDatasetSubmission();
+            AggregateDatasetSmsSubmission origSubm = CreateSubm.createAggregateDatasetSubmission();
             String comp64 = compressSubm( origSubm, 1 );
-            AggregateDatasetSMSSubmission decSubm = (AggregateDatasetSMSSubmission) decompressSubm( comp64 );
+            AggregateDatasetSmsSubmission decSubm = (AggregateDatasetSmsSubmission) decompressSubm( comp64 );
 
             TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
         }
@@ -133,9 +133,9 @@ public class TestVersions
     {
         try
         {
-            EnrollmentSMSSubmission origSubm = CreateSubmV1.createEnrollmentSubmissionV1();
+            EnrollmentSmsSubmission origSubm = CreateSubmV1.createEnrollmentSubmissionV1();
             String comp64 = compressSubm( origSubm, 1 );
-            EnrollmentSMSSubmission decSubm = (EnrollmentSMSSubmission) decompressSubm( comp64 );
+            EnrollmentSmsSubmission decSubm = (EnrollmentSmsSubmission) decompressSubm( comp64 );
 
             TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
         }
@@ -151,9 +151,9 @@ public class TestVersions
     {
         try
         {
-            TrackerEventSMSSubmission origSubm = CreateSubmV1.createTrackerEventSubmissionV1();
+            TrackerEventSmsSubmission origSubm = CreateSubmV1.createTrackerEventSubmissionV1();
             String comp64 = compressSubm( origSubm, 1 );
-            TrackerEventSMSSubmission decSubm = (TrackerEventSMSSubmission) decompressSubm( comp64 );
+            TrackerEventSmsSubmission decSubm = (TrackerEventSmsSubmission) decompressSubm( comp64 );
 
             TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
         }
@@ -169,9 +169,9 @@ public class TestVersions
     {
         try
         {
-            DeleteSMSSubmission origSubm = CreateSubm.createDeleteSubmission();
+            DeleteSmsSubmission origSubm = CreateSubm.createDeleteSubmission();
             String comp64 = compressSubm( origSubm, 1 );
-            DeleteSMSSubmission decSubm = (DeleteSMSSubmission) decompressSubm( comp64 );
+            DeleteSmsSubmission decSubm = (DeleteSmsSubmission) decompressSubm( comp64 );
 
             TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
         }
@@ -187,9 +187,9 @@ public class TestVersions
     {
         try
         {
-            RelationshipSMSSubmission origSubm = CreateSubm.createRelationshipSubmission();
+            RelationshipSmsSubmission origSubm = CreateSubm.createRelationshipSubmission();
             String comp64 = compressSubm( origSubm, 1 );
-            RelationshipSMSSubmission decSubm = (RelationshipSMSSubmission) decompressSubm( comp64 );
+            RelationshipSmsSubmission decSubm = (RelationshipSmsSubmission) decompressSubm( comp64 );
 
             TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
         }
@@ -209,8 +209,8 @@ public class TestVersions
         }
         catch ( Exception e )
         {
-            assertEquals( e.getClass(), SMSCompressionException.class );
-            assertEquals( e.getMessage(), "Version 0 of TrackerEventSMSSubmission is not supported" );
+            assertEquals( e.getClass(), SmsCompressionException.class );
+            assertEquals( e.getMessage(), "Version 0 of TrackerEventSmsSubmission is not supported" );
             return;
         }
 
@@ -220,7 +220,7 @@ public class TestVersions
     @Test
     public void testWriteFutureVersion()
     {
-        SMSSubmission subm = CreateSubm.createTrackerEventSubmission();
+        SmsSubmission subm = CreateSubm.createTrackerEventSubmission();
         int futureVer = subm.getCurrentVersion() + 1;
 
         try
@@ -229,9 +229,9 @@ public class TestVersions
         }
         catch ( Exception e )
         {
-            assertEquals( e.getClass(), SMSCompressionException.class );
+            assertEquals( e.getClass(), SmsCompressionException.class );
             assertEquals( e.getMessage(),
-                String.format( "Version %d of TrackerEventSMSSubmission is not supported", futureVer ) );
+                String.format( "Version %d of TrackerEventSmsSubmission is not supported", futureVer ) );
             return;
         }
 
@@ -247,8 +247,8 @@ public class TestVersions
         }
         catch ( Exception e )
         {
-            assertEquals( e.getClass(), SMSCompressionException.class );
-            assertEquals( e.getMessage(), "Version 0 of RelationshipSMSSubmission is not supported" );
+            assertEquals( e.getClass(), SmsCompressionException.class );
+            assertEquals( e.getMessage(), "Version 0 of RelationshipSmsSubmission is not supported" );
             return;
         }
 
@@ -258,7 +258,7 @@ public class TestVersions
     @Test
     public void testWriteFutureVersionRelationship()
     {
-        SMSSubmission subm = CreateSubm.createRelationshipSubmission();
+        SmsSubmission subm = CreateSubm.createRelationshipSubmission();
         int futureVer = subm.getCurrentVersion() + 1;
 
         try
@@ -267,9 +267,9 @@ public class TestVersions
         }
         catch ( Exception e )
         {
-            assertEquals( e.getClass(), SMSCompressionException.class );
+            assertEquals( e.getClass(), SmsCompressionException.class );
             assertEquals( e.getMessage(),
-                String.format( "Version %d of RelationshipSMSSubmission is not supported", futureVer ) );
+                String.format( "Version %d of RelationshipSmsSubmission is not supported", futureVer ) );
             return;
         }
 

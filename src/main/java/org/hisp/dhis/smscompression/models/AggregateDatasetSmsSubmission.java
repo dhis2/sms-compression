@@ -31,49 +31,49 @@ package org.hisp.dhis.smscompression.models;
 import java.util.List;
 import java.util.Objects;
 
-import org.hisp.dhis.smscompression.SMSCompressionException;
-import org.hisp.dhis.smscompression.SMSConsts;
-import org.hisp.dhis.smscompression.SMSConsts.MetadataType;
-import org.hisp.dhis.smscompression.SMSConsts.SubmissionType;
-import org.hisp.dhis.smscompression.SMSSubmissionReader;
-import org.hisp.dhis.smscompression.SMSSubmissionWriter;
+import org.hisp.dhis.smscompression.SmsCompressionException;
+import org.hisp.dhis.smscompression.SmsConsts;
+import org.hisp.dhis.smscompression.SmsConsts.MetadataType;
+import org.hisp.dhis.smscompression.SmsConsts.SubmissionType;
+import org.hisp.dhis.smscompression.SmsSubmissionReader;
+import org.hisp.dhis.smscompression.SmsSubmissionWriter;
 
-public class AggregateDatasetSMSSubmission
+public class AggregateDatasetSmsSubmission
     extends
-    SMSSubmission
+    SmsSubmission
 {
-    protected UID orgUnit;
+    protected Uid orgUnit;
 
-    protected UID dataSet;
+    protected Uid dataSet;
 
     protected boolean complete;
 
-    protected UID attributeOptionCombo;
+    protected Uid attributeOptionCombo;
 
     protected String period;
 
-    protected List<SMSDataValue> values;
+    protected List<SmsDataValue> values;
 
     /* Getters and Setters */
 
-    public UID getOrgUnit()
+    public Uid getOrgUnit()
     {
         return orgUnit;
     }
 
     public void setOrgUnit( String orgUnit )
     {
-        this.orgUnit = new UID( orgUnit, MetadataType.ORGANISATION_UNIT );
+        this.orgUnit = new Uid( orgUnit, MetadataType.ORGANISATION_UNIT );
     }
 
-    public UID getDataSet()
+    public Uid getDataSet()
     {
         return dataSet;
     }
 
     public void setDataSet( String dataSet )
     {
-        this.dataSet = new UID( dataSet, MetadataType.DATASET );
+        this.dataSet = new Uid( dataSet, MetadataType.DATASET );
     }
 
     public boolean isComplete()
@@ -86,14 +86,14 @@ public class AggregateDatasetSMSSubmission
         this.complete = complete;
     }
 
-    public UID getAttributeOptionCombo()
+    public Uid getAttributeOptionCombo()
     {
         return attributeOptionCombo;
     }
 
     public void setAttributeOptionCombo( String attributeOptionCombo )
     {
-        this.attributeOptionCombo = new UID( attributeOptionCombo, MetadataType.CATEGORY_OPTION_COMBO );
+        this.attributeOptionCombo = new Uid( attributeOptionCombo, MetadataType.CATEGORY_OPTION_COMBO );
     }
 
     public String getPeriod()
@@ -106,12 +106,12 @@ public class AggregateDatasetSMSSubmission
         this.period = period;
     }
 
-    public List<SMSDataValue> getValues()
+    public List<SmsDataValue> getValues()
     {
         return values;
     }
 
-    public void setValues( List<SMSDataValue> values )
+    public void setValues( List<SmsDataValue> values )
     {
         this.values = values;
     }
@@ -123,7 +123,7 @@ public class AggregateDatasetSMSSubmission
         {
             return false;
         }
-        AggregateDatasetSMSSubmission subm = (AggregateDatasetSMSSubmission) o;
+        AggregateDatasetSmsSubmission subm = (AggregateDatasetSmsSubmission) o;
 
         return Objects.equals( orgUnit, subm.orgUnit ) && Objects.equals( dataSet, subm.dataSet )
             && Objects.equals( complete, subm.complete )
@@ -134,8 +134,8 @@ public class AggregateDatasetSMSSubmission
     /* Implementation of abstract methods */
 
     @Override
-    public void writeSubm( SMSSubmissionWriter writer, int version )
-        throws SMSCompressionException
+    public void writeSubm( SmsSubmissionWriter writer, int version )
+        throws SmsCompressionException
     {
         switch ( version )
         {
@@ -146,28 +146,28 @@ public class AggregateDatasetSMSSubmission
             writeSubmV2( writer );
             break;
         default:
-            throw new SMSCompressionException( versionError( version ) );
+            throw new SmsCompressionException( versionError( version ) );
         }
     }
 
-    private void writeSubmV1( SMSSubmissionWriter writer )
-        throws SMSCompressionException
+    private void writeSubmV1( SmsSubmissionWriter writer )
+        throws SmsCompressionException
     {
-        writer.writeID( orgUnit );
-        writer.writeID( dataSet );
+        writer.writeId( orgUnit );
+        writer.writeId( dataSet );
         writer.writeBool( complete );
-        writer.writeID( attributeOptionCombo );
+        writer.writeId( attributeOptionCombo );
         writer.writePeriod( period );
         writer.writeDataValues( values );
     }
 
-    private void writeSubmV2( SMSSubmissionWriter writer )
-        throws SMSCompressionException
+    private void writeSubmV2( SmsSubmissionWriter writer )
+        throws SmsCompressionException
     {
-        writer.writeID( orgUnit );
-        writer.writeID( dataSet );
+        writer.writeId( orgUnit );
+        writer.writeId( dataSet );
         writer.writeBool( complete );
-        writer.writeID( attributeOptionCombo );
+        writer.writeId( attributeOptionCombo );
         writer.writePeriod( period );
         boolean hasValues = (values != null && !values.isEmpty());
         writer.writeBool( hasValues );
@@ -178,8 +178,8 @@ public class AggregateDatasetSMSSubmission
     }
 
     @Override
-    public void readSubm( SMSSubmissionReader reader, int version )
-        throws SMSCompressionException
+    public void readSubm( SmsSubmissionReader reader, int version )
+        throws SmsCompressionException
     {
         switch ( version )
         {
@@ -190,28 +190,28 @@ public class AggregateDatasetSMSSubmission
             readSubmV2( reader );
             break;
         default:
-            throw new SMSCompressionException( versionError( version ) );
+            throw new SmsCompressionException( versionError( version ) );
         }
     }
 
-    private void readSubmV1( SMSSubmissionReader reader )
-        throws SMSCompressionException
+    private void readSubmV1( SmsSubmissionReader reader )
+        throws SmsCompressionException
     {
-        this.orgUnit = reader.readID( MetadataType.ORGANISATION_UNIT );
-        this.dataSet = reader.readID( MetadataType.DATASET );
+        this.orgUnit = reader.readId( MetadataType.ORGANISATION_UNIT );
+        this.dataSet = reader.readId( MetadataType.DATASET );
         this.complete = reader.readBool();
-        this.attributeOptionCombo = reader.readID( MetadataType.CATEGORY_OPTION_COMBO );
+        this.attributeOptionCombo = reader.readId( MetadataType.CATEGORY_OPTION_COMBO );
         this.period = reader.readPeriod();
         this.values = reader.readDataValues();
     }
 
-    private void readSubmV2( SMSSubmissionReader reader )
-        throws SMSCompressionException
+    private void readSubmV2( SmsSubmissionReader reader )
+        throws SmsCompressionException
     {
-        this.orgUnit = reader.readID( MetadataType.ORGANISATION_UNIT );
-        this.dataSet = reader.readID( MetadataType.DATASET );
+        this.orgUnit = reader.readId( MetadataType.ORGANISATION_UNIT );
+        this.dataSet = reader.readId( MetadataType.DATASET );
         this.complete = reader.readBool();
-        this.attributeOptionCombo = reader.readID( MetadataType.CATEGORY_OPTION_COMBO );
+        this.attributeOptionCombo = reader.readId( MetadataType.CATEGORY_OPTION_COMBO );
         this.period = reader.readPeriod();
         boolean hasValues = reader.readBool();
         this.values = hasValues ? reader.readDataValues() : null;
@@ -226,6 +226,6 @@ public class AggregateDatasetSMSSubmission
     @Override
     public SubmissionType getType()
     {
-        return SMSConsts.SubmissionType.AGGREGATE_DATASET;
+        return SmsConsts.SubmissionType.AGGREGATE_DATASET;
     }
 }

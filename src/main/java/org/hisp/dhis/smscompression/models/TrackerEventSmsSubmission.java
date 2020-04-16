@@ -32,27 +32,29 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import org.hisp.dhis.smscompression.SMSCompressionException;
-import org.hisp.dhis.smscompression.SMSConsts;
-import org.hisp.dhis.smscompression.SMSConsts.MetadataType;
-import org.hisp.dhis.smscompression.SMSConsts.SMSEventStatus;
-import org.hisp.dhis.smscompression.SMSConsts.SubmissionType;
-import org.hisp.dhis.smscompression.SMSSubmissionReader;
-import org.hisp.dhis.smscompression.SMSSubmissionWriter;
+import org.hisp.dhis.smscompression.SmsCompressionException;
+import org.hisp.dhis.smscompression.SmsConsts;
+import org.hisp.dhis.smscompression.SmsConsts.MetadataType;
+import org.hisp.dhis.smscompression.SmsConsts.SmsEventStatus;
+import org.hisp.dhis.smscompression.SmsConsts.SubmissionType;
+import org.hisp.dhis.smscompression.SmsSubmissionReader;
+import org.hisp.dhis.smscompression.SmsSubmissionWriter;
 
-public class SimpleEventSMSSubmission
+public class TrackerEventSmsSubmission
     extends
-    SMSSubmission
+    SmsSubmission
 {
-    protected UID orgUnit;
+    protected Uid orgUnit;
 
-    protected UID eventProgram;
+    protected Uid programStage;
 
-    protected SMSEventStatus eventStatus;
+    protected SmsEventStatus eventStatus;
 
-    protected UID attributeOptionCombo;
+    protected Uid attributeOptionCombo;
 
-    protected UID event;
+    protected Uid enrollment;
+
+    protected Uid event;
 
     protected Date eventDate;
 
@@ -60,58 +62,68 @@ public class SimpleEventSMSSubmission
 
     protected GeoPoint coordinates;
 
-    protected List<SMSDataValue> values;
+    protected List<SmsDataValue> values;
 
     /* Getters and Setters */
 
-    public UID getOrgUnit()
+    public Uid getOrgUnit()
     {
         return orgUnit;
     }
 
     public void setOrgUnit( String orgUnit )
     {
-        this.orgUnit = new UID( orgUnit, MetadataType.ORGANISATION_UNIT );
+        this.orgUnit = new Uid( orgUnit, MetadataType.ORGANISATION_UNIT );
     }
 
-    public UID getEventProgram()
+    public Uid getProgramStage()
     {
-        return eventProgram;
+        return programStage;
     }
 
-    public void setEventProgram( String eventProgram )
+    public void setProgramStage( String programStage )
     {
-        this.eventProgram = new UID( eventProgram, MetadataType.PROGRAM );
+        this.programStage = new Uid( programStage, MetadataType.PROGRAM_STAGE );
     }
 
-    public SMSEventStatus getEventStatus()
+    public SmsEventStatus getEventStatus()
     {
         return eventStatus;
     }
 
-    public void setEventStatus( SMSEventStatus eventStatus )
+    public void setEventStatus( SmsEventStatus eventStatus )
     {
         this.eventStatus = eventStatus;
     }
 
-    public UID getAttributeOptionCombo()
+    public Uid getAttributeOptionCombo()
     {
         return attributeOptionCombo;
     }
 
     public void setAttributeOptionCombo( String attributeOptionCombo )
     {
-        this.attributeOptionCombo = new UID( attributeOptionCombo, MetadataType.CATEGORY_OPTION_COMBO );
+        this.attributeOptionCombo = new Uid( attributeOptionCombo, MetadataType.CATEGORY_OPTION_COMBO );
     }
 
-    public UID getEvent()
+    public Uid getEnrollment()
+    {
+        return enrollment;
+    }
+
+    public void setEnrollment( String enrollment )
+    {
+        this.enrollment = new Uid( enrollment, MetadataType.ENROLLMENT );
+    }
+
+    public Uid getEvent()
     {
         return event;
     }
 
     public void setEvent( String event )
     {
-        this.event = new UID( event, MetadataType.EVENT );
+        this.event = new Uid( event, MetadataType.EVENT );
     }
 
     public Date getEventDate()
@@ -144,12 +156,12 @@ public class SimpleEventSMSSubmission
         this.coordinates = coordinates;
     }
 
-    public List<SMSDataValue> getValues()
+    public List<SmsDataValue> getValues()
     {
         return values;
     }
 
-    public void setValues( List<SMSDataValue> values )
+    public void setValues( List<SmsDataValue> values )
     {
         this.values = values;
     }
@@ -161,20 +173,21 @@ public class SimpleEventSMSSubmission
         {
             return false;
         }
-        SimpleEventSMSSubmission subm = (SimpleEventSMSSubmission) o;
+        TrackerEventSmsSubmission subm = (TrackerEventSmsSubmission) o;
 
-        return Objects.equals( orgUnit, subm.orgUnit ) && Objects.equals( eventProgram, subm.eventProgram )
+        return Objects.equals( orgUnit, subm.orgUnit ) && Objects.equals( programStage, subm.programStage )
             && Objects.equals( eventStatus, subm.eventStatus )
-            && Objects.equals( attributeOptionCombo, subm.attributeOptionCombo ) && Objects.equals( event, subm.event )
-            && Objects.equals( eventDate, subm.eventDate ) && Objects.equals( dueDate, subm.dueDate )
-            && Objects.equals( coordinates, subm.coordinates ) && Objects.equals( values, subm.values );
+            && Objects.equals( attributeOptionCombo, subm.attributeOptionCombo ) && enrollment.equals( subm.enrollment )
+            && Objects.equals( event, subm.event ) && Objects.equals( eventDate, subm.eventDate )
+            && Objects.equals( dueDate, subm.dueDate ) && Objects.equals( coordinates, subm.coordinates )
+            && Objects.equals( values, subm.values );
     }
 
     /* Implementation of abstract methods */
 
     @Override
-    public void writeSubm( SMSSubmissionWriter writer, int version )
-        throws SMSCompressionException
+    public void writeSubm( SmsSubmissionWriter writer, int version )
+        throws SmsCompressionException
     {
         switch ( version )
         {
@@ -185,30 +198,32 @@ public class SimpleEventSMSSubmission
             writeSubmV2( writer );
             break;
         default:
-            throw new SMSCompressionException( versionError( version ) );
+            throw new SmsCompressionException( versionError( version ) );
         }
     }
 
-    private void writeSubmV1( SMSSubmissionWriter writer )
-        throws SMSCompressionException
+    private void writeSubmV1( SmsSubmissionWriter writer )
+        throws SmsCompressionException
     {
-        writer.writeID( orgUnit );
-        writer.writeID( eventProgram );
+        writer.writeId( orgUnit );
+        writer.writeId( programStage );
         writer.writeEventStatus( eventStatus );
-        writer.writeID( attributeOptionCombo );
-        writer.writeID( event );
+        writer.writeId( attributeOptionCombo );
+        writer.writeId( enrollment );
+        writer.writeId( event );
         writer.writeNonNullableDate( eventDate );
         writer.writeDataValues( values );
     }
 
-    private void writeSubmV2( SMSSubmissionWriter writer )
-        throws SMSCompressionException
+    private void writeSubmV2( SmsSubmissionWriter writer )
+        throws SmsCompressionException
     {
-        writer.writeID( orgUnit );
-        writer.writeID( eventProgram );
+        writer.writeId( orgUnit );
+        writer.writeId( programStage );
         writer.writeEventStatus( eventStatus );
-        writer.writeID( attributeOptionCombo );
-        writer.writeID( event );
+        writer.writeId( attributeOptionCombo );
+        writer.writeId( enrollment );
+        writer.writeId( event );
         writer.writeDate( eventDate );
         writer.writeDate( dueDate );
         writer.writeGeoPoint( coordinates );
@@ -221,8 +236,8 @@ public class SimpleEventSMSSubmission
     }
 
     @Override
-    public void readSubm( SMSSubmissionReader reader, int version )
-        throws SMSCompressionException
+    public void readSubm( SmsSubmissionReader reader, int version )
+        throws SmsCompressionException
     {
         switch ( version )
         {
@@ -233,30 +248,32 @@ public class SimpleEventSMSSubmission
             readSubmV2( reader );
             break;
         default:
-            throw new SMSCompressionException( versionError( version ) );
+            throw new SmsCompressionException( versionError( version ) );
         }
     }
 
-    private void readSubmV1( SMSSubmissionReader reader )
-        throws SMSCompressionException
+    private void readSubmV1( SmsSubmissionReader reader )
+        throws SmsCompressionException
     {
-        this.orgUnit = reader.readID( MetadataType.ORGANISATION_UNIT );
-        this.eventProgram = reader.readID( MetadataType.PROGRAM );
+        this.orgUnit = reader.readId( MetadataType.ORGANISATION_UNIT );
+        this.programStage = reader.readId( MetadataType.PROGRAM_STAGE );
         this.eventStatus = reader.readEventStatus();
-        this.attributeOptionCombo = reader.readID( MetadataType.CATEGORY_OPTION_COMBO );
-        this.event = reader.readID( MetadataType.EVENT );
+        this.attributeOptionCombo = reader.readId( MetadataType.CATEGORY_OPTION_COMBO );
+        this.enrollment = reader.readId( MetadataType.ENROLLMENT );
+        this.event = reader.readId( MetadataType.EVENT );
         this.eventDate = reader.readNonNullableDate();
         this.values = reader.readDataValues();
     }
 
-    private void readSubmV2( SMSSubmissionReader reader )
-        throws SMSCompressionException
+    private void readSubmV2( SmsSubmissionReader reader )
+        throws SmsCompressionException
     {
-        this.orgUnit = reader.readID( MetadataType.ORGANISATION_UNIT );
-        this.eventProgram = reader.readID( MetadataType.PROGRAM );
+        this.orgUnit = reader.readId( MetadataType.ORGANISATION_UNIT );
+        this.programStage = reader.readId( MetadataType.PROGRAM_STAGE );
         this.eventStatus = reader.readEventStatus();
-        this.attributeOptionCombo = reader.readID( MetadataType.CATEGORY_OPTION_COMBO );
-        this.event = reader.readID( MetadataType.EVENT );
+        this.attributeOptionCombo = reader.readId( MetadataType.CATEGORY_OPTION_COMBO );
+        this.enrollment = reader.readId( MetadataType.ENROLLMENT );
+        this.event = reader.readId( MetadataType.EVENT );
         this.eventDate = reader.readDate();
         this.dueDate = reader.readDate();
         this.coordinates = reader.readGeoPoint();
@@ -273,6 +290,6 @@ public class SimpleEventSMSSubmission
     @Override
     public SubmissionType getType()
     {
-        return SMSConsts.SubmissionType.SIMPLE_EVENT;
+        return SmsConsts.SubmissionType.TRACKER_EVENT;
     }
 }

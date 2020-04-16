@@ -30,65 +30,65 @@ import java.util.Objects;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.hisp.dhis.smscompression.SMSCompressionException;
-import org.hisp.dhis.smscompression.SMSConsts;
-import org.hisp.dhis.smscompression.SMSConsts.MetadataType;
-import org.hisp.dhis.smscompression.SMSConsts.SubmissionType;
-import org.hisp.dhis.smscompression.SMSSubmissionReader;
-import org.hisp.dhis.smscompression.SMSSubmissionWriter;
+import org.hisp.dhis.smscompression.SmsCompressionException;
+import org.hisp.dhis.smscompression.SmsConsts;
+import org.hisp.dhis.smscompression.SmsConsts.MetadataType;
+import org.hisp.dhis.smscompression.SmsConsts.SubmissionType;
+import org.hisp.dhis.smscompression.SmsSubmissionReader;
+import org.hisp.dhis.smscompression.SmsSubmissionWriter;
 
-public class RelationshipSMSSubmission
+public class RelationshipSmsSubmission
     extends
-    SMSSubmission
+    SmsSubmission
 {
-    protected UID relationshipType;
+    protected Uid relationshipType;
 
-    protected UID relationship;
+    protected Uid relationship;
 
-    protected UID from;
+    protected Uid from;
 
-    protected UID to;
+    protected Uid to;
 
     /* Getters and Setters */
 
-    public UID getRelationshipType()
+    public Uid getRelationshipType()
     {
         return relationshipType;
     }
 
     public void setRelationshipType( String relationshipType )
     {
-        this.relationshipType = new UID( relationshipType, MetadataType.RELATIONSHIP_TYPE );
+        this.relationshipType = new Uid( relationshipType, MetadataType.RELATIONSHIP_TYPE );
     }
 
-    public UID getRelationship()
+    public Uid getRelationship()
     {
         return relationship;
     }
 
     public void setRelationship( String relationship )
     {
-        this.relationship = new UID( relationship, MetadataType.RELATIONSHIP );
+        this.relationship = new Uid( relationship, MetadataType.RELATIONSHIP );
     }
 
-    public UID getFrom()
+    public Uid getFrom()
     {
         return from;
     }
 
     public void setFrom( String from )
     {
-        this.from = new UID( from, null );
+        this.from = new Uid( from, null );
     }
 
-    public UID getTo()
+    public Uid getTo()
     {
         return to;
     }
 
     public void setTo( String to )
     {
-        this.to = new UID( to, null );
+        this.to = new Uid( to, null );
     }
 
     @Override
@@ -98,7 +98,7 @@ public class RelationshipSMSSubmission
         {
             return false;
         }
-        RelationshipSMSSubmission subm = (RelationshipSMSSubmission) o;
+        RelationshipSmsSubmission subm = (RelationshipSmsSubmission) o;
 
         return Objects.equals( relationshipType, subm.relationshipType )
             && Objects.equals( relationship, subm.relationship ) && Objects.equals( from, subm.from )
@@ -108,31 +108,31 @@ public class RelationshipSMSSubmission
     /* Implementation of abstract methods */
 
     @Override
-    public void writeSubm( SMSSubmissionWriter writer, int version )
-        throws SMSCompressionException
+    public void writeSubm( SmsSubmissionWriter writer, int version )
+        throws SmsCompressionException
     {
         if ( version != 1 && version != 2 )
         {
-            throw new SMSCompressionException( versionError( version ) );
+            throw new SmsCompressionException( versionError( version ) );
         }
-        writer.writeID( relationshipType );
-        writer.writeID( relationship );
-        writer.writeNewID( from.getUID() );
-        writer.writeNewID( to.getUID() );
+        writer.writeId( relationshipType );
+        writer.writeId( relationship );
+        writer.writeNewId( from.getUid() );
+        writer.writeNewId( to.getUid() );
     }
 
     @Override
-    public void readSubm( SMSSubmissionReader reader, int version )
-        throws SMSCompressionException
+    public void readSubm( SmsSubmissionReader reader, int version )
+        throws SmsCompressionException
     {
         if ( version != 1 && version != 2 )
         {
-            throw new SMSCompressionException( versionError( version ) );
+            throw new SmsCompressionException( versionError( version ) );
         }
-        this.relationshipType = reader.readID( MetadataType.RELATIONSHIP_TYPE );
-        this.relationship = reader.readID( MetadataType.RELATIONSHIP );
-        this.from = new UID( reader.readNewID(), null );
-        this.to = new UID( reader.readNewID(), null );
+        this.relationshipType = reader.readId( MetadataType.RELATIONSHIP_TYPE );
+        this.relationship = reader.readId( MetadataType.RELATIONSHIP );
+        this.from = new Uid( reader.readNewId(), null );
+        this.to = new Uid( reader.readNewId(), null );
     }
 
     @Override
@@ -144,6 +144,6 @@ public class RelationshipSMSSubmission
     @Override
     public SubmissionType getType()
     {
-        return SMSConsts.SubmissionType.RELATIONSHIP;
+        return SmsConsts.SubmissionType.RELATIONSHIP;
     }
 }

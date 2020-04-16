@@ -3,11 +3,11 @@ package org.hisp.dhis.smscompression;
 import java.io.FileReader;
 
 import org.apache.commons.io.IOUtils;
-import org.hisp.dhis.smscompression.models.AggregateDatasetSMSSubmission;
-import org.hisp.dhis.smscompression.models.EnrollmentSMSSubmission;
-import org.hisp.dhis.smscompression.models.SMSMetadata;
-import org.hisp.dhis.smscompression.models.SMSSubmission;
-import org.hisp.dhis.smscompression.models.SMSSubmissionHeader;
+import org.hisp.dhis.smscompression.models.AggregateDatasetSmsSubmission;
+import org.hisp.dhis.smscompression.models.EnrollmentSmsSubmission;
+import org.hisp.dhis.smscompression.models.SmsMetadata;
+import org.hisp.dhis.smscompression.models.SmsSubmission;
+import org.hisp.dhis.smscompression.models.SmsSubmissionHeader;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -16,13 +16,13 @@ import com.google.gson.Gson;
 public class TestCustomMetadata
 {
 
-    SMSMetadata meta;
+    SmsMetadata meta;
 
-    SMSSubmissionWriter writer;
+    SmsSubmissionWriter writer;
 
-    SMSSubmissionReader reader;
+    SmsSubmissionReader reader;
 
-    public String compressSubm( SMSSubmission subm )
+    public String compressSubm( SmsSubmission subm )
         throws Exception
     {
         byte[] compressSubm = writer.compress( subm );
@@ -31,11 +31,11 @@ public class TestCustomMetadata
         return comp64;
     }
 
-    public SMSSubmission decompressSubm( String comp64 )
+    public SmsSubmission decompressSubm( String comp64 )
         throws Exception
     {
         byte[] decSubmBytes = TestUtils.decBase64( comp64 );
-        SMSSubmissionHeader header = reader.readHeader( decSubmBytes );
+        SmsSubmissionHeader header = reader.readHeader( decSubmBytes );
         Assert.assertNotNull( header );
         return reader.readSubmission( decSubmBytes, meta );
     }
@@ -46,12 +46,12 @@ public class TestCustomMetadata
         try
         {
             meta = null;
-            writer = new SMSSubmissionWriter( meta );
-            reader = new SMSSubmissionReader();
+            writer = new SmsSubmissionWriter( meta );
+            reader = new SmsSubmissionReader();
 
-            AggregateDatasetSMSSubmission origSubm = CreateSubm.createAggregateDatasetSubmission();
+            AggregateDatasetSmsSubmission origSubm = CreateSubm.createAggregateDatasetSubmission();
             String comp64 = compressSubm( origSubm );
-            AggregateDatasetSMSSubmission decSubm = (AggregateDatasetSMSSubmission) decompressSubm( comp64 );
+            AggregateDatasetSmsSubmission decSubm = (AggregateDatasetSmsSubmission) decompressSubm( comp64 );
 
             TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
         }
@@ -67,13 +67,13 @@ public class TestCustomMetadata
     {
         try
         {
-            meta = new SMSMetadata();
-            writer = new SMSSubmissionWriter( meta );
-            reader = new SMSSubmissionReader();
+            meta = new SmsMetadata();
+            writer = new SmsSubmissionWriter( meta );
+            reader = new SmsSubmissionReader();
 
-            AggregateDatasetSMSSubmission origSubm = CreateSubm.createAggregateDatasetSubmission();
+            AggregateDatasetSmsSubmission origSubm = CreateSubm.createAggregateDatasetSubmission();
             String comp64 = compressSubm( origSubm );
-            AggregateDatasetSMSSubmission decSubm = (AggregateDatasetSMSSubmission) decompressSubm( comp64 );
+            AggregateDatasetSmsSubmission decSubm = (AggregateDatasetSmsSubmission) decompressSubm( comp64 );
 
             TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
         }
@@ -91,14 +91,14 @@ public class TestCustomMetadata
         {
             Gson gson = new Gson();
             String metadataJson = IOUtils.toString( new FileReader( "src/test/resources/metadata.json" ) );
-            meta = gson.fromJson( metadataJson, SMSMetadata.class );
+            meta = gson.fromJson( metadataJson, SmsMetadata.class );
             meta.dataElements = null;
-            writer = new SMSSubmissionWriter( meta );
-            reader = new SMSSubmissionReader();
+            writer = new SmsSubmissionWriter( meta );
+            reader = new SmsSubmissionReader();
 
-            AggregateDatasetSMSSubmission origSubm = CreateSubm.createAggregateDatasetSubmission();
+            AggregateDatasetSmsSubmission origSubm = CreateSubm.createAggregateDatasetSubmission();
             String comp64 = compressSubm( origSubm );
-            AggregateDatasetSMSSubmission decSubm = (AggregateDatasetSMSSubmission) decompressSubm( comp64 );
+            AggregateDatasetSmsSubmission decSubm = (AggregateDatasetSmsSubmission) decompressSubm( comp64 );
 
             TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
         }
@@ -116,14 +116,14 @@ public class TestCustomMetadata
         {
             Gson gson = new Gson();
             String metadataJson = IOUtils.toString( new FileReader( "src/test/resources/metadata.json" ) );
-            meta = gson.fromJson( metadataJson, SMSMetadata.class );
+            meta = gson.fromJson( metadataJson, SmsMetadata.class );
             meta.trackedEntityAttributes = null;
-            writer = new SMSSubmissionWriter( meta );
-            reader = new SMSSubmissionReader();
+            writer = new SmsSubmissionWriter( meta );
+            reader = new SmsSubmissionReader();
 
-            EnrollmentSMSSubmission origSubm = CreateSubm.createEnrollmentSubmission();
+            EnrollmentSmsSubmission origSubm = CreateSubm.createEnrollmentSubmission();
             String comp64 = compressSubm( origSubm );
-            EnrollmentSMSSubmission decSubm = (EnrollmentSMSSubmission) decompressSubm( comp64 );
+            EnrollmentSmsSubmission decSubm = (EnrollmentSmsSubmission) decompressSubm( comp64 );
 
             TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
         }
@@ -141,14 +141,14 @@ public class TestCustomMetadata
         {
             Gson gson = new Gson();
             String metadataJson = IOUtils.toString( new FileReader( "src/test/resources/metadata.json" ) );
-            meta = gson.fromJson( metadataJson, SMSMetadata.class );
-            writer = new SMSSubmissionWriter( meta );
+            meta = gson.fromJson( metadataJson, SmsMetadata.class );
+            writer = new SmsSubmissionWriter( meta );
             writer.setHashingEnabled( false );
-            reader = new SMSSubmissionReader();
+            reader = new SmsSubmissionReader();
 
-            AggregateDatasetSMSSubmission origSubm = CreateSubm.createAggregateDatasetSubmission();
+            AggregateDatasetSmsSubmission origSubm = CreateSubm.createAggregateDatasetSubmission();
             String comp64 = compressSubm( origSubm );
-            AggregateDatasetSMSSubmission decSubm = (AggregateDatasetSMSSubmission) decompressSubm( comp64 );
+            AggregateDatasetSmsSubmission decSubm = (AggregateDatasetSmsSubmission) decompressSubm( comp64 );
 
             TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
         }

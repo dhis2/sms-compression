@@ -37,17 +37,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.hisp.dhis.smscompression.SMSCompressionException;
-import org.hisp.dhis.smscompression.SMSConsts;
-import org.hisp.dhis.smscompression.SMSConsts.MetadataType;
-import org.hisp.dhis.smscompression.models.SMSMetadata;
-import org.hisp.dhis.smscompression.models.UID;
+import org.hisp.dhis.smscompression.SmsCompressionException;
+import org.hisp.dhis.smscompression.SmsConsts;
+import org.hisp.dhis.smscompression.SmsConsts.MetadataType;
+import org.hisp.dhis.smscompression.models.SmsMetadata;
+import org.hisp.dhis.smscompression.models.Uid;
 
-public class IDUtil
+public class IdUtil
 {
 
     public static int getBitLengthForList( List<String> ids )
-        throws SMSCompressionException
+        throws SmsCompressionException
     {
         // Start with the shortest length that will fit all IDs
         int len = BinaryUtils.bitlenNeeded( ids.size() );
@@ -74,19 +74,19 @@ public class IDUtil
             }
             // This is the max bit length we can support if we still
             // have a collision we can't support this UID list
-            if ( len > (Math.pow( 2, SMSConsts.VARLEN_BITLEN )) )
-                throw new SMSCompressionException( "Error hashing: Group too large to support" );
+            if ( len > (Math.pow( 2, SmsConsts.VARLEN_BITLEN )) )
+                throw new SmsCompressionException( "Error hashing: Group too large to support" );
         }
         while ( collision );
         return len;
     }
 
-    public static boolean validID( String id )
+    public static boolean validId( String id )
     {
-        return id.matches( "^[A-z0-9]{" + SMSConsts.ID_LEN + "}$" );
+        return id.matches( "^[A-z0-9]{" + SmsConsts.ID_LEN + "}$" );
     }
 
-    public static int convertIDCharToInt( char c )
+    public static int convertIdCharToInt( char c )
     {
         int i = c;
 
@@ -106,7 +106,7 @@ public class IDUtil
         return i;
     }
 
-    public static char convertIDIntToChar( int i )
+    public static char convertIdIntToChar( int i )
     {
         char c = (char) i;
 
@@ -128,51 +128,51 @@ public class IDUtil
     // Used to write new IDs where we have to express the full ID.
     // Must only include chars in the range a-Z0-9, as we encode each
     // char to 6 bits (64 vals)
-    public static void writeNewID( String id, BitOutputStream outStream )
-        throws SMSCompressionException
+    public static void writeNewId( String id, BitOutputStream outStream )
+        throws SmsCompressionException
     {
-        if ( !validID( id ) )
-            throw new SMSCompressionException( "Attempting to write out ID with invalid format: " + id );
+        if ( !validId( id ) )
+            throw new SmsCompressionException( "Attempting to write out ID with invalid format: " + id );
         for ( char c : id.toCharArray() )
         {
-            outStream.write( convertIDCharToInt( c ), 6 );
+            outStream.write( convertIdCharToInt( c ), 6 );
         }
     }
 
     // Used to read new IDs where we have to express the full ID.
     // Must only include chars in the range a-Z0-9, as we encode each
     // char to 6 bits (64 vals)
-    public static String readNewID( BitInputStream inStream )
-        throws SMSCompressionException
+    public static String readNewId( BitInputStream inStream )
+        throws SmsCompressionException
     {
         String id = "";
-        while ( id.length() < SMSConsts.ID_LEN )
+        while ( id.length() < SmsConsts.ID_LEN )
         {
             int i = inStream.read( 6 );
-            id += convertIDIntToChar( i );
+            id += convertIdIntToChar( i );
         }
         return id;
     }
 
-    public static UID readID( MetadataType type, SMSMetadata meta, BitInputStream inStream )
-        throws SMSCompressionException
+    public static Uid readId( MetadataType type, SmsMetadata meta, BitInputStream inStream )
+        throws SmsCompressionException
     {
         boolean useHash = ValueUtil.readBool( inStream );
 
         if ( useHash )
         {
-            int typeBitLen = inStream.read( SMSConsts.VARLEN_BITLEN );
-            Map<Integer, String> idLookup = IDUtil.getIDLookup( meta.getType( type ), typeBitLen );
+            int typeBitLen = inStream.read( SmsConsts.VARLEN_BITLEN );
+            Map<Integer, String> idLookup = IdUtil.getIdLookup( meta.getType( type ), typeBitLen );
             int idHash = inStream.read( typeBitLen );
-            return new UID( idLookup.get( idHash ), idHash, type );
+            return new Uid( idLookup.get( idHash ), idHash, type );
         }
         else
         {
-            return new UID( readNewID( inStream ), type );
+            return new Uid( readNewId( inStream ), type );
         }
     }
 
-    public static Map<Integer, String> getIDLookup( List<String> idList, int hashLen )
+    public static Map<Integer, String> getIdLookup( List<String> idList, int hashLen )
     {
         HashMap<Integer, String> idLookup = new HashMap<>();
         for ( String id : idList )
@@ -183,30 +183,30 @@ public class IDUtil
         return idLookup;
     }
 
-    public static void writeID( UID uid, boolean hashingEnabled, SMSMetadata meta, BitOutputStream outStream )
-        throws SMSCompressionException
+    public static void writeId( Uid uid, boolean hashingEnabled, SmsMetadata meta, BitOutputStream outStream )
+        throws SmsCompressionException
     {
-        if ( !validID( uid.getUID() ) )
-            throw new SMSCompressionException( "Attempting to write out ID with invalid format: " + uid.getUID() );
+        if ( !validId( uid.getUid() ) )
+            throw new SmsCompressionException( "Attempting to write out ID with invalid format: " + uid.getUid() );
 
         List<String> idList = meta != null ? meta.getType( uid.getType() ) : null;
-        boolean useHash = hashingEnabled && idList != null && idList.contains( uid.getUID() );
+        boolean useHash = hashingEnabled && idList != null && idList.contains( uid.getUid() );
         ValueUtil.writeBool( useHash, outStream );
 
         if ( useHash )
         {
             int typeBitLen = getBitLengthForList( idList );
-            outStream.write( typeBitLen, SMSConsts.VARLEN_BITLEN );
-            int idHash = BinaryUtils.hash( uid.getUID(), typeBitLen );
+            outStream.write( typeBitLen, SmsConsts.VARLEN_BITLEN );
+            int idHash = BinaryUtils.hash( uid.getUid(), typeBitLen );
             outStream.write( idHash, typeBitLen );
         }
         else
         {
-            IDUtil.writeNewID( uid.getUID(), outStream );
+            IdUtil.writeNewId( uid.getUid(), outStream );
         }
     }
 
-    public static String hashAsBase64( UID uid )
+    public static String hashAsBase64( Uid uid )
     {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         BitOutputStream outStream = new BitOutputStream( byteStream );
@@ -214,8 +214,8 @@ public class IDUtil
 
         try
         {
-            outStream.write( uid.getType().ordinal(), SMSConsts.METADATA_TYPE_BITLEN );
-            outStream.write( bitLen, SMSConsts.VARLEN_BITLEN );
+            outStream.write( uid.getType().ordinal(), SmsConsts.METADATA_TYPE_BITLEN );
+            outStream.write( bitLen, SmsConsts.VARLEN_BITLEN );
             outStream.write( uid.getHash(), bitLen );
             outStream.close();
         }
@@ -227,7 +227,7 @@ public class IDUtil
         return Base64.getEncoder().encodeToString( byteStream.toByteArray() );
     }
 
-    public static UID getUIDFromHash( String hashStr, SMSMetadata meta )
+    public static Uid getUidFromHash( String hashStr, SmsMetadata meta )
     {
         byte[] hashBytes = Base64.getDecoder().decode( hashStr.replace( "#", "" ) );
         ByteArrayInputStream byteStream = new ByteArrayInputStream( hashBytes );
@@ -235,16 +235,16 @@ public class IDUtil
 
         try
         {
-            int typeID = inStream.read( SMSConsts.METADATA_TYPE_BITLEN );
-            MetadataType type = MetadataType.values()[typeID];
-            int bitLen = inStream.read( SMSConsts.VARLEN_BITLEN );
+            int typeId = inStream.read( SmsConsts.METADATA_TYPE_BITLEN );
+            MetadataType type = MetadataType.values()[typeId];
+            int bitLen = inStream.read( SmsConsts.VARLEN_BITLEN );
             int hash = inStream.read( bitLen );
             inStream.close();
 
             List<String> ids = meta.getType( type );
-            Map<Integer, String> idMap = getIDLookup( ids, getBitLengthForList( ids ) );
+            Map<Integer, String> idMap = getIdLookup( ids, getBitLengthForList( ids ) );
             String uidStr = idMap.get( hash );
-            return new UID( uidStr, hash, type );
+            return new Uid( uidStr, hash, type );
         }
         catch ( Exception e )
         {

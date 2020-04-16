@@ -30,7 +30,7 @@ import java.text.SimpleDateFormat;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-public class SMSConsts
+public class SmsConsts
 {
 
     public enum SubmissionType
@@ -68,7 +68,7 @@ public class SMSConsts
         ;
     }
 
-    public enum SMSEventStatus
+    public enum SmsEventStatus
     {
         ACTIVE, COMPLETED, VISITED, SCHEDULE, OVERDUE, SKIPPED,
 
@@ -76,7 +76,7 @@ public class SMSConsts
 
     }
 
-    public enum SMSEnrollmentStatus
+    public enum SmsEnrollmentStatus
     {
         ACTIVE, COMPLETED, CANCELLED
 

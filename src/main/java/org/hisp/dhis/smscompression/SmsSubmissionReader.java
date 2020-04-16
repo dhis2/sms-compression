@@ -37,84 +37,84 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.hisp.dhis.smscompression.SMSConsts.MetadataType;
-import org.hisp.dhis.smscompression.SMSConsts.SMSEnrollmentStatus;
-import org.hisp.dhis.smscompression.SMSConsts.SMSEventStatus;
-import org.hisp.dhis.smscompression.SMSConsts.SubmissionType;
-import org.hisp.dhis.smscompression.models.AggregateDatasetSMSSubmission;
-import org.hisp.dhis.smscompression.models.DeleteSMSSubmission;
-import org.hisp.dhis.smscompression.models.EnrollmentSMSSubmission;
+import org.hisp.dhis.smscompression.SmsConsts.MetadataType;
+import org.hisp.dhis.smscompression.SmsConsts.SmsEnrollmentStatus;
+import org.hisp.dhis.smscompression.SmsConsts.SmsEventStatus;
+import org.hisp.dhis.smscompression.SmsConsts.SubmissionType;
+import org.hisp.dhis.smscompression.models.AggregateDatasetSmsSubmission;
+import org.hisp.dhis.smscompression.models.DeleteSmsSubmission;
+import org.hisp.dhis.smscompression.models.EnrollmentSmsSubmission;
 import org.hisp.dhis.smscompression.models.GeoPoint;
-import org.hisp.dhis.smscompression.models.RelationshipSMSSubmission;
-import org.hisp.dhis.smscompression.models.SMSAttributeValue;
-import org.hisp.dhis.smscompression.models.SMSDataValue;
-import org.hisp.dhis.smscompression.models.SMSEvent;
-import org.hisp.dhis.smscompression.models.SMSMetadata;
-import org.hisp.dhis.smscompression.models.SMSSubmission;
-import org.hisp.dhis.smscompression.models.SMSSubmissionHeader;
-import org.hisp.dhis.smscompression.models.SimpleEventSMSSubmission;
-import org.hisp.dhis.smscompression.models.TrackerEventSMSSubmission;
-import org.hisp.dhis.smscompression.models.UID;
+import org.hisp.dhis.smscompression.models.RelationshipSmsSubmission;
+import org.hisp.dhis.smscompression.models.SmsAttributeValue;
+import org.hisp.dhis.smscompression.models.SmsDataValue;
+import org.hisp.dhis.smscompression.models.SmsEvent;
+import org.hisp.dhis.smscompression.models.SmsMetadata;
+import org.hisp.dhis.smscompression.models.SmsSubmission;
+import org.hisp.dhis.smscompression.models.SmsSubmissionHeader;
+import org.hisp.dhis.smscompression.models.SimpleEventSmsSubmission;
+import org.hisp.dhis.smscompression.models.TrackerEventSmsSubmission;
+import org.hisp.dhis.smscompression.models.Uid;
 import org.hisp.dhis.smscompression.utils.BitInputStream;
-import org.hisp.dhis.smscompression.utils.IDUtil;
+import org.hisp.dhis.smscompression.utils.IdUtil;
 import org.hisp.dhis.smscompression.utils.ValueUtil;
 
-public class SMSSubmissionReader
+public class SmsSubmissionReader
 {
     BitInputStream inStream;
 
-    SMSMetadata meta;
+    SmsMetadata meta;
 
     ValueReader valueReader;
 
-    public SMSSubmissionHeader readHeader( byte[] smsBytes )
-        throws SMSCompressionException
+    public SmsSubmissionHeader readHeader( byte[] smsBytes )
+        throws SmsCompressionException
     {
-        if ( !checkCRC( smsBytes ) )
-            throw new SMSCompressionException( "Invalid CRC - CRC in header does not match submission" );
+        if ( !checkCrc( smsBytes ) )
+            throw new SmsCompressionException( "Invalid CRC - CRC in header does not match submission" );
 
         ByteArrayInputStream byteStream = new ByteArrayInputStream( smsBytes );
         this.inStream = new BitInputStream( byteStream );
-        inStream.read( SMSConsts.CRC_BITLEN ); // skip CRC
+        inStream.read( SmsConsts.CRC_BITLEN ); // skip CRC
 
-        SMSSubmissionHeader header = new SMSSubmissionHeader();
+        SmsSubmissionHeader header = new SmsSubmissionHeader();
         header.readHeader( this );
 
         return header;
     }
 
-    public SMSSubmission readSubmission( byte[] smsBytes, SMSMetadata meta )
-        throws SMSCompressionException
+    public SmsSubmission readSubmission( byte[] smsBytes, SmsMetadata meta )
+        throws SmsCompressionException
     {
         if ( meta != null )
             meta.validate();
         this.meta = meta;
-        SMSSubmissionHeader header = readHeader( smsBytes );
+        SmsSubmissionHeader header = readHeader( smsBytes );
         this.valueReader = new ValueReader( inStream, meta );
-        SMSSubmission subm = null;
+        SmsSubmission subm = null;
 
         switch ( header.getType() )
         {
         case AGGREGATE_DATASET:
-            subm = new AggregateDatasetSMSSubmission();
+            subm = new AggregateDatasetSmsSubmission();
             break;
         case DELETE:
-            subm = new DeleteSMSSubmission();
+            subm = new DeleteSmsSubmission();
             break;
         case ENROLLMENT:
-            subm = new EnrollmentSMSSubmission();
+            subm = new EnrollmentSmsSubmission();
             break;
         case RELATIONSHIP:
-            subm = new RelationshipSMSSubmission();
+            subm = new RelationshipSmsSubmission();
             break;
         case SIMPLE_EVENT:
-            subm = new SimpleEventSMSSubmission();
+            subm = new SimpleEventSmsSubmission();
             break;
         case TRACKER_EVENT:
-            subm = new TrackerEventSMSSubmission();
+            subm = new TrackerEventSmsSubmission();
             break;
         default:
-            throw new SMSCompressionException( "Unknown SMS Submission Type: " + header.getType() );
+            throw new SmsCompressionException( "Unknown SMS Submission Type: " + header.getType() );
         }
 
         subm.read( this, header );
@@ -124,12 +124,12 @@ public class SMSSubmissionReader
         }
         catch ( IOException e )
         {
-            throw new SMSCompressionException( e );
+            throw new SmsCompressionException( e );
         }
         return subm;
     }
 
-    private boolean checkCRC( byte[] smsBytes )
+    private boolean checkCrc( byte[] smsBytes )
     {
         byte crc = smsBytes[0];
         byte[] submBytes = Arrays.copyOfRange( smsBytes, 1, smsBytes.length );
@@ -137,8 +137,8 @@ public class SMSSubmissionReader
         try
         {
             MessageDigest digest = MessageDigest.getInstance( "SHA-256" );
-            byte[] calcCRC = digest.digest( submBytes );
-            return (calcCRC[0] == crc);
+            byte[] calcCrc = digest.digest( submBytes );
+            return (calcCrc[0] == crc);
         }
         catch ( NoSuchAlgorithmException e )
         {
@@ -148,26 +148,26 @@ public class SMSSubmissionReader
     }
 
     public SubmissionType readType()
-        throws SMSCompressionException
+        throws SmsCompressionException
     {
-        int submType = inStream.read( SMSConsts.SUBM_TYPE_BITLEN );
-        return SMSConsts.SubmissionType.values()[submType];
+        int submType = inStream.read( SmsConsts.SUBM_TYPE_BITLEN );
+        return SmsConsts.SubmissionType.values()[submType];
     }
 
     public int readVersion()
-        throws SMSCompressionException
+        throws SmsCompressionException
     {
-        return inStream.read( SMSConsts.VERSION_BITLEN );
+        return inStream.read( SmsConsts.VERSION_BITLEN );
     }
 
     public Date readNonNullableDate()
-        throws SMSCompressionException
+        throws SmsCompressionException
     {
         return ValueUtil.readDate( inStream );
     }
 
     public Date readDate()
-        throws SMSCompressionException
+        throws SmsCompressionException
     {
         boolean hasDate = readBool();
         if ( !hasDate )
@@ -178,67 +178,67 @@ public class SMSSubmissionReader
         return ValueUtil.readDate( inStream );
     }
 
-    public UID readID( MetadataType type )
-        throws SMSCompressionException
+    public Uid readId( MetadataType type )
+        throws SmsCompressionException
     {
-        return IDUtil.readID( type, meta, inStream );
+        return IdUtil.readId( type, meta, inStream );
     }
 
-    public String readNewID()
-        throws SMSCompressionException
+    public String readNewId()
+        throws SmsCompressionException
     {
-        return IDUtil.readNewID( inStream );
+        return IdUtil.readNewId( inStream );
     }
 
-    public List<SMSAttributeValue> readAttributeValues()
-        throws SMSCompressionException
+    public List<SmsAttributeValue> readAttributeValues()
+        throws SmsCompressionException
     {
         return valueReader.readAttributeValues();
     }
 
-    public List<SMSDataValue> readDataValues()
-        throws SMSCompressionException
+    public List<SmsDataValue> readDataValues()
+        throws SmsCompressionException
     {
         return valueReader.readDataValues();
     }
 
     public boolean readBool()
-        throws SMSCompressionException
+        throws SmsCompressionException
     {
         return ValueUtil.readBool( inStream );
     }
 
     // TODO: Update this once we have a better impl of period
     public String readPeriod()
-        throws SMSCompressionException
+        throws SmsCompressionException
     {
         return ValueUtil.readString( inStream );
     }
 
-    public int readSubmissionID()
-        throws SMSCompressionException
+    public int readSubmissionId()
+        throws SmsCompressionException
     {
-        return inStream.read( SMSConsts.SUBM_ID_BITLEN );
+        return inStream.read( SmsConsts.SUBM_ID_BITLEN );
     }
 
-    public SMSEventStatus readEventStatus()
-        throws SMSCompressionException
+    public SmsEventStatus readEventStatus()
+        throws SmsCompressionException
     {
-        int eventStatusNum = inStream.read( SMSConsts.EVENT_STATUS_BITLEN );
-        return SMSEventStatus.values()[eventStatusNum];
+        int eventStatusNum = inStream.read( SmsConsts.EVENT_STATUS_BITLEN );
+        return SmsEventStatus.values()[eventStatusNum];
     }
 
-    public List<SMSEvent> readEvents( int version )
-        throws SMSCompressionException
+    public List<SmsEvent> readEvents( int version )
+        throws SmsCompressionException
     {
         boolean hasEvents = readBool();
-        ArrayList<SMSEvent> events = null;
+        ArrayList<SmsEvent> events = null;
         if ( hasEvents )
         {
             events = new ArrayList<>();
             for ( boolean hasNext = true; hasNext; hasNext = readBool() )
             {
-                SMSEvent event = new SMSEvent();
+                SmsEvent event = new SmsEvent();
                 event.readEvent( this, version );
                 events.add( event );
             }
@@ -248,7 +248,7 @@ public class SMSSubmissionReader
     }
 
     public GeoPoint readGeoPoint()
-        throws SMSCompressionException
+        throws SmsCompressionException
     {
         GeoPoint gp = null;
         boolean hasGeoPoint = readBool();
@@ -262,10 +262,10 @@ public class SMSSubmissionReader
         return gp;
     }
 
-    public SMSEnrollmentStatus readEnrollmentStatus()
-        throws SMSCompressionException
+    public SmsEnrollmentStatus readEnrollmentStatus()
+        throws SmsCompressionException
     {
-        int enrollStatusNum = inStream.read( SMSConsts.ENROL_STATUS_BITLEN );
-        return SMSEnrollmentStatus.values()[enrollStatusNum];
+        int enrollStatusNum = inStream.read( SmsConsts.ENROL_STATUS_BITLEN );
+        return SmsEnrollmentStatus.values()[enrollStatusNum];
     }
 }

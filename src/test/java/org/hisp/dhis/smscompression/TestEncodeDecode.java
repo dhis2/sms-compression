@@ -33,15 +33,15 @@ import static org.junit.Assert.assertEquals;
 import java.io.FileReader;
 
 import org.apache.commons.io.IOUtils;
-import org.hisp.dhis.smscompression.models.AggregateDatasetSMSSubmission;
-import org.hisp.dhis.smscompression.models.DeleteSMSSubmission;
-import org.hisp.dhis.smscompression.models.EnrollmentSMSSubmission;
-import org.hisp.dhis.smscompression.models.RelationshipSMSSubmission;
-import org.hisp.dhis.smscompression.models.SMSMetadata;
-import org.hisp.dhis.smscompression.models.SMSSubmission;
-import org.hisp.dhis.smscompression.models.SMSSubmissionHeader;
-import org.hisp.dhis.smscompression.models.SimpleEventSMSSubmission;
-import org.hisp.dhis.smscompression.models.TrackerEventSMSSubmission;
+import org.hisp.dhis.smscompression.models.AggregateDatasetSmsSubmission;
+import org.hisp.dhis.smscompression.models.DeleteSmsSubmission;
+import org.hisp.dhis.smscompression.models.EnrollmentSmsSubmission;
+import org.hisp.dhis.smscompression.models.RelationshipSmsSubmission;
+import org.hisp.dhis.smscompression.models.SmsMetadata;
+import org.hisp.dhis.smscompression.models.SmsSubmission;
+import org.hisp.dhis.smscompression.models.SmsSubmissionHeader;
+import org.hisp.dhis.smscompression.models.SimpleEventSmsSubmission;
+import org.hisp.dhis.smscompression.models.TrackerEventSmsSubmission;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -51,13 +51,13 @@ import com.google.gson.Gson;
 
 public class TestEncodeDecode
 {
-    SMSMetadata meta;
+    SmsMetadata meta;
 
-    SMSSubmissionWriter writer;
+    SmsSubmissionWriter writer;
 
-    SMSSubmissionReader reader;
+    SmsSubmissionReader reader;
 
-    public String compressSubm( SMSSubmission subm )
+    public String compressSubm( SmsSubmission subm )
         throws Exception
     {
         byte[] compressSubm = writer.compress( subm );
@@ -66,11 +66,11 @@ public class TestEncodeDecode
         return comp64;
     }
 
-    public SMSSubmission decompressSubm( String comp64 )
+    public SmsSubmission decompressSubm( String comp64 )
         throws Exception
     {
         byte[] decSubmBytes = TestUtils.decBase64( comp64 );
-        SMSSubmissionHeader header = reader.readHeader( decSubmBytes );
+        SmsSubmissionHeader header = reader.readHeader( decSubmBytes );
         Assert.assertNotNull( header );
         return reader.readSubmission( decSubmBytes, meta );
     }
@@ -81,9 +81,9 @@ public class TestEncodeDecode
     {
         Gson gson = new Gson();
         String metadataJson = IOUtils.toString( new FileReader( "src/test/resources/metadata.json" ) );
-        meta = gson.fromJson( metadataJson, SMSMetadata.class );
-        writer = new SMSSubmissionWriter( meta );
-        reader = new SMSSubmissionReader();
+        meta = gson.fromJson( metadataJson, SmsMetadata.class );
+        writer = new SmsSubmissionWriter( meta );
+        reader = new SmsSubmissionReader();
     }
 
     @After
@@ -97,9 +97,9 @@ public class TestEncodeDecode
     {
         try
         {
-            RelationshipSMSSubmission origSubm = CreateSubm.createRelationshipSubmission();
+            RelationshipSmsSubmission origSubm = CreateSubm.createRelationshipSubmission();
             String comp64 = compressSubm( origSubm );
-            RelationshipSMSSubmission decSubm = (RelationshipSMSSubmission) decompressSubm( comp64 );
+            RelationshipSmsSubmission decSubm = (RelationshipSmsSubmission) decompressSubm( comp64 );
 
             TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
         }
@@ -115,9 +115,9 @@ public class TestEncodeDecode
     {
         try
         {
-            DeleteSMSSubmission origSubm = CreateSubm.createDeleteSubmission();
+            DeleteSmsSubmission origSubm = CreateSubm.createDeleteSubmission();
             String comp64 = compressSubm( origSubm );
-            DeleteSMSSubmission decSubm = (DeleteSMSSubmission) decompressSubm( comp64 );
+            DeleteSmsSubmission decSubm = (DeleteSmsSubmission) decompressSubm( comp64 );
 
             TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
         }
@@ -133,9 +133,9 @@ public class TestEncodeDecode
     {
         try
         {
-            SimpleEventSMSSubmission origSubm = CreateSubm.createSimpleEventSubmission();
+            SimpleEventSmsSubmission origSubm = CreateSubm.createSimpleEventSubmission();
             String comp64 = compressSubm( origSubm );
-            SimpleEventSMSSubmission decSubm = (SimpleEventSMSSubmission) decompressSubm( comp64 );
+            SimpleEventSmsSubmission decSubm = (SimpleEventSmsSubmission) decompressSubm( comp64 );
 
             TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
         }
@@ -151,9 +151,9 @@ public class TestEncodeDecode
     {
         try
         {
-            AggregateDatasetSMSSubmission origSubm = CreateSubm.createAggregateDatasetSubmission();
+            AggregateDatasetSmsSubmission origSubm = CreateSubm.createAggregateDatasetSubmission();
             String comp64 = compressSubm( origSubm );
-            AggregateDatasetSMSSubmission decSubm = (AggregateDatasetSMSSubmission) decompressSubm( comp64 );
+            AggregateDatasetSmsSubmission decSubm = (AggregateDatasetSmsSubmission) decompressSubm( comp64 );
 
             TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
         }
@@ -169,9 +169,9 @@ public class TestEncodeDecode
     {
         try
         {
-            EnrollmentSMSSubmission origSubm = CreateSubm.createEnrollmentSubmission();
+            EnrollmentSmsSubmission origSubm = CreateSubm.createEnrollmentSubmission();
             String comp64 = compressSubm( origSubm );
-            EnrollmentSMSSubmission decSubm = (EnrollmentSMSSubmission) decompressSubm( comp64 );
+            EnrollmentSmsSubmission decSubm = (EnrollmentSmsSubmission) decompressSubm( comp64 );
 
             TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
         }
@@ -187,9 +187,9 @@ public class TestEncodeDecode
     {
         try
         {
-            TrackerEventSMSSubmission origSubm = CreateSubm.createTrackerEventSubmission();
+            TrackerEventSmsSubmission origSubm = CreateSubm.createTrackerEventSubmission();
             String comp64 = compressSubm( origSubm );
-            TrackerEventSMSSubmission decSubm = (TrackerEventSMSSubmission) decompressSubm( comp64 );
+            TrackerEventSmsSubmission decSubm = (TrackerEventSmsSubmission) decompressSubm( comp64 );
 
             TestUtils.checkSubmissionsAreEqual( origSubm, decSubm );
         }
@@ -205,7 +205,7 @@ public class TestEncodeDecode
     {
         try
         {
-            TrackerEventSMSSubmission origSubm = CreateSubm.createTrackerEventSubmission();
+            TrackerEventSmsSubmission origSubm = CreateSubm.createTrackerEventSubmission();
             String comp64 = compressSubm( origSubm );
             comp64 = comp64.subSequence( 0, comp64.length() - 4 ).toString();
             comp64 = TestUtils.stripTillValid( comp64 );
@@ -213,7 +213,7 @@ public class TestEncodeDecode
         }
         catch ( Exception e )
         {
-            assertEquals( e.getClass(), SMSCompressionException.class );
+            assertEquals( e.getClass(), SmsCompressionException.class );
             assertEquals( e.getMessage(), "Invalid CRC - CRC in header does not match submission" );
             return;
         }
@@ -226,7 +226,7 @@ public class TestEncodeDecode
     {
         try
         {
-            TrackerEventSMSSubmission origSubm = CreateSubm.createTrackerEventSubmission();
+            TrackerEventSmsSubmission origSubm = CreateSubm.createTrackerEventSubmission();
             String comp64 = compressSubm( origSubm );
             comp64 = comp64.subSequence( 1, comp64.length() ).toString();
             comp64 = TestUtils.stripTillValid( comp64 );
@@ -234,7 +234,7 @@ public class TestEncodeDecode
         }
         catch ( Exception e )
         {
-            assertEquals( SMSCompressionException.class, e.getClass() );
+            assertEquals( SmsCompressionException.class, e.getClass() );
             assertEquals( "Invalid CRC - CRC in header does not match submission", e.getMessage() );
             return;
         }
