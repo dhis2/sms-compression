@@ -28,7 +28,7 @@ package org.hisp.dhis.smscompression;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-public class SMSCompressionException
+public class SmsCompressionException
     extends
     Exception
 {
@@ -38,17 +38,17 @@ public class SMSCompressionException
      */
     private static final long serialVersionUID = 1L;
 
-    public SMSCompressionException( String message )
+    public SmsCompressionException( String message )
     {
         super( message );
     }
 
-    public SMSCompressionException( String message, Throwable error )
+    public SmsCompressionException( String message, Throwable error )
     {
         super( message, error );
     }
 
-    public SMSCompressionException( Throwable error )
+    public SmsCompressionException( Throwable error )
     {
         super( error );
     }

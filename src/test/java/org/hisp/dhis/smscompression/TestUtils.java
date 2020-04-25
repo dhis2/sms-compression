@@ -34,11 +34,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.hisp.dhis.smscompression.SMSConsts.SMSEventStatus;
+import org.hisp.dhis.smscompression.SmsConsts.SmsEventStatus;
 import org.hisp.dhis.smscompression.models.GeoPoint;
-import org.hisp.dhis.smscompression.models.SMSDataValue;
-import org.hisp.dhis.smscompression.models.SMSEvent;
-import org.hisp.dhis.smscompression.models.SMSSubmission;
+import org.hisp.dhis.smscompression.models.SmsDataValue;
+import org.hisp.dhis.smscompression.models.SmsEvent;
+import org.hisp.dhis.smscompression.models.SmsSubmission;
 import org.junit.Assert;
 
 import com.google.gson.Gson;
@@ -54,23 +54,23 @@ public class TestUtils
         return cal.getTime();
     }
 
-    public static List<SMSEvent> createEventList()
+    public static List<SmsEvent> createEventList()
     {
-        List<SMSEvent> events = new ArrayList<>();
+        List<SmsEvent> events = new ArrayList<>();
         for ( int i = 1; i <= 3; i++ )
         {
-            SMSEvent event = new SMSEvent();
+            SmsEvent event = new SmsEvent();
             event.setOrgUnit( "DiszpKrYNg8" ); // Ngelehun CHC
             event.setProgramStage( "A03MvHHogjR" ); // Birth
-            event.setEventStatus( SMSEventStatus.COMPLETED );
+            event.setEventStatus( SmsEventStatus.COMPLETED );
             event.setAttributeOptionCombo( "HllvX50cXC0" ); // Default
                                                             // catOptionCombo
             event.setEvent( "r7M1gUFK3X" + i ); // New UID
             event.setEventDate( getNowWithoutMillis() );
             event.setDueDate( getNowWithoutMillis() );
             event.setCoordinates( new GeoPoint( 8.4844694f, -13.2364332f ) );
-            ArrayList<SMSDataValue> values = new ArrayList<>();
-            values.add( new SMSDataValue( "HllvX50cXC0", "UXz7xuGCEhU", String.valueOf( i + 1 ) ) ); // Weight
+            ArrayList<SmsDataValue> values = new ArrayList<>();
+            values.add( new SmsDataValue( "HllvX50cXC0", "UXz7xuGCEhU", String.valueOf( i + 1 ) ) ); // Weight
             event.setValues( values );
             events.add( event );
         }
@@ -78,7 +78,7 @@ public class TestUtils
         return events;
     }
 
-    public static void printSubm( SMSSubmission subm )
+    public static void printSubm( SmsSubmission subm )
     {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         System.out.println( gson.toJson( subm ) );
@@ -120,7 +120,7 @@ public class TestUtils
         System.out.println( "************************" );
     }
 
-    public static void checkSubmissionsAreEqual( SMSSubmission origSubm, SMSSubmission decSubm )
+    public static void checkSubmissionsAreEqual( SmsSubmission origSubm, SmsSubmission decSubm )
     {
         if ( !origSubm.equals( decSubm ) )
         {

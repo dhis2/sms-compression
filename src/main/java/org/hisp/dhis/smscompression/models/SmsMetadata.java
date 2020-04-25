@@ -35,11 +35,11 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
-import org.hisp.dhis.smscompression.SMSCompressionException;
-import org.hisp.dhis.smscompression.SMSConsts.MetadataType;
-import org.hisp.dhis.smscompression.utils.IDUtil;
+import org.hisp.dhis.smscompression.SmsCompressionException;
+import org.hisp.dhis.smscompression.SmsConsts.MetadataType;
+import org.hisp.dhis.smscompression.utils.IdUtil;
 
-public class SMSMetadata
+public class SmsMetadata
 {
     public static final List<MetadataType> ValidHashTypes = Collections
         .unmodifiableList( Arrays.asList( MetadataType.USER, MetadataType.TRACKED_ENTITY_TYPE,
@@ -47,11 +47,11 @@ public class SMSMetadata
             MetadataType.DATA_ELEMENT, MetadataType.CATEGORY_OPTION_COMBO, MetadataType.DATASET,
             MetadataType.PROGRAM_STAGE, MetadataType.RELATIONSHIP_TYPE ) );
 
-    public static class ID
+    public static class Id
     {
         String id;
 
-        public ID( String id )
+        public Id( String id )
         {
             this.id = id;
         }
@@ -59,46 +59,46 @@ public class SMSMetadata
 
     public Date lastSyncDate;
 
-    public List<ID> users;
+    public List<Id> users;
 
-    public List<ID> trackedEntityTypes;
+    public List<Id> trackedEntityTypes;
 
-    public List<ID> trackedEntityAttributes;
+    public List<Id> trackedEntityAttributes;
 
-    public List<ID> programs;
+    public List<Id> programs;
 
-    public List<ID> organisationUnits;
+    public List<Id> organisationUnits;
 
-    public List<ID> dataElements;
+    public List<Id> dataElements;
 
-    public List<ID> categoryOptionCombos;
+    public List<Id> categoryOptionCombos;
 
-    public List<ID> dataSets;
+    public List<Id> dataSets;
 
-    public List<ID> programStages;
+    public List<Id> programStages;
 
-    public List<ID> relationshipTypes;
+    public List<Id> relationshipTypes;
 
     public void validate()
-        throws SMSCompressionException
+        throws SmsCompressionException
     {
         for ( MetadataType type : ValidHashTypes )
         {
-            checkIDList( getType( type ), type );
+            checkIdList( getType( type ), type );
         }
     }
 
-    public static boolean checkIDList( List<String> ids, MetadataType type )
-        throws SMSCompressionException
+    public static boolean checkIdList( List<String> ids, MetadataType type )
+        throws SmsCompressionException
     {
         String typeMsg = "Metadata error[" + type + "]:";
         HashSet<String> set = new HashSet<>();
         for ( String id : ids )
         {
             if ( !set.add( id ) )
-                throw new SMSCompressionException( typeMsg + "List of UIDs in Metadata contains duplicate: " + id );
-            if ( !IDUtil.validID( id ) )
-                throw new SMSCompressionException( typeMsg + "Invalid format UID found in Metadata UID List: " + id );
+                throw new SmsCompressionException( typeMsg + "List of UIDs in Metadata contains duplicate: " + id );
+            if ( !IdUtil.validId( id ) )
+                throw new SmsCompressionException( typeMsg + "Invalid format UID found in Metadata UID List: " + id );
         }
 
         return true;
@@ -109,38 +109,38 @@ public class SMSMetadata
         switch ( type )
         {
         case USER:
-            return getIDs( users );
+            return getIds( users );
         case TRACKED_ENTITY_TYPE:
-            return getIDs( trackedEntityTypes );
+            return getIds( trackedEntityTypes );
         case TRACKED_ENTITY_ATTRIBUTE:
-            return getIDs( trackedEntityAttributes );
+            return getIds( trackedEntityAttributes );
         case PROGRAM:
-            return getIDs( programs );
+            return getIds( programs );
         case ORGANISATION_UNIT:
-            return getIDs( organisationUnits );
+            return getIds( organisationUnits );
         case DATA_ELEMENT:
-            return getIDs( dataElements );
+            return getIds( dataElements );
         case CATEGORY_OPTION_COMBO:
-            return getIDs( categoryOptionCombos );
+            return getIds( categoryOptionCombos );
         case DATASET:
-            return getIDs( dataSets );
+            return getIds( dataSets );
         case PROGRAM_STAGE:
-            return getIDs( programStages );
+            return getIds( programStages );
         case RELATIONSHIP_TYPE:
-            return getIDs( relationshipTypes );
+            return getIds( relationshipTypes );
 
         default:
             return null;
         }
     }
 
-    private List<String> getIDs( List<ID> ids )
+    private List<String> getIds( List<Id> ids )
     {
         ArrayList<String> idList = new ArrayList<>();
 
         if ( ids != null )
         {
-            for ( ID id : ids )
+            for ( Id id : ids )
             {
                 idList.add( id.id );
             }

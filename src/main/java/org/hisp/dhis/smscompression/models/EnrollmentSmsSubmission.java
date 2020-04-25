@@ -32,88 +32,88 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import org.hisp.dhis.smscompression.SMSCompressionException;
-import org.hisp.dhis.smscompression.SMSConsts;
-import org.hisp.dhis.smscompression.SMSConsts.MetadataType;
-import org.hisp.dhis.smscompression.SMSConsts.SMSEnrollmentStatus;
-import org.hisp.dhis.smscompression.SMSConsts.SubmissionType;
-import org.hisp.dhis.smscompression.SMSSubmissionReader;
-import org.hisp.dhis.smscompression.SMSSubmissionWriter;
+import org.hisp.dhis.smscompression.SmsCompressionException;
+import org.hisp.dhis.smscompression.SmsConsts;
+import org.hisp.dhis.smscompression.SmsConsts.MetadataType;
+import org.hisp.dhis.smscompression.SmsConsts.SmsEnrollmentStatus;
+import org.hisp.dhis.smscompression.SmsConsts.SubmissionType;
+import org.hisp.dhis.smscompression.SmsSubmissionReader;
+import org.hisp.dhis.smscompression.SmsSubmissionWriter;
 
-public class EnrollmentSMSSubmission
+public class EnrollmentSmsSubmission
     extends
-    SMSSubmission
+    SmsSubmission
 {
-    protected UID orgUnit;
+    protected Uid orgUnit;
 
-    protected UID trackerProgram;
+    protected Uid trackerProgram;
 
-    protected UID trackedEntityType;
+    protected Uid trackedEntityType;
 
-    protected UID trackedEntityInstance;
+    protected Uid trackedEntityInstance;
 
-    protected UID enrollment;
+    protected Uid enrollment;
 
     protected Date enrollmentDate;
 
-    protected SMSEnrollmentStatus enrollmentStatus;
+    protected SmsEnrollmentStatus enrollmentStatus;
 
     protected Date incidentDate;
 
     protected GeoPoint coordinates;
 
-    protected List<SMSAttributeValue> values;
+    protected List<SmsAttributeValue> values;
 
-    protected List<SMSEvent> events;
+    protected List<SmsEvent> events;
 
-    public UID getOrgUnit()
+    public Uid getOrgUnit()
     {
         return orgUnit;
     }
 
     public void setOrgUnit( String orgUnit )
     {
-        this.orgUnit = new UID( orgUnit, MetadataType.ORGANISATION_UNIT );
+        this.orgUnit = new Uid( orgUnit, MetadataType.ORGANISATION_UNIT );
     }
 
-    public UID getTrackerProgram()
+    public Uid getTrackerProgram()
     {
         return trackerProgram;
     }
 
     public void setTrackerProgram( String trackerProgram )
     {
-        this.trackerProgram = new UID( trackerProgram, MetadataType.PROGRAM );
+        this.trackerProgram = new Uid( trackerProgram, MetadataType.PROGRAM );
     }
 
-    public UID getTrackedEntityType()
+    public Uid getTrackedEntityType()
     {
         return trackedEntityType;
     }
 
     public void setTrackedEntityType( String trackedEntityType )
     {
-        this.trackedEntityType = new UID( trackedEntityType, MetadataType.TRACKED_ENTITY_TYPE );
+        this.trackedEntityType = new Uid( trackedEntityType, MetadataType.TRACKED_ENTITY_TYPE );
     }
 
-    public UID getTrackedEntityInstance()
+    public Uid getTrackedEntityInstance()
     {
         return trackedEntityInstance;
     }
 
     public void setTrackedEntityInstance( String trackedEntityInstance )
     {
-        this.trackedEntityInstance = new UID( trackedEntityInstance, MetadataType.TRACKED_ENTITY_INSTANCE );
+        this.trackedEntityInstance = new Uid( trackedEntityInstance, MetadataType.TRACKED_ENTITY_INSTANCE );
     }
 
-    public UID getEnrollment()
+    public Uid getEnrollment()
     {
         return enrollment;
     }
 
     public void setEnrollment( String enrollment )
     {
-        this.enrollment = new UID( enrollment, MetadataType.ENROLLMENT );
+        this.enrollment = new Uid( enrollment, MetadataType.ENROLLMENT );
     }
 
     public Date getEnrollmentDate()
@@ -126,12 +126,12 @@ public class EnrollmentSMSSubmission
         this.enrollmentDate = enrollmentDate;
     }
 
-    public SMSEnrollmentStatus getEnrollmentStatus()
+    public SmsEnrollmentStatus getEnrollmentStatus()
     {
         return enrollmentStatus;
     }
 
-    public void setEnrollmentStatus( SMSEnrollmentStatus enrollmentStatus )
+    public void setEnrollmentStatus( SmsEnrollmentStatus enrollmentStatus )
     {
         this.enrollmentStatus = enrollmentStatus;
     }
@@ -156,22 +156,22 @@ public class EnrollmentSMSSubmission
         this.coordinates = coordinates;
     }
 
-    public List<SMSAttributeValue> getValues()
+    public List<SmsAttributeValue> getValues()
     {
         return values;
     }
 
-    public void setValues( List<SMSAttributeValue> values )
+    public void setValues( List<SmsAttributeValue> values )
     {
         this.values = values;
     }
 
-    public List<SMSEvent> getEvents()
+    public List<SmsEvent> getEvents()
     {
         return events;
     }
 
-    public void setEvents( List<SMSEvent> events )
+    public void setEvents( List<SmsEvent> events )
     {
         this.events = events;
     }
@@ -183,7 +183,7 @@ public class EnrollmentSMSSubmission
         {
             return false;
         }
-        EnrollmentSMSSubmission subm = (EnrollmentSMSSubmission) o;
+        EnrollmentSmsSubmission subm = (EnrollmentSmsSubmission) o;
 
         return Objects.equals( orgUnit, subm.orgUnit ) && Objects.equals( trackerProgram, subm.trackerProgram )
             && Objects.equals( trackedEntityType, subm.trackedEntityType )
@@ -195,8 +195,8 @@ public class EnrollmentSMSSubmission
     }
 
     @Override
-    public void writeSubm( SMSSubmissionWriter writer, int version )
-        throws SMSCompressionException
+    public void writeSubm( SmsSubmissionWriter writer, int version )
+        throws SmsCompressionException
     {
         switch ( version )
         {
@@ -207,30 +207,30 @@ public class EnrollmentSMSSubmission
             writeSubmV2( writer, version );
             break;
         default:
-            throw new SMSCompressionException( versionError( version ) );
+            throw new SmsCompressionException( versionError( version ) );
         }
     }
 
-    private void writeSubmV1( SMSSubmissionWriter writer, int version )
-        throws SMSCompressionException
+    private void writeSubmV1( SmsSubmissionWriter writer, int version )
+        throws SmsCompressionException
     {
-        writer.writeID( orgUnit );
-        writer.writeID( trackerProgram );
-        writer.writeID( trackedEntityType );
-        writer.writeID( trackedEntityInstance );
-        writer.writeID( enrollment );
+        writer.writeId( orgUnit );
+        writer.writeId( trackerProgram );
+        writer.writeId( trackedEntityType );
+        writer.writeId( trackedEntityInstance );
+        writer.writeId( enrollment );
         writer.writeNonNullableDate( enrollmentDate );
         writer.writeAttributeValues( values );
     }
 
-    private void writeSubmV2( SMSSubmissionWriter writer, int version )
-        throws SMSCompressionException
+    private void writeSubmV2( SmsSubmissionWriter writer, int version )
+        throws SmsCompressionException
     {
-        writer.writeID( orgUnit );
-        writer.writeID( trackerProgram );
-        writer.writeID( trackedEntityType );
-        writer.writeID( trackedEntityInstance );
-        writer.writeID( enrollment );
+        writer.writeId( orgUnit );
+        writer.writeId( trackerProgram );
+        writer.writeId( trackedEntityType );
+        writer.writeId( trackedEntityInstance );
+        writer.writeId( enrollment );
         writer.writeDate( enrollmentDate );
         writer.writeEnrollmentStatus( enrollmentStatus );
         writer.writeDate( incidentDate );
@@ -245,8 +245,8 @@ public class EnrollmentSMSSubmission
     }
 
     @Override
-    public void readSubm( SMSSubmissionReader reader, int version )
-        throws SMSCompressionException
+    public void readSubm( SmsSubmissionReader reader, int version )
+        throws SmsCompressionException
     {
         switch ( version )
         {
@@ -257,31 +257,31 @@ public class EnrollmentSMSSubmission
             readSubmV2( reader, version );
             break;
         default:
-            throw new SMSCompressionException( versionError( version ) );
+            throw new SmsCompressionException( versionError( version ) );
         }
     }
 
-    public void readSubmV1( SMSSubmissionReader reader, int version )
-        throws SMSCompressionException
+    public void readSubmV1( SmsSubmissionReader reader, int version )
+        throws SmsCompressionException
     {
-        this.orgUnit = reader.readID( MetadataType.ORGANISATION_UNIT );
-        this.trackerProgram = reader.readID( MetadataType.PROGRAM );
-        this.trackedEntityType = reader.readID( MetadataType.TRACKED_ENTITY_TYPE );
-        this.trackedEntityInstance = reader.readID( MetadataType.TRACKED_ENTITY_INSTANCE );
-        this.enrollment = reader.readID( MetadataType.ENROLLMENT );
+        this.orgUnit = reader.readId( MetadataType.ORGANISATION_UNIT );
+        this.trackerProgram = reader.readId( MetadataType.PROGRAM );
+        this.trackedEntityType = reader.readId( MetadataType.TRACKED_ENTITY_TYPE );
+        this.trackedEntityInstance = reader.readId( MetadataType.TRACKED_ENTITY_INSTANCE );
+        this.enrollment = reader.readId( MetadataType.ENROLLMENT );
         this.enrollmentDate = reader.readNonNullableDate();
         this.values = reader.readAttributeValues();
         this.events = null;
     }
 
-    public void readSubmV2( SMSSubmissionReader reader, int version )
-        throws SMSCompressionException
+    public void readSubmV2( SmsSubmissionReader reader, int version )
+        throws SmsCompressionException
     {
-        this.orgUnit = reader.readID( MetadataType.ORGANISATION_UNIT );
-        this.trackerProgram = reader.readID( MetadataType.PROGRAM );
-        this.trackedEntityType = reader.readID( MetadataType.TRACKED_ENTITY_TYPE );
-        this.trackedEntityInstance = reader.readID( MetadataType.TRACKED_ENTITY_INSTANCE );
-        this.enrollment = reader.readID( MetadataType.ENROLLMENT );
+        this.orgUnit = reader.readId( MetadataType.ORGANISATION_UNIT );
+        this.trackerProgram = reader.readId( MetadataType.PROGRAM );
+        this.trackedEntityType = reader.readId( MetadataType.TRACKED_ENTITY_TYPE );
+        this.trackedEntityInstance = reader.readId( MetadataType.TRACKED_ENTITY_INSTANCE );
+        this.enrollment = reader.readId( MetadataType.ENROLLMENT );
         this.enrollmentDate = reader.readDate();
         this.enrollmentStatus = reader.readEnrollmentStatus();
         this.incidentDate = reader.readDate();
@@ -300,7 +300,7 @@ public class EnrollmentSMSSubmission
     @Override
     public SubmissionType getType()
     {
-        return SMSConsts.SubmissionType.ENROLLMENT;
+        return SmsConsts.SubmissionType.ENROLLMENT;
     }
 
 }

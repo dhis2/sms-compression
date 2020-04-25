@@ -32,7 +32,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Objects;
 
-import org.hisp.dhis.smscompression.SMSCompressionException;
+import org.hisp.dhis.smscompression.SmsCompressionException;
 
 /**
  * A stream where bits can be written to. Because they are written to an
@@ -90,7 +90,7 @@ public final class BitOutputStream
      * @throws IOException if an I/O exception occurred
      */
     public void write( int i, int n )
-        throws SMSCompressionException
+        throws SmsCompressionException
     {
         try
         {
@@ -107,7 +107,7 @@ public final class BitOutputStream
         }
         catch ( IOException e )
         {
-            throw new SMSCompressionException( e );
+            throw new SmsCompressionException( e );
         }
     }
 

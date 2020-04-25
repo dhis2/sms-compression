@@ -4,46 +4,46 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.hisp.dhis.smscompression.SMSConsts.MetadataType;
-import org.hisp.dhis.smscompression.models.SMSAttributeValue;
-import org.hisp.dhis.smscompression.models.SMSDataValue;
-import org.hisp.dhis.smscompression.models.SMSMetadata;
-import org.hisp.dhis.smscompression.models.SMSValue;
-import org.hisp.dhis.smscompression.models.UID;
+import org.hisp.dhis.smscompression.SmsConsts.MetadataType;
+import org.hisp.dhis.smscompression.models.SmsAttributeValue;
+import org.hisp.dhis.smscompression.models.SmsDataValue;
+import org.hisp.dhis.smscompression.models.SmsMetadata;
+import org.hisp.dhis.smscompression.models.SmsValue;
+import org.hisp.dhis.smscompression.models.Uid;
 import org.hisp.dhis.smscompression.utils.BitInputStream;
-import org.hisp.dhis.smscompression.utils.IDUtil;
+import org.hisp.dhis.smscompression.utils.IdUtil;
 import org.hisp.dhis.smscompression.utils.ValueUtil;
 
 public class ValueReader
 {
     BitInputStream inStream;
 
-    SMSMetadata meta;
+    SmsMetadata meta;
 
     boolean hashingEnabled;
 
-    public ValueReader( BitInputStream inStream, SMSMetadata meta )
+    public ValueReader( BitInputStream inStream, SmsMetadata meta )
     {
         this.inStream = inStream;
         this.meta = meta;
     }
 
-    public UID readValID( int bitLen, Map<Integer, String> idLookup, MetadataType type )
-        throws SMSCompressionException
+    public Uid readValId( int bitLen, Map<Integer, String> idLookup, MetadataType type )
+        throws SmsCompressionException
     {
         if ( !hashingEnabled )
-            return new UID( ValueUtil.readString( inStream ), type );
+            return new Uid( ValueUtil.readString( inStream ), type );
 
         String id;
         int idHash = inStream.read( bitLen );
         id = idLookup.get( idHash );
-        return new UID( id, idHash, type );
+        return new Uid( id, idHash, type );
     }
 
-    public List<SMSAttributeValue> readAttributeValues()
-        throws SMSCompressionException
+    public List<SmsAttributeValue> readAttributeValues()
+        throws SmsCompressionException
     {
-        ArrayList<SMSAttributeValue> values = new ArrayList<>();
+        ArrayList<SmsAttributeValue> values = new ArrayList<>();
         MetadataType type = MetadataType.TRACKED_ENTITY_ATTRIBUTE;
         int attributeBitLen = 0;
         Map<Integer, String> idLookup = null;
@@ -51,23 +51,23 @@ public class ValueReader
         this.hashingEnabled = ValueUtil.readBool( inStream );
         if ( hashingEnabled )
         {
-            attributeBitLen = inStream.read( SMSConsts.VARLEN_BITLEN );
-            idLookup = IDUtil.getIDLookup( meta.getType( type ), attributeBitLen );
+            attributeBitLen = inStream.read( SmsConsts.VARLEN_BITLEN );
+            idLookup = IdUtil.getIdLookup( meta.getType( type ), attributeBitLen );
         }
-        int fixedIntBitLen = inStream.read( SMSConsts.FIXED_INT_BITLEN ) + 1;
+        int fixedIntBitLen = inStream.read( SmsConsts.FIXED_INT_BITLEN ) + 1;
 
         for ( int valSep = 1; valSep == 1; valSep = inStream.read( 1 ) )
         {
-            UID id = readValID( attributeBitLen, idLookup, type );
-            SMSValue<?> smsValue = ValueUtil.readSMSValue( fixedIntBitLen, inStream );
-            values.add( new SMSAttributeValue( id, smsValue ) );
+            Uid id = readValId( attributeBitLen, idLookup, type );
+            SmsValue<?> smsValue = ValueUtil.readSmsValue( fixedIntBitLen, inStream );
+            values.add( new SmsAttributeValue( id, smsValue ) );
         }
 
         return values;
     }
 
-    public List<SMSDataValue> readDataValues()
-        throws SMSCompressionException
+    public List<SmsDataValue> readDataValues()
+        throws SmsCompressionException
     {
         int catOptionComboBitLen = 0;
         int dataElementBitLen = 0;
@@ -79,24 +79,24 @@ public class ValueReader
         this.hashingEnabled = ValueUtil.readBool( inStream );
         if ( hashingEnabled )
         {
-            catOptionComboBitLen = inStream.read( SMSConsts.VARLEN_BITLEN );
-            cocIDLookup = IDUtil.getIDLookup( meta.getType( cocType ), catOptionComboBitLen );
+            catOptionComboBitLen = inStream.read( SmsConsts.VARLEN_BITLEN );
+            cocIDLookup = IdUtil.getIdLookup( meta.getType( cocType ), catOptionComboBitLen );
 
-            dataElementBitLen = inStream.read( SMSConsts.VARLEN_BITLEN );
-            deIDLookup = IDUtil.getIDLookup( meta.getType( deType ), dataElementBitLen );
+            dataElementBitLen = inStream.read( SmsConsts.VARLEN_BITLEN );
+            deIDLookup = IdUtil.getIdLookup( meta.getType( deType ), dataElementBitLen );
         }
-        int fixedIntBitLen = inStream.read( SMSConsts.FIXED_INT_BITLEN ) + 1;
-        ArrayList<SMSDataValue> values = new ArrayList<>();
+        int fixedIntBitLen = inStream.read( SmsConsts.FIXED_INT_BITLEN ) + 1;
+        ArrayList<SmsDataValue> values = new ArrayList<>();
 
         for ( int cocSep = 1; cocSep == 1; cocSep = inStream.read( 1 ) )
         {
-            UID catOptionCombo = readValID( catOptionComboBitLen, cocIDLookup, cocType );
+            Uid catOptionCombo = readValId( catOptionComboBitLen, cocIDLookup, cocType );
 
             for ( int valSep = 1; valSep == 1; valSep = inStream.read( 1 ) )
             {
-                UID dataElement = readValID( dataElementBitLen, deIDLookup, deType );
-                SMSValue<?> smsValue = ValueUtil.readSMSValue( fixedIntBitLen, inStream );
-                values.add( new SMSDataValue( catOptionCombo, dataElement, smsValue ) );
+                Uid dataElement = readValId( dataElementBitLen, deIDLookup, deType );
+                SmsValue<?> smsValue = ValueUtil.readSmsValue( fixedIntBitLen, inStream );
+                values.add( new SmsDataValue( catOptionCombo, dataElement, smsValue ) );
             }
         }
 
