@@ -105,6 +105,7 @@ public class CreateSubm
         subm.setTrackedEntityType( "nEenWmSyUEp" ); // Person
         subm.setTrackedEntityInstance( "T2bRuLEGoVN" ); // Newly generated UID
         subm.setEnrollment( "p7M1gUFK37W" ); // Newly generated UID
+        subm.setAttributeOptionCombo( "HllvX50cXC0" );
         subm.setEnrollmentDate( TestUtils.getNowWithoutMillis() );
         subm.setIncidentDate( TestUtils.getNowWithoutMillis() );
         subm.setCoordinates( new GeoPoint( 8.4844694f, -13.2364332f ) );

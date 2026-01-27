@@ -21,6 +21,7 @@ public class CreateSubmV1
         subm.setTrackedEntityType( "nEenWmSyUEp" ); // Person
         subm.setTrackedEntityInstance( "T2bRuLEGoVN" ); // Newly generated UID
         subm.setEnrollment( "p7M1gUFK37W" ); // Newly generated UID
+        subm.setAttributeOptionCombo( "HllvX50cXC0" );
         subm.setEnrollmentDate( TestUtils.getNowWithoutMillis() );
         ArrayList<SmsAttributeValue> values = new ArrayList<>();
         values.add( new SmsAttributeValue( "w75KJ2mc4zz", "Harold" ) ); // First
