@@ -1,29 +1,30 @@
 plugins {
-  id 'com.gradle.build-scan' version '1.16'
-  id 'java'
-  id 'maven'
+    id 'java'
+    id 'maven-publish'
 }
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+    withSourcesJar()
+}
 
 repositories {
-    jcenter()
+    mavenCentral()
 }
 
 dependencies {
-    compile group: 'com.google.code.gson', name: 'gson', version:'2.8.2'
-    compile group: 'org.apache.commons', name: 'commons-lang3', version:'3.6'
-    compile group: 'commons-io', name: 'commons-io', version: '2.6'
+    implementation 'com.google.code.gson:gson:2.8.2'
+    implementation 'org.apache.commons:commons-lang3:3.6'
+    implementation 'commons-io:commons-io:2.6'
     testImplementation 'junit:junit:4.12'
 }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-buildScan {
-    termsOfServiceUrl = 'https://gradle.com/terms-of-service'
-    termsOfServiceAgree = 'yes'
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
 }

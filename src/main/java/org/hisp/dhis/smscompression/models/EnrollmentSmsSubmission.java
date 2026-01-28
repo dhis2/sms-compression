@@ -66,6 +66,8 @@ public class EnrollmentSmsSubmission
 
     protected List<SmsEvent> events;
 
+    protected Uid attributeOptionCombo;
+
     public Uid getOrgUnit()
     {
         return orgUnit;
@@ -176,6 +178,15 @@ public class EnrollmentSmsSubmission
         this.events = events;
     }
 
+    public Uid getAttributeOptionCombo()
+  {
+    return attributeOptionCombo;
+  }
+
+    public void setAttributeOptionCombo( String attributeOptionCombo ) {
+      this.attributeOptionCombo = new Uid( attributeOptionCombo, MetadataType.CATEGORY_OPTION_COMBO );
+    }
+
     @Override
     public boolean equals( Object o )
     {
@@ -191,7 +202,8 @@ public class EnrollmentSmsSubmission
             && Objects.equals( enrollment, subm.enrollment ) && Objects.equals( enrollmentDate, subm.enrollmentDate )
             && Objects.equals( enrollmentStatus, subm.enrollmentStatus )
             && Objects.equals( incidentDate, subm.incidentDate ) && Objects.equals( coordinates, subm.coordinates )
-            && Objects.equals( values, subm.values ) && Objects.equals( events, subm.events );
+            && Objects.equals( values, subm.values ) && Objects.equals( events, subm.events )
+            && Objects.equals( attributeOptionCombo, subm.attributeOptionCombo );
     }
 
     @Override
@@ -221,6 +233,7 @@ public class EnrollmentSmsSubmission
         writer.writeId( enrollment );
         writer.writeNonNullableDate( enrollmentDate );
         writer.writeAttributeValues( values );
+        writer.writeId( attributeOptionCombo );
     }
 
     private void writeSubmV2( SmsSubmissionWriter writer, int version )
@@ -231,6 +244,7 @@ public class EnrollmentSmsSubmission
         writer.writeId( trackedEntityType );
         writer.writeId( trackedEntityInstance );
         writer.writeId( enrollment );
+        writer.writeId( attributeOptionCombo );
         writer.writeDate( enrollmentDate );
         writer.writeEnrollmentStatus( enrollmentStatus );
         writer.writeDate( incidentDate );
@@ -271,6 +285,7 @@ public class EnrollmentSmsSubmission
         this.enrollment = reader.readId( MetadataType.ENROLLMENT );
         this.enrollmentDate = reader.readNonNullableDate();
         this.values = reader.readAttributeValues();
+        this.attributeOptionCombo = reader.readId( MetadataType.CATEGORY_OPTION_COMBO );
         this.events = null;
     }
 
@@ -282,6 +297,7 @@ public class EnrollmentSmsSubmission
         this.trackedEntityType = reader.readId( MetadataType.TRACKED_ENTITY_TYPE );
         this.trackedEntityInstance = reader.readId( MetadataType.TRACKED_ENTITY_INSTANCE );
         this.enrollment = reader.readId( MetadataType.ENROLLMENT );
+        this.attributeOptionCombo = reader.readId( MetadataType.CATEGORY_OPTION_COMBO );
         this.enrollmentDate = reader.readDate();
         this.enrollmentStatus = reader.readEnrollmentStatus();
         this.incidentDate = reader.readDate();
