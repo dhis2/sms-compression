@@ -184,7 +184,9 @@ public class EnrollmentSmsSubmission
   }
 
     public void setAttributeOptionCombo( String attributeOptionCombo ) {
-      this.attributeOptionCombo = new Uid( attributeOptionCombo, MetadataType.CATEGORY_OPTION_COMBO );
+      if (attributeOptionCombo != null) {
+          this.attributeOptionCombo = new Uid( attributeOptionCombo, MetadataType.CATEGORY_OPTION_COMBO );
+      }
     }
 
     @Override
@@ -233,8 +235,11 @@ public class EnrollmentSmsSubmission
         writer.writeId( enrollment );
         writer.writeNonNullableDate( enrollmentDate );
         writer.writeAttributeValues( values );
-        if(attributeOptionCombo!=null) {
-          writer.writeId( attributeOptionCombo );
+        boolean hasAttributeOptionCombo = (attributeOptionCombo != null && attributeOptionCombo.getUid() != null);
+        writer.writeBool( hasAttributeOptionCombo );
+        if ( hasAttributeOptionCombo )
+        {
+            writer.writeId( attributeOptionCombo );
         }
     }
 
@@ -246,9 +251,6 @@ public class EnrollmentSmsSubmission
         writer.writeId( trackedEntityType );
         writer.writeId( trackedEntityInstance );
         writer.writeId( enrollment );
-        if(attributeOptionCombo!=null) {
-          writer.writeId( attributeOptionCombo );
-        }
         writer.writeDate( enrollmentDate );
         writer.writeEnrollmentStatus( enrollmentStatus );
         writer.writeDate( incidentDate );
@@ -260,6 +262,12 @@ public class EnrollmentSmsSubmission
             writer.writeAttributeValues( values );
         }
         writer.writeEvents( events, version );
+        boolean hasAttributeOptionCombo = (attributeOptionCombo != null && attributeOptionCombo.getUid() != null);
+        writer.writeBool( hasAttributeOptionCombo );
+        if ( hasAttributeOptionCombo )
+        {
+            writer.writeId( attributeOptionCombo );
+        }
     }
 
     @Override
@@ -289,7 +297,8 @@ public class EnrollmentSmsSubmission
         this.enrollment = reader.readId( MetadataType.ENROLLMENT );
         this.enrollmentDate = reader.readNonNullableDate();
         this.values = reader.readAttributeValues();
-        this.attributeOptionCombo = reader.readId( MetadataType.CATEGORY_OPTION_COMBO );
+        boolean hasAttributeOptionCombo = reader.readBool();
+        this.attributeOptionCombo = hasAttributeOptionCombo ? reader.readId( MetadataType.CATEGORY_OPTION_COMBO ) : null;
         this.events = null;
     }
 
@@ -301,7 +310,6 @@ public class EnrollmentSmsSubmission
         this.trackedEntityType = reader.readId( MetadataType.TRACKED_ENTITY_TYPE );
         this.trackedEntityInstance = reader.readId( MetadataType.TRACKED_ENTITY_INSTANCE );
         this.enrollment = reader.readId( MetadataType.ENROLLMENT );
-        this.attributeOptionCombo = reader.readId( MetadataType.CATEGORY_OPTION_COMBO );
         this.enrollmentDate = reader.readDate();
         this.enrollmentStatus = reader.readEnrollmentStatus();
         this.incidentDate = reader.readDate();
@@ -309,6 +317,8 @@ public class EnrollmentSmsSubmission
         boolean hasValues = reader.readBool();
         this.values = hasValues ? reader.readAttributeValues() : null;
         this.events = reader.readEvents( version );
+        boolean hasAttributeOptionCombo = reader.readBool();
+        this.attributeOptionCombo = hasAttributeOptionCombo ? reader.readId( MetadataType.CATEGORY_OPTION_COMBO ) : null;
     }
 
     @Override
