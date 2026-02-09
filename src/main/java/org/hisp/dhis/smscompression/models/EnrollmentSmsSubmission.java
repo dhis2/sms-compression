@@ -233,7 +233,9 @@ public class EnrollmentSmsSubmission
         writer.writeId( enrollment );
         writer.writeNonNullableDate( enrollmentDate );
         writer.writeAttributeValues( values );
-        writer.writeId( attributeOptionCombo );
+        if(attributeOptionCombo!=null) {
+          writer.writeId( attributeOptionCombo );
+        }
     }
 
     private void writeSubmV2( SmsSubmissionWriter writer, int version )
@@ -244,7 +246,9 @@ public class EnrollmentSmsSubmission
         writer.writeId( trackedEntityType );
         writer.writeId( trackedEntityInstance );
         writer.writeId( enrollment );
-        writer.writeId( attributeOptionCombo );
+        if(attributeOptionCombo!=null) {
+          writer.writeId( attributeOptionCombo );
+        }
         writer.writeDate( enrollmentDate );
         writer.writeEnrollmentStatus( enrollmentStatus );
         writer.writeDate( incidentDate );
