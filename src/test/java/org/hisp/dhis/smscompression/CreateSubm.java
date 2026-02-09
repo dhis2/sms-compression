@@ -123,6 +123,7 @@ public class CreateSubm
         subm.setSubmissionId( 1 );
 
         subm.setEvents( TestUtils.createEventList() );
+        subm.setAttributeOptionCombo("sqGRzCziswD");
 
         return subm;
     }

@@ -143,6 +143,7 @@ public class TestEmptyVals
             origSubm.setCoordinates( null );
             origSubm.setValues( null );
             origSubm.setEvents( null );
+            origSubm.setAttributeOptionCombo( null );
             String comp64 = compressSubm( origSubm );
             EnrollmentSmsSubmission decSubm = (EnrollmentSmsSubmission) decompressSubm( comp64 );
 
